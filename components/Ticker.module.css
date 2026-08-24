@@ -1,0 +1,74 @@
+/*
+  The reel.
+
+  One column per digit, holding 0-9 over and over, parked on the digit it is
+  meant to show. Turning it is a matter of moving the column by a whole number
+  of digit heights, which is why the tape repeats: the landing position after
+  three turns has to be a real row rather than a wrap-around.
+*/
+
+.ticker {
+  /*
+    A row taller than the type it holds. At 1em the box is exactly the em
+    square, and a digit's cap and overshoot both sit outside it at display
+    sizes, so the reel shaved the top off every figure.
+  */
+  --row: 1.16em;
+
+  display: inline-flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.fixed {
+  display: inline-block;
+  line-height: 1;
+}
+
+.reel {
+  display: inline-block;
+  overflow: hidden;
+  height: var(--row);
+  line-height: 1;
+  /* Baseline-aligned by hand. The reel is a clipped box, so its own baseline is
+     its bottom edge, which would sit a descender lower than the character
+     beside it. */
+  vertical-align: baseline;
+}
+
+.tape {
+  display: flex;
+  flex-direction: column;
+  translate: 0 calc(var(--target) * var(--row) * -1);
+}
+
+.digit {
+  display: grid;
+  place-items: center;
+  height: var(--row);
+  line-height: 1;
+}
+
+@keyframes tick {
+  from { translate: 0 calc(var(--target) * var(--row) * -1); }
+  to   { translate: 0 calc((var(--target) + 30) * var(--row) * -1); }
+}
+
+/*
+  Driven from the card rather than from the number, so hovering anywhere on the
+  door turns it -- the figure is a texture behind the type and nobody would
+  think to point at it.
+
+  Later columns turn for longer, so the number settles left to right like a
+  counter coming to rest instead of every digit stopping on the same frame.
+*/
+[data-card]:hover .tape,
+[data-card]:focus-visible .tape {
+  animation: tick calc(760ms + var(--order) * 300ms) var(--ease-in-out-quart) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-card]:hover .tape,
+  [data-card]:focus-visible .tape { animation: none; }
+}

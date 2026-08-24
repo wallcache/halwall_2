@@ -4,6 +4,7 @@ import { doors } from "@/content/doors";
 import { Parallax } from "./Parallax";
 import { ArrowUpRight } from "./icons";
 import { PrintStack } from "./PrintStack";
+import { Ticker } from "./Ticker";
 import styles from "./Doors.module.css";
 
 export function Doors() {
@@ -53,7 +54,7 @@ export function Doors() {
 
               {door.figure && (
                 <span className={styles.doorFigure} aria-hidden="true">
-                  {door.figure}
+                  <Ticker value={door.figure} />
                 </span>
               )}
 
