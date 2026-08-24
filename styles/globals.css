@@ -86,8 +86,12 @@
   /* The reading width of an interior page, measured across the content itself
      rather than across the padding box. */
   --shell-max: 76rem;
-  /* The margin an indexed page keeps for its index, and the air beside it. */
-  --rail-w: 11rem;
+  /*
+    The margin an indexed page keeps for its index, and the air beside it.
+    Proportional rather than fixed, so the split holds its shape at any width
+    instead of the index staying a thin strip while the text column grows.
+  */
+  --rail-fr: 0.74fr;
   --rail-gap: clamp(2rem, 5vw, 4.5rem);
 
   /* -- motion ----------------------------------------------------------- */

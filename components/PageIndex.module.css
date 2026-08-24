@@ -11,7 +11,7 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1.15rem;
   list-style: none;
   /* The UA's inline padding survives list-style:none and would push the whole
      rail out of line with the page title above it. */
@@ -22,10 +22,10 @@
 .entry {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1.1rem;
   font-family: var(--font-mono);
-  font-size: 0.63rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.17em;
   text-transform: uppercase;
   color: var(--ink-faint);
   transition: color var(--dur-mid) var(--ease-out-expo);
@@ -35,7 +35,7 @@
    section, then long and inked. Animating width would relayout the label on
    every scroll frame, so it scales from the left instead. */
 .rule {
-  width: 2.5rem;
+  width: clamp(2.5rem, 7vw, 5.5rem);
   height: 1px;
   background: currentColor;
   transform-origin: left center;
@@ -73,8 +73,8 @@
 .progress {
   position: relative;
   width: 1px;
-  height: clamp(3rem, 12vh, 6rem);
-  margin-left: 0.55rem;
+  height: clamp(3rem, 14vh, 8rem);
+  margin-left: 0.6rem;
   background: var(--rule);
 }
 
@@ -88,7 +88,7 @@
 
 /* Below the two-column breakpoint the rail is redundant: the sections are a
    short scroll apart and a sticky rail would eat a third of a phone screen. */
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .rail { display: none; }
 }
 

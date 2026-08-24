@@ -50,7 +50,7 @@
 */
 .bodyIndexed {
   display: grid;
-  grid-template-columns: minmax(0, var(--rail-w)) minmax(0, 1fr);
+  grid-template-columns: minmax(0, var(--rail-fr)) minmax(0, 1fr);
   gap: var(--rail-gap);
   /*
     The cap is on the content, not the padding box. Capping the border box
@@ -66,7 +66,7 @@
   min-width: 0;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .bodyIndexed {
     display: block;
   }

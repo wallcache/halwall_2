@@ -42,9 +42,14 @@ export function Ledger({ counts }: { counts: LiveCounts }) {
     <ul className={styles.ledger} ref={ref}>
       {experience.map((role) => (
         <li key={role.slug} className={styles.row} data-slug={role.slug}>
-          <span className={styles.dates}>{role.dateRange}</span>
-
-          <div>
+          {/*
+            The dates read as an eyebrow above the role rather than as a column
+            beside it. A date column is the handsomer arrangement, but it costs
+            a fixed 150px of a reading column that is now half the page, and it
+            was buying two words of type at the price of a wrapped job title.
+          */}
+          <div className={styles.main}>
+            <span className={styles.dates}>{role.dateRange}</span>
             <h3 className={styles.role}>{role.title}</h3>
             <p className={styles.company}>
               {role.logo && (

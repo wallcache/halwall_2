@@ -7,7 +7,7 @@
   --row-inset: clamp(0.9rem, 2vw, 1.6rem);
 
   display: grid;
-  grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr) minmax(0, 10rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 9rem);
   gap: clamp(0.5rem, 2vw, 2rem);
   align-items: start;
 
@@ -33,13 +33,18 @@
   border-top-color: transparent;
 }
 
+.main {
+  min-width: 0;
+}
+
 .dates {
+  display: block;
+  margin-bottom: 0.4rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-faint);
-  padding-top: 0.35rem;
 }
 
 .role {
