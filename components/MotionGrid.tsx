@@ -1,53 +1,94 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motionPieces } from "@/content/motion";
 import styles from "@/app/making/motion/Motion.module.css";
 
 /**
- * Each tile holds a muted video parked on a frame where the logo has resolved,
- * so the grid reads as ten finished marks rather than ten black rectangles.
- * Nothing preloads beyond that frame until you ask for it.
+ * The motion archive: everything playing at once.
+ *
+ * Hover-to-play was the wrong model twice over. It never fired reliably,
+ * because a browser refuses play() until it has decided a gesture was
+ * deliberate, and it offered nothing at all to touch or to a keyboard. Ten
+ * short loops playing on arrival is what the work actually is, and hovering
+ * just brings one forward.
+ *
+ * Only what is on screen plays. Ten simultaneous decodes is real work, so an
+ * IntersectionObserver pauses anything scrolled away and resumes it on return,
+ * and a hidden tab stops all of them.
  */
 export function MotionGrid() {
-  const refs = useRef(new Map<string, HTMLVideoElement>());
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  const park = useCallback((slug: string, posterTime: number) => {
-    const video = refs.current.get(slug);
-    if (!video) return;
-    video.pause();
-    video.currentTime = posterTime;
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const videos = Array.from(grid.querySelectorAll("video"));
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Reduced motion gets stills, parked on the frame where each logo resolves.
+    if (reduced) {
+      videos.forEach((v) => {
+        const at = Number(v.dataset.poster ?? 0);
+        const seek = () => {
+          if (v.readyState >= 1) v.currentTime = at;
+        };
+        v.addEventListener("loadedmetadata", seek);
+        seek();
+      });
+      return;
+    }
+
+    const visible = new Set<HTMLVideoElement>();
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const v = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            visible.add(v);
+            // play() rejects if the element is torn down mid-promise, and an
+            // unhandled rejection here would surface as a console error.
+            if (!document.hidden) void v.play().catch(() => {});
+          } else {
+            visible.delete(v);
+            v.pause();
+          }
+        }
+      },
+      { threshold: 0.25 },
+    );
+    videos.forEach((v) => io.observe(v));
+
+    const onVisibility = () => {
+      if (document.hidden) videos.forEach((v) => v.pause());
+      else visible.forEach((v) => void v.play().catch(() => {}));
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      videos.forEach((v) => v.pause());
+    };
   }, []);
 
   return (
-    <div className={styles.grid}>
+    <div ref={gridRef} className={styles.grid}>
       {motionPieces.map((piece) => (
-        <figure key={piece.slug} className={styles.item}>
+        <figure key={piece.slug} className={styles.item} data-magnetic="0.072">
           <video
-            ref={(el) => {
-              if (el) refs.current.set(piece.slug, el);
-              else refs.current.delete(piece.slug);
-            }}
             className={`${styles.video} ${piece.aspectRatio === "square" ? styles.square : ""}`}
             src={piece.videoSrc}
+            data-poster={piece.posterTime}
             muted
-            playsInline
             loop
+            playsInline
             preload="metadata"
             aria-label={`${piece.name}, logo animation`}
-            onLoadedMetadata={() => park(piece.slug, piece.posterTime)}
-            onMouseEnter={(e) => void e.currentTarget.play().catch(() => {})}
-            onMouseLeave={() => park(piece.slug, piece.posterTime)}
-            onFocus={(e) => void e.currentTarget.play().catch(() => {})}
-            onBlur={() => park(piece.slug, piece.posterTime)}
-            tabIndex={0}
           />
-          <figcaption className={styles.name}>
-            {piece.name}
-            <span className={styles.hint} aria-hidden="true">
-              hover to play
-            </span>
-          </figcaption>
+          <figcaption className={styles.name}>{piece.name}</figcaption>
         </figure>
       ))}
     </div>

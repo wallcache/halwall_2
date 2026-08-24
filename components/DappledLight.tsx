@@ -73,10 +73,10 @@ const float GRAIN    = 0.028;
 // sitting in the middle of the frame.
 const float FOLLOW   = 2.22;
 
-// Hal's HSV, one per side of the seam. Forest as given (128 degrees, 0.54,
-// 0.59); the verso takes the same saturation and brightness at a slate hue, so
-// the two sides differ in temperature rather than in weight.
-const vec3 SLATE  = vec3(0.58889, 0.54, 0.59);   // verso, the engineering
+// Both sides green, differing in brightness rather than hue. Forest as given
+// (128 degrees, 0.54, 0.59) on the paper side; a lighter, limier green on the
+// dark side, where a forest tone has nothing to separate it from the ground.
+const vec3 SPRING = vec3(0.30000, 0.52, 0.74);   // verso, the engineering
 const vec3 FOREST = vec3(0.35556, 0.54, 0.59);   // recto, the Canon
 
 uniform vec2  uRes;
@@ -169,7 +169,7 @@ void main(){
 
   // Palette, split on the seam.
   float side = smoothstep(uGutter - 0.012, uGutter + 0.012, uv.x);
-  vec3 hsv = mix(SLATE, FOREST, side);
+  vec3 hsv = mix(SPRING, FOREST, side);
 
   // Two tones from one scheme: the light itself, and a desaturated core for
   // the gaps where the sun gets through cleanly.

@@ -22,9 +22,13 @@
   --verso-ink-faint: #8e8e8e;
   --verso-rule: #3a3a3a;
   --verso-rule-strong: #4c4c4c;
-  --verso-accent: #f0562a;
-  --verso-accent-hover: #ff6b3d;
-  --verso-accent-wash: rgb(240 86 42 / 0.14);
+  /* Fluorescent green, not orange. The recto keeps The Daily Canon's deep
+     forest; the verso takes a bright spring green that carries on #242424,
+     where the forest tone would sink into the ground. Same family, two
+     brightnesses, no second hue anywhere on the site. */
+  --verso-accent: #7de68a;
+  --verso-accent-hover: #9bf0a4;
+  --verso-accent-wash: rgb(125 230 138 / 0.13);
 
   /* -- recto: the canon ------------------------------------------------
      Lifted from the live Daily Canon codebase, so this side genuinely is

@@ -10,10 +10,10 @@ const GONE_AT = 2250;
 /**
  * The opening.
  *
- * Three beats, no percentage: the seam draws itself, the name sets either side
- * of it, then the two grounds part along that same seam. It is the site's own
- * gesture performed once before you have seen it, so the spread reads as
- * inevitable rather than as a trick when it appears.
+ * Two beats, no percentage: the name sets either side of centre, then the two
+ * grounds part down the middle. It is the site's own gesture performed once
+ * before you have seen it, so the spread reads as inevitable rather than as a
+ * trick when it appears.
  *
  * Two guards matter more than the choreography. rAF does not run in a
  * background tab, so a visitor who opens the site in a new tab and comes back
@@ -67,7 +67,6 @@ export function Preloader() {
     <div className={styles.root} data-drawn={drawn} data-open={open} data-done={done} aria-hidden="true">
       <div className={`${styles.half} ${styles.left}`} />
       <div className={`${styles.half} ${styles.right}`} />
-      <div className={styles.seam} />
       <div className={styles.name}>
         <p className={styles.word}>
           <span className={styles.hal}>Hal</span>

@@ -95,7 +95,15 @@ export function Header() {
   );
 
   return (
-    <div className={styles.wrap} data-compact={compact} data-mode={mode}>
+    // data-side hands the bar a whole palette: the interior pages already use
+    // these token blocks, so the bar changes theme with them rather than
+    // carrying its own colour rules.
+    <div
+      className={styles.wrap}
+      data-compact={compact}
+      data-mode={mode}
+      data-side={mode === "recto" ? "recto" : "verso"}
+    >
       <nav ref={barRef} className={styles.bar} aria-label="Primary" onPointerMove={onBarPointerMove}>
         <div className={styles.group}>{versoNav.map(renderLink)}</div>
 

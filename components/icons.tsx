@@ -136,3 +136,9 @@ export const Mail = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => 
     <path d="m3 7 9 6 9-6" />
   </svg>
 );
+
+export const Play = ({ size = 18, className, strokeWidth = 1.6 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <path d="M8 5.5v13l11-6.5z" />
+  </svg>
+);

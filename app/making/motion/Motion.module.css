@@ -1,6 +1,62 @@
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem); }
-.item { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--rule); background: #000; overflow: hidden; }
-.video { width: 100%; height: auto; display: block; aspect-ratio: 16 / 9; object-fit: cover; background: #000; }
+/*
+  The motion archive.
+
+  Everything plays on arrival; hovering brings one forward. Hover-to-play was
+  the wrong model twice over: it never fired reliably, because a browser
+  refuses play() until it decides a gesture was deliberate, and it offered
+  nothing to touch or to a keyboard.
+*/
+
+/* isolate: a hovered tile raises above its neighbours, not above the page. */
+.grid {
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+/* The lift is a scale, not a translate, so it reads as growth. */
+.item {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+  transition:
+    border-color 420ms var(--ease-out-expo),
+    transform 620ms var(--ease-out-expo),
+    box-shadow 620ms var(--ease-out-expo);
+}
+
+.item:hover {
+  border-color: var(--accent);
+  transform: scale(1.045);
+  box-shadow: 0 26px 60px -30px rgb(0 0 0 / 0.6);
+  z-index: 2;
+}
+
+.video {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #000;
+}
+
 .square { aspect-ratio: 1; }
-.name { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0.75rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; color: var(--ink-muted); border-top: 1px solid var(--rule); background: var(--ground-raised); }
-.hint { color: var(--ink-faint); font-size: 0.56rem; }
+
+.name {
+  padding: 0.65rem 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--rule);
+  background: var(--ground-raised);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item:hover { transform: none; box-shadow: none; }
+}

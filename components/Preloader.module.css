@@ -1,11 +1,11 @@
 /*
   The loader is the gutter.
 
-  Rather than a percentage counting up behind a curtain, the page arrives the
-  way it works: a hairline seam draws itself down the middle, the name sets
-  either side of it in the two voices, and then the two grounds part along that
-  same seam to reveal the site. Nothing here is a separate loading screen with
-  its own visual language; it is the first frame of the page.
+  The page arrives the way it works: the name sets either side of centre in the
+  two voices, then the two grounds part down the middle to reveal the site.
+  There is no drawn seam line: the join between the two grounds already reads
+  as one, and an accent hairline on top of it was a third element competing
+  with the two that matter.
 */
 
 .root {
@@ -38,26 +38,6 @@
 
 .root[data-open="true"] .left  { transform: translateX(-101%); }
 .root[data-open="true"] .right { transform: translateX(101%); }
-
-/* The seam: a hairline that draws from the centre outward. */
-.seam {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  /* Centred on the join by its own width, not by a guessed offset. */
-  transform-origin: center;
-  translate: -50% 0;
-  z-index: 1;
-  background: var(--verso-accent);
-  transform: scaleY(0);
-  transform-origin: center;
-  transition: transform 900ms var(--ease-out-expo), opacity 400ms linear;
-}
-
-.root[data-drawn="true"] .seam { transform: scaleY(1); }
-.root[data-open="true"] .seam { opacity: 0; }
 
 /* The name, set either side of the seam in the site's own two voices. */
 .name {
@@ -116,5 +96,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .half { transition-duration: 240ms; }
-  .seam, .hal, .wall { transition: opacity 200ms linear; transform: none; }
+  .hal, .wall { transition: opacity 200ms linear; transform: none; }
 }
