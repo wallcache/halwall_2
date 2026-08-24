@@ -43,6 +43,18 @@ export function TodayPhone({
     }
 
     let timer = 0;
+
+    /*
+      A backstop, for the same reason the preloader has one: this content
+      starts at opacity 0 and is revealed by an observer, so anything that
+      stops the observer firing leaves the phone permanently blank. Whatever
+      happens, it is showing within three seconds.
+    */
+    const backstop = window.setTimeout(() => {
+      setBooting(true);
+      setLoaded(true);
+    }, 3000);
+
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
@@ -59,6 +71,7 @@ export function TodayPhone({
     return () => {
       io.disconnect();
       window.clearTimeout(timer);
+      window.clearTimeout(backstop);
     };
   }, []);
 
