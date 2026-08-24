@@ -3,53 +3,60 @@
 import Link from "next/link";
 import { bio } from "@/content/identity";
 import { useGutter } from "@/lib/gutter";
-import { Parallax } from "./Parallax";
 import styles from "./TwoLives.module.css";
 
 /**
  * The long bio, moved out of the masthead.
  *
- * It used to fold open inside the hero, which meant it was clipped mid-sentence
- * by a max-height at exactly the moment someone wanted to read it. A masthead
- * should not also be a body-copy container: this is the "and here is more"
- * that sits one scroll below it.
+ * It used to fold open inside the hero and get clipped mid-sentence by a
+ * max-height at exactly the moment someone wanted to read it. Here it has room,
+ * and it answers to the same gutter: commit to a side upstairs and that side
+ * takes the full width down here.
  */
+const HALVES = [
+  {
+    side: "verso" as const,
+    eyebrow: "Measured in runtime",
+    body: bio.verso,
+    href: "/work",
+    label: "The engineering",
+  },
+  {
+    side: "recto" as const,
+    eyebrow: "Measured in readers",
+    body: bio.recto,
+    href: "/canon",
+    label: "The Daily Canon",
+  },
+];
+
 export function TwoLives() {
   const { mode, commit, release } = useGutter();
 
   return (
-    // The section answers to the same gutter as the hero, so committing to a
-    // side upstairs is still in force by the time you have read this far.
     <section className={styles.section} aria-label="About" data-mode={mode}>
-      <Parallax className={styles.half} speed={0.05} fade>
+      {HALVES.map((half) => (
         <div
-          data-side="verso"
-          style={{ display: "contents" }}
-          onMouseEnter={() => commit("verso")}
+          key={half.side}
+          className={styles.half}
+          data-side={half.side}
+          onMouseEnter={() => commit(half.side)}
           onMouseLeave={release}
+          // Hidden from the reading order once its column has closed.
+          inert={
+            (mode === "verso" && half.side === "recto") ||
+            (mode === "recto" && half.side === "verso")
+          }
         >
-          <p className={styles.eyebrow}>Measured in runtime</p>
-          <p className={styles.body}>{bio.verso}</p>
-          <Link href="/work" className={styles.link}>
-            The engineering <span className={styles.arrow} aria-hidden="true">→</span>
-          </Link>
+          <div className={styles.inner}>
+            <p className={styles.eyebrow}>{half.eyebrow}</p>
+            <p className={styles.body}>{half.body}</p>
+            <Link href={half.href} className={styles.link}>
+              {half.label} <span className={styles.arrow} aria-hidden="true">→</span>
+            </Link>
+          </div>
         </div>
-      </Parallax>
-
-      <Parallax className={styles.half} speed={0.11} fade>
-        <div
-          data-side="recto"
-          style={{ display: "contents" }}
-          onMouseEnter={() => commit("recto")}
-          onMouseLeave={release}
-        >
-          <p className={styles.eyebrow}>Measured in readers</p>
-          <p className={styles.body}>{bio.recto}</p>
-          <Link href="/canon" className={styles.link}>
-            The Daily Canon <span className={styles.arrow} aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </Parallax>
+      ))}
     </section>
   );
 }

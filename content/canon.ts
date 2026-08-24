@@ -84,7 +84,10 @@ export const canon = {
       { name: "Visual themes", detail: "48 work-specific themes — CSS, animation and WebGL — that transform the page for works like Hamlet, Moby-Dick and Wuthering Heights." },
       { name: "Reading paths", detail: "Curated thematic journeys through the canon: The Dark Mirror for gothic and horror, Woolf's Room for women writers, The Philosopher's Path." },
       { name: "Bloomy", detail: "An AI literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next." },
-      { name: "Streaks and badges", detail: "Consecutive days of reading, milestone badges, reader tiers and a community leaderboard." },
+      { name: "Its own weather", detail: "Every book gets an ambience: rain, wind, fire, waves, a train. Use the suggested mix or build your own from The storm, By the fire, The riverbank, A window seat." },
+      { name: "Immersions", detail: "One work, held for days, read together with a cohort. The Chekhov Ten, The Dickinson Immersion, Aesop's Fables." },
+      { name: "My Canon", detail: "Rank what you have read against what you have read before, one binary choice at a time, and get a reader type out of it." },
+      { name: "Streaks and badges", detail: "Consecutive days of reading, freezes when life happens, milestone badges, reader tiers and a leaderboard." },
       { name: "On iOS", detail: "A native wrapper via Capacitor, with push notifications, deep links, Spotlight indexing and haptics." },
     ],
   },
@@ -103,7 +106,7 @@ export const canon = {
     ],
   },
 
-  press: { label: "App Store", honour: "App of the Day" },
+  press: { label: "App Store", honour: "Featured on the App Store" },
   wordmark: "/media/brand/tdc-wordmark.svg",
   appleMark: "/media/brand/apple-mark.svg",
 } as const;

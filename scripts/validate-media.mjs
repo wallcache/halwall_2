@@ -38,7 +38,7 @@ const collect = (value, into) => {
 };
 
 const paths = new Set();
-for (const f of ["photography", "identity-work", "motion", "walking", "doors", "canon", "identity"]) {
+for (const f of ["photography", "identity-work", "motion", "walking", "doors", "canon", "canon-slides", "identity"]) {
   const mod = await import(pathToFileURL(path.join(OUT, `${f}.js`)).href);
   collect(mod, paths);
 }

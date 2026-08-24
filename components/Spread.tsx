@@ -24,7 +24,6 @@ export function Spread() {
   const { mode, commit, set, read, settle } = useGutter();
   const heroRef = useRef<HTMLElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
-  const pillRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
   const [touched, setTouched] = useState(false);
   const [narrow, setNarrow] = useState(false);
@@ -101,7 +100,7 @@ export function Spread() {
   );
 
   const startDrag = useCallback(
-    (e: React.PointerEvent, source: "seam" | "portrait" | "pill") => {
+    (e: React.PointerEvent, source: "seam" | "portrait") => {
       if (narrow || e.pointerType === "touch") return;
       if ((e.target as HTMLElement).closest("a")) return;
 
@@ -112,13 +111,7 @@ export function Spread() {
         gutter: read(),
         // Each grab point uses its own travel, so whatever you are holding
         // stays under the cursor.
-        gain:
-          source === "seam"
-            ? heroWidth()
-            : source === "pill"
-              ? (pillRef.current?.querySelector("span[class*='pillTrack']") as HTMLElement)
-                  ?.getBoundingClientRect().width || 120
-              : portraitTravel(),
+        gain: source === "seam" ? heroWidth() : portraitTravel(),
       };
       last.current = { frac: read(), t: e.timeStamp };
       setTouched(true);
@@ -301,6 +294,9 @@ export function Spread() {
             priority
             sizes="(max-width: 760px) 52vw, 300px"
           />
+          {/* Colour layers, clipped to match their photographs exactly. */}
+          <span className={`${styles.tint} ${styles.tintVerso}`} aria-hidden="true" />
+          <span className={`${styles.tint} ${styles.tintRecto}`} aria-hidden="true" />
         </div>
         {/* Outside .portraitInner, which clips to round its corners. */}
         <span className={styles.portraitCaption}>Drag me</span>
@@ -320,23 +316,6 @@ export function Spread() {
             aria-hidden="true"
           />
 
-          {/* The pill says what it does before you touch it. */}
-          <div
-            ref={pillRef}
-            className={styles.pill}
-            data-mode={mode}
-            onPointerDown={(e) => startDrag(e, "pill")}
-            onPointerMove={onPointerMove}
-            onPointerUp={endDrag}
-            onPointerCancel={endDrag}
-            aria-hidden="true"
-          >
-            <span className={`${styles.pillLabel} ${styles.pillLabelVerso}`}>runtime</span>
-            <span className={styles.pillTrack}>
-              <span className={styles.pillKnob} />
-            </span>
-            <span className={`${styles.pillLabel} ${styles.pillLabelRecto}`}>readers</span>
-          </div>
         </>
       )}
     </section>

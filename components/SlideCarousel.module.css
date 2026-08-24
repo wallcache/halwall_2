@@ -1,0 +1,102 @@
+.wrap { position: relative; }
+
+.viewport {
+  display: flex;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* Bleeds to the viewport edges so the strip runs off both sides. */
+  margin-inline: calc(var(--shell-x) * -1);
+  padding: 0.5rem var(--shell-x) 1.5rem;
+  scrollbar-width: none;
+  cursor: grab;
+  overscroll-behavior-x: contain;
+}
+
+.viewport::-webkit-scrollbar { display: none; }
+.viewport[data-dragging="true"] { cursor: grabbing; scroll-snap-type: none; }
+
+.slide {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(180px, 22vw, 268px);
+  aspect-ratio: 1000 / 2162;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  scroll-snap-align: center;
+  background: var(--ground-raised);
+  box-shadow: 0 20px 50px -34px rgb(0 0 0 / 0.55);
+  transition: transform 520ms var(--ease-out-expo), box-shadow 520ms var(--ease-out-expo);
+}
+
+.viewport:not([data-dragging="true"]) .slide:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 66px -30px rgb(0 0 0 / 0.7);
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The slide art is the product shot; dragging should not lift it out. */
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--rule-strong);
+  background: none;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: border-color 320ms var(--ease-out-expo), color 320ms var(--ease-out-expo);
+}
+
+.btn:hover:not(:disabled),
+.btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn:disabled { opacity: 0.3; cursor: default; }
+
+.progress {
+  flex: 1;
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-full);
+  transform-origin: left;
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport { scroll-behavior: auto; }
+  .viewport:not([data-dragging="true"]) .slide:hover { transform: none; }
+}

@@ -173,7 +173,12 @@ export function DappledLight() {
       powerPreference: "low-power",
     });
     // No WebGL2 is not an error. The CSS ground underneath is the design.
-    if (!gl) return;
+    if (!gl) {
+      console.warn("[DappledLight] WebGL2 unavailable; the hero keeps its CSS ground.");
+      canvas.dataset.light = "unavailable";
+      return;
+    }
+    canvas.dataset.light = "on";
 
     const vs = compile(gl, gl.VERTEX_SHADER, VERT);
     const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
@@ -209,16 +214,32 @@ export function DappledLight() {
     };
     if (!reduced) window.addEventListener("pointermove", onMove, { passive: true });
 
+    /**
+     * Push the size to the GPU. Kept separate from the resize check on purpose.
+     *
+     * This used to bail out early whenever the canvas dimensions were already
+     * correct, which quietly broke the whole effect in development: React
+     * StrictMode mounts the effect twice, the second mount reuses the same
+     * canvas at the same size, so the freshly linked program never received
+     * u_res. It stayed (0, 0), every fragment divided by zero, and the canvas
+     * rendered nothing at all. Fine in a production build, invisible in dev.
+     */
+    const pushSize = (w: number, h: number) => {
+      gl.viewport(0, 0, w, h);
+      gl.uniform2f(uRes, w, h);
+    };
+
     const resize = () => {
       // Capped DPR: this is a soft, blurred field. Nobody can see the extra pixels.
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      const w = Math.floor(canvas.clientWidth * dpr);
-      const h = Math.floor(canvas.clientHeight * dpr);
-      if (canvas.width === w && canvas.height === h) return;
-      canvas.width = w;
-      canvas.height = h;
-      gl.viewport(0, 0, w, h);
-      gl.uniform2f(uRes, w, h);
+      const w = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+      const h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+      // Always pushed, never conditionally.
+      pushSize(w, h);
     };
     resize();
     const ro = new ResizeObserver(resize);

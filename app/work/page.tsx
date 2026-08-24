@@ -19,8 +19,15 @@ export default function WorkPage() {
       side="verso"
       eyebrow="Measured in runtime"
       title="The engineering"
-      standfirst="Four years of production pipelines across insurance and finance. Three of them are worth explaining properly rather than listing."
+      standfirst="Four years of production pipelines across insurance and finance. The ledger first, then the three that are worth explaining properly rather than listing."
     >
+      <section className={shell.section} aria-labelledby="ledger">
+        <h2 id="ledger" className={shell.sectionHead}>
+          The ledger · every role, and the number it is remembered by
+        </h2>
+        <Ledger />
+      </section>
+
       <section className={shell.section} aria-labelledby="studies">
         <h2 id="studies" className={shell.sectionHead}>
           Case studies
@@ -58,13 +65,6 @@ export default function WorkPage() {
             </ul>
           </article>
         ))}
-      </section>
-
-      <section className={shell.section} aria-labelledby="ledger">
-        <h2 id="ledger" className={shell.sectionHead}>
-          The ledger
-        </h2>
-        <Ledger />
       </section>
 
       <section className={shell.section} aria-labelledby="education">

@@ -267,6 +267,8 @@
   height: 100%;
   border-radius: var(--radius-lg);
   overflow: hidden;
+  /* Contains the tint blend so it cannot reach the panes behind. */
+  isolation: isolate;
   will-change: transform;
   box-shadow: 0 30px 70px -40px rgb(0 0 0 / 0.6);
   transition: box-shadow 520ms var(--ease-out-expo);
@@ -285,14 +287,54 @@
   object-position: center 22%;
 }
 
-/* No grading. The two frames are genuinely different places with genuinely
-   different light, which does the job a filter was faking. */
+/*
+  Both frames go monochrome, then each half takes a gradient of its own side's
+  colour through `mix-blend-mode: color` — which keeps the luminosity of the
+  photograph underneath and replaces only hue and saturation. A plain overlay
+  would wash the faces out; this tints them.
+*/
+.portrait {
+  filter: grayscale(1) contrast(1.06);
+}
+
 .portraitVerso {
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
 }
 
 .portraitRecto {
   clip-path: inset(0 0 0 var(--gutter-pct));
+}
+
+.tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: color;
+}
+
+.tintVerso {
+  clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--verso-accent) 92%, transparent) 0%,
+    color-mix(in srgb, var(--verso-accent) 52%, transparent) 55%,
+    color-mix(in srgb, var(--verso-accent) 28%, transparent) 100%
+  );
+}
+
+.tintRecto {
+  clip-path: inset(0 0 0 var(--gutter-pct));
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--recto-accent) 28%, transparent) 0%,
+    color-mix(in srgb, var(--recto-accent) 62%, transparent) 45%,
+    color-mix(in srgb, var(--recto-accent) 95%, transparent) 100%
+  );
+}
+
+/* Without blend-mode support the tint would sit over the face as flat colour. */
+@supports not (mix-blend-mode: color) {
+  .tint { display: none; }
 }
 
 .portraitCaption {
@@ -348,95 +390,7 @@
   cursor: ew-resize;
 }
 
-/* --------------------------------------------------------------------------
-   The pill
-
-   A floating control on the floor of the hero. Drag it left or right and the
-   whole page follows. It exists because the seam and the portrait are both
-   discoverable only by trying them; this is the one affordance that says what
-   it does before you touch it.
-   -------------------------------------------------------------------------- */
-
-.pill {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(1.25rem, 4vh, 2.25rem);
-  transform: translateX(-50%);
-  z-index: 6;
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: var(--radius-full);
-  border: 1px solid transparent;
-  /* Nearly opaque on purpose: the pill straddles the seam, so it needs a
-     ground of its own or its labels vanish over the paper side. */
-  background: color-mix(in srgb, var(--verso-ground) 82%, transparent);
-  backdrop-filter: blur(26px) saturate(190%);
-  -webkit-backdrop-filter: blur(26px) saturate(190%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 -1px 0 rgb(0 0 0 / 0.18),
-    0 18px 44px -28px rgb(0 0 0 / 0.7);
-  cursor: ew-resize;
-  touch-action: none;
-  user-select: none;
-  transition: transform 420ms var(--ease-out-expo), box-shadow 420ms var(--ease-out-expo);
-}
-
-.pill:hover,
-.pill:focus-visible {
-  transform: translateX(-50%) translateY(-3px);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.3),
-    inset 0 -1px 0 rgb(0 0 0 / 0.2),
-    0 24px 54px -26px rgb(0 0 0 / 0.8);
-}
-
-.pill:active { cursor: grabbing; }
-
-.pillLabel {
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--verso-ink-muted);
-  transition: color 320ms var(--ease-out-expo);
-  white-space: nowrap;
-}
-
-/* Whichever side is winning lights up. */
-.pill[data-mode="verso"] .pillLabelVerso { color: var(--verso-accent); }
-.pill[data-mode="recto"] .pillLabelRecto { color: var(--recto-accent); }
-
-.pillTrack {
-  position: relative;
-  width: clamp(88px, 12vw, 140px);
-  height: 3px;
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--verso-ink) 30%, transparent);
-}
-
-.pillKnob {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 22px;
-  height: 22px;
-  margin-left: -11px;
-  border-radius: 50%;
-  background: var(--verso-accent);
-  box-shadow: 0 2px 10px -2px rgb(0 0 0 / 0.6);
-  /* Tracks the gutter directly. No JS writes this. */
-  transform: translate(calc(var(--gutter) * clamp(88px, 12vw, 140px)), -50%);
-}
-
-@media (max-width: 760px) {
-  .pill { display: none; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .pill:hover, .pill:focus-visible { transform: translateX(-50%); }
   .nameDrift { transform: none; }
 }
 
