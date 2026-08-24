@@ -81,24 +81,46 @@
 
 /* ---- fractional rating -------------------------------------------------- */
 
+/*
+  The two rows have to be geometrically identical or the fill drifts off the
+  outline. They share the same gap, the same padding and the same star size,
+  and the fill is clipped by width from a fixed left edge — the earlier version
+  let flex distribute the hollow row while the filled one was position:absolute
+  against a different box, so the stars did not sit on top of each other.
+*/
 .rating {
   position: relative;
-  display: inline-flex;
+  display: inline-block;
   line-height: 0;
   color: var(--accent);
+  isolation: isolate;
 }
 
 .ratingTrack,
 .ratingFill {
   display: flex;
   gap: 0.1rem;
+  line-height: 0;
 }
 
-/* The filled row sits over the hollow one and is clipped to the real value,
-   so the final star is part-filled rather than rounded up. */
 .ratingFill {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  height: 100%;
   overflow: hidden;
-  white-space: nowrap;
+  display: block;
+}
+
+/* Natural width, so the clip is what trims it rather than flex. */
+.ratingFillInner {
+  display: flex;
+  gap: 0.1rem;
+  width: max-content;
+  line-height: 0;
+}
+
+.ratingFillInner > svg,
+.ratingTrack > svg {
+  flex: 0 0 auto;
 }

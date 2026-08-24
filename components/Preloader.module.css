@@ -1,3 +1,13 @@
+/*
+  The loader is the gutter.
+
+  Rather than a percentage counting up behind a curtain, the page arrives the
+  way it works: a hairline seam draws itself down the middle, the name sets
+  either side of it in the two voices, and then the two grounds part along that
+  same seam to reveal the site. Nothing here is a separate loading screen with
+  its own visual language; it is the first frame of the page.
+*/
+
 .root {
   position: fixed;
   inset: 0;
@@ -7,71 +17,94 @@
 
 .root[data-done="true"] { display: none; }
 
-/* Two halves that part at the centre — the site's own gesture, performed once
-   before you have seen it, so the spread reads as inevitable when it appears. */
-.curtain {
+.half {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 50.5%;
-  background: var(--verso-ground);
-  transition: transform 1100ms var(--ease-in-out-quart);
+  transition: transform 1000ms var(--ease-in-out-quart);
   will-change: transform;
 }
 
-.left  { left: 0; }
+.left  { left: 0;  background: var(--verso-ground); }
 .right { right: 0; background: var(--recto-ground); }
 
 .root[data-open="true"] .left  { transform: translateX(-101%); }
 .root[data-open="true"] .right { transform: translateX(101%); }
 
-.center {
+/* The seam: a hairline that draws from the centre outward. */
+.seam {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--verso-accent);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 900ms var(--ease-out-expo), opacity 400ms linear;
+}
+
+.root[data-drawn="true"] .seam { transform: scaleY(1); }
+.root[data-open="true"] .seam { opacity: 0; }
+
+/* The name, set either side of the seam in the site's own two voices. */
+.name {
   position: absolute;
   inset: 0;
   display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 1.1rem;
-  transition: opacity 420ms var(--ease-out-expo);
+  place-items: center;
+  align-content: center;
 }
 
-.root[data-open="true"] .center { opacity: 0; }
+.word {
+  display: flex;
+  align-items: baseline;
+  gap: 0.22em;
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 0.95;
+  white-space: nowrap;
+}
 
-.pct {
+.hal,
+.wall {
+  opacity: 0;
+  transform: translateY(0.28em);
+  transition: opacity 700ms var(--ease-out-expo), transform 900ms var(--ease-out-expo);
+}
+
+/* Each half rises from its own side of the seam, a beat apart. */
+.hal {
   font-family: var(--font-mono);
-  font-weight: 300;
-  font-size: clamp(3rem, 9vw, 8rem);
-  line-height: 1;
-  letter-spacing: -0.06em;
-  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.055em;
   color: var(--verso-ink);
-  mix-blend-mode: difference;
+  transition-delay: 120ms;
 }
 
-.rule {
-  position: relative;
-  width: min(58vw, 420px);
-  height: 1px;
-  background: var(--verso-rule-strong);
-  mix-blend-mode: difference;
+.wall {
+  font-family: var(--font-serif);
+  font-style: italic;
+  letter-spacing: -0.025em;
+  color: var(--recto-ink);
+  transition-delay: 260ms;
 }
 
-.fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: var(--verso-accent);
-  transition: width 180ms linear;
+.root[data-drawn="true"] .hal,
+.root[data-drawn="true"] .wall {
+  opacity: 1;
+  transform: none;
 }
 
-.label {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--verso-ink-faint);
-  mix-blend-mode: difference;
+.root[data-open="true"] .hal,
+.root[data-open="true"] .wall {
+  opacity: 0;
+  transition-duration: 300ms;
+  transition-delay: 0ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .curtain { transition-duration: 260ms; }
+  .half { transition-duration: 240ms; }
+  .seam, .hal, .wall { transition: opacity 200ms linear; transform: none; }
 }

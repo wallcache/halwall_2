@@ -294,10 +294,9 @@
   photograph underneath and replaces only hue and saturation. A plain overlay
   would wash the faces out; this tints them.
 */
-.portrait {
-  /* Ungraded. The photographs keep their own colour; the only colour added is
-     the ramp below, and it does not reach far enough to alter the face. */
-}
+/* No filter, deliberately. The photographs are shown exactly as taken; the
+   only colour anywhere near them is the edge ramp below, which stops well
+   before the face. */
 
 .portraitVerso {
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
@@ -327,9 +326,9 @@
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
   background: linear-gradient(
     to right,
-    color-mix(in srgb, var(--verso-accent) 70%, transparent) 0%,
-    color-mix(in srgb, var(--verso-accent) 30%, transparent) 11%,
-    transparent 30%
+    color-mix(in srgb, var(--verso-accent) 46%, transparent) 0%,
+    color-mix(in srgb, var(--verso-accent) 16%, transparent) 9%,
+    transparent 22%
   );
 }
 
@@ -338,9 +337,9 @@
   background: linear-gradient(
     to right,
     transparent var(--gutter-pct),
-    color-mix(in srgb, var(--recto-accent) 70%, transparent) var(--gutter-pct),
-    color-mix(in srgb, var(--recto-accent) 30%, transparent) calc(var(--gutter-pct) + 11%),
-    transparent calc(var(--gutter-pct) + 30%)
+    color-mix(in srgb, var(--recto-accent) 46%, transparent) var(--gutter-pct),
+    color-mix(in srgb, var(--recto-accent) 16%, transparent) calc(var(--gutter-pct) + 9%),
+    transparent calc(var(--gutter-pct) + 22%)
   );
 }
 
@@ -427,9 +426,9 @@
     clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--verso-accent) 70%, transparent) 0%,
-      color-mix(in srgb, var(--verso-accent) 30%, transparent) 11%,
-      transparent 30%
+      color-mix(in srgb, var(--verso-accent) 46%, transparent) 0%,
+      color-mix(in srgb, var(--verso-accent) 16%, transparent) 9%,
+      transparent 22%
     );
   }
 
@@ -438,10 +437,90 @@
     background: linear-gradient(
       to bottom,
       transparent var(--gutter-pct),
-      color-mix(in srgb, var(--recto-accent) 70%, transparent) var(--gutter-pct),
-      color-mix(in srgb, var(--recto-accent) 30%, transparent) calc(var(--gutter-pct) + 11%),
-      transparent calc(var(--gutter-pct) + 30%)
+      color-mix(in srgb, var(--recto-accent) 46%, transparent) var(--gutter-pct),
+      color-mix(in srgb, var(--recto-accent) 16%, transparent) calc(var(--gutter-pct) + 9%),
+      transparent calc(var(--gutter-pct) + 22%)
     );
   }
 }
 
+
+/* --------------------------------------------------------------------------
+   Pane content states
+
+   A pane is leading, muted, or at rest, and its contents move accordingly.
+   Clipping alone made content vanish at a hard edge as the seam crossed it,
+   which read as the text being cut rather than the side stepping back. Now the
+   losing side's content drifts away from the seam and fades while the winning
+   side's rises into place, and the figures stagger so the numbers arrive one
+   after another rather than as a block.
+   -------------------------------------------------------------------------- */
+
+.eyebrow,
+.claim,
+.figure {
+  transition:
+    opacity 620ms var(--ease-out-expo),
+    transform 820ms var(--ease-out-expo),
+    filter 620ms var(--ease-out-expo);
+}
+
+/* Stagger: eyebrow, claim, then each figure in turn. */
+.figure:nth-child(1) { transition-delay: 90ms; }
+.figure:nth-child(2) { transition-delay: 170ms; }
+.figure:nth-child(3) { transition-delay: 250ms; }
+
+.pane[data-state="lead"] .eyebrow,
+.pane[data-state="lead"] .claim,
+.pane[data-state="lead"] .figure {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.pane[data-state="idle"] .eyebrow,
+.pane[data-state="idle"] .claim,
+.pane[data-state="idle"] .figure {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Muted: pushed away from the seam, so each side exits toward its own edge. */
+.paneVerso[data-state="mute"] .eyebrow,
+.paneVerso[data-state="mute"] .claim,
+.paneVerso[data-state="mute"] .figure {
+  opacity: 0;
+  transform: translateX(-2.5rem);
+  filter: blur(3px);
+}
+
+.paneRecto[data-state="mute"] .eyebrow,
+.paneRecto[data-state="mute"] .claim,
+.paneRecto[data-state="mute"] .figure {
+  opacity: 0;
+  transform: translateX(2.5rem);
+  filter: blur(3px);
+}
+
+/* Leading: the figures arrive from just below, one after another. */
+.pane[data-state="lead"] .figure { transform: translateY(0); }
+.pane[data-state="mute"] .figure { transition-delay: 0ms; }
+
+@media (max-width: 760px) {
+  /* The gutter is horizontal here, so muted content leaves vertically. */
+  .paneVerso[data-state="mute"] .eyebrow,
+  .paneVerso[data-state="mute"] .claim,
+  .paneVerso[data-state="mute"] .figure { transform: translateY(-1.5rem); }
+
+  .paneRecto[data-state="mute"] .eyebrow,
+  .paneRecto[data-state="mute"] .claim,
+  .paneRecto[data-state="mute"] .figure { transform: translateY(1.5rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow, .claim, .figure { transition: opacity 300ms linear; }
+  .pane[data-state="mute"] .eyebrow,
+  .pane[data-state="mute"] .claim,
+  .pane[data-state="mute"] .figure { transform: none; filter: none; }
+}

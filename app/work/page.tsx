@@ -30,7 +30,7 @@ export default function WorkPage() {
           The ledger · every role, and the number it is remembered by
         </h2>
         <Ledger />
-        <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.5">
+        <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.225">
           <Document size={15} /> Full CV (PDF) <ArrowUpRight size={13} />
         </a>
       </section>

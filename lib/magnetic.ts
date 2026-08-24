@@ -18,7 +18,7 @@
  * gutter offset on the portrait, and the parallax the scroll engine writes.
  */
 
-const DEFAULT_STRENGTH = 0.32;
+const DEFAULT_STRENGTH = 0.16;
 /** Per-frame approach rate. Lower is heavier. */
 const EASE_IN = 0.14;
 /** The release is slower than the pull, which is what gives it weight. */
@@ -74,7 +74,8 @@ function measure(el: HTMLElement): State | null {
     cx: rect.left + rect.width / 2 - cur.x,
     cy: rect.top + rect.height / 2 - cur.y,
     // Clamped so a large element does not travel absurdly far.
-    limit: Math.min(rect.width, rect.height) * 0.18,
+    // Travel capped tighter too: strength alone still let a big element swing.
+    limit: Math.min(rect.width, rect.height) * 0.08,
     strength,
   };
 }

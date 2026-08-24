@@ -87,6 +87,7 @@ export function Spread() {
         className={`${styles.pane} ${styles.paneVerso}`}
         data-side="verso"
         data-open={mode === "verso"}
+        data-state={mode === "verso" ? "lead" : mode === "recto" ? "mute" : "idle"}
         inert={mode === "recto"}
         onClick={narrow ? () => commit("verso") : undefined}
       >
@@ -117,6 +118,7 @@ export function Spread() {
         className={`${styles.pane} ${styles.paneRecto}`}
         data-side="recto"
         data-open={mode === "recto"}
+        data-state={mode === "recto" ? "lead" : mode === "verso" ? "mute" : "idle"}
         inert={mode === "verso"}
         onClick={narrow ? () => commit("recto") : undefined}
       >
@@ -174,7 +176,7 @@ export function Spread() {
       */}
       <div
         className={styles.portraitAnchor}
-        data-magnetic="0.1"
+        data-magnetic="0.045"
       >
         <div ref={portraitRef} className={styles.portraitInner}>
           <Image

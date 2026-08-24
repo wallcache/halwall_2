@@ -18,7 +18,19 @@ const Star = ({ size = 11 }: { size?: number }) => (
  * being rounded up into a claim the App Store does not make.
  */
 export function Rating({ value, size = 13 }: { value: number; size?: number }) {
-  const pct = (value / 5) * 100;
+  /*
+    The clip is measured, not estimated. A flat value/5 percentage includes the
+    gaps between stars, so the cut lands slightly off where the partial star
+    actually begins. Whole stars plus their gaps plus a fraction of the next
+    star is the real width, and it stays correct at any size.
+
+    At small sizes 4.8 and 5 look nearly identical regardless — that is honest,
+    since they nearly are — which is why the numeral sits beside it.
+  */
+  const GAP = 1.6; // 0.1rem, matching the stylesheet
+  const whole = Math.floor(value);
+  const frac = value - whole;
+  const width = whole * size + whole * GAP + frac * size;
   return (
     <span className={styles.rating} role="img" aria-label={`${value} out of 5 stars`}>
       <span className={styles.ratingTrack} aria-hidden="true">
@@ -28,10 +40,15 @@ export function Rating({ value, size = 13 }: { value: number; size?: number }) {
           </svg>
         ))}
       </span>
-      <span className={styles.ratingFill} style={{ width: `${pct}%` }} aria-hidden="true">
-        {Array.from({ length: 5 }, (_, i) => (
-          <Star key={i} size={size} />
-        ))}
+      <span className={styles.ratingFill} style={{ width: `${width}px` }} aria-hidden="true">
+        {/* Inner row at natural width. Without it flex shrinks the five stars
+            to fit the clip box, so 4.8 renders as five whole stars — the exact
+            rounding this component exists to avoid. */}
+        <span className={styles.ratingFillInner}>
+          {Array.from({ length: 5 }, (_, i) => (
+            <Star key={i} size={size} />
+          ))}
+        </span>
       </span>
     </span>
   );

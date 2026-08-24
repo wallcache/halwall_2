@@ -3,24 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./Preloader.module.css";
 
-const DURATION = 1500;
-const LABELS = ["assembling the spread", "setting both voices", "ready"];
-
-/** Fast start, long settle — the same curve the gutter uses. */
-const easeOutExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
+const DRAW_AT = 60;
+const OPEN_AT = 1150;
+const GONE_AT = 2250;
 
 /**
- * The preloader.
+ * The opening.
  *
- * Two guards matter more than the animation. rAF does not fire in a
+ * Three beats, no percentage: the seam draws itself, the name sets either side
+ * of it, then the two grounds part along that same seam. It is the site's own
+ * gesture performed once before you have seen it, so the spread reads as
+ * inevitable rather than as a trick when it appears.
+ *
+ * Two guards matter more than the choreography. rAF does not run in a
  * background tab, so a visitor who opens the site in a new tab and comes back
- * a minute later would find a page frozen at 3% — `document.hidden`
- * short-circuits straight to done, and a timeout backstops the whole thing in
- * case rAF never runs at all. An unfinished preloader is indistinguishable
- * from a broken site.
+ * would otherwise find a page frozen mid-animation: `document.hidden`
+ * short-circuits straight to done, and every step is on a timeout that fires
+ * regardless. An unfinished loader is indistinguishable from a broken site.
  */
 export function Preloader() {
-  const [pct, setPct] = useState(0);
+  const [drawn, setDrawn] = useState(false);
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
   const finished = useRef(false);
@@ -29,10 +31,10 @@ export function Preloader() {
     const finish = () => {
       if (finished.current) return;
       finished.current = true;
-      setPct(100);
+      setDrawn(true);
       setOpen(true);
+      setDone(true);
       document.documentElement.dataset.revealed = "true";
-      window.setTimeout(() => setDone(true), 1300);
     };
 
     if (document.hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -40,37 +42,37 @@ export function Preloader() {
       return;
     }
 
-    const start = performance.now();
-    let frame = requestAnimationFrame(function step(now) {
-      const t = Math.min(1, (now - start) / DURATION);
-      setPct(Math.round(easeOutExpo(t) * 100));
-      if (t < 1) frame = requestAnimationFrame(step);
-      else finish();
-    });
+    const timers = [
+      window.setTimeout(() => setDrawn(true), DRAW_AT),
+      window.setTimeout(() => {
+        setOpen(true);
+        document.documentElement.dataset.revealed = "true";
+      }, OPEN_AT),
+      window.setTimeout(() => {
+        finished.current = true;
+        setDone(true);
+      }, GONE_AT),
+    ];
 
-    const backstop = window.setTimeout(finish, DURATION + 900);
     const onHide = () => document.hidden && finish();
     document.addEventListener("visibilitychange", onHide);
 
     return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(backstop);
+      timers.forEach(window.clearTimeout);
       document.removeEventListener("visibilitychange", onHide);
     };
   }, []);
 
-  const label = pct < 55 ? LABELS[0] : pct < 100 ? LABELS[1] : LABELS[2];
-
   return (
-    <div className={styles.root} data-open={open} data-done={done} aria-hidden="true">
-      <div className={`${styles.curtain} ${styles.left}`} />
-      <div className={`${styles.curtain} ${styles.right}`} />
-      <div className={styles.center}>
-        <p className={styles.pct}>{pct}</p>
-        <div className={styles.rule}>
-          <div className={styles.fill} style={{ width: `${pct}%` }} />
-        </div>
-        <p className={styles.label}>{label}</p>
+    <div className={styles.root} data-drawn={drawn} data-open={open} data-done={done} aria-hidden="true">
+      <div className={`${styles.half} ${styles.left}`} />
+      <div className={`${styles.half} ${styles.right}`} />
+      <div className={styles.seam} />
+      <div className={styles.name}>
+        <p className={styles.word}>
+          <span className={styles.hal}>Hal</span>
+          <span className={styles.wall}>Wall</span>
+        </p>
       </div>
     </div>
   );

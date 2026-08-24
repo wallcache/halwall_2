@@ -70,13 +70,16 @@
 .group,
 .link,
 .wordmark {
+  /* Slow enough to read as the bar changing shape rather than snapping into
+     a different one. The size and shape properties share one long duration so
+     they arrive together; only colour is allowed to be quick. */
   transition:
-    padding 620ms var(--ease-out-expo),
-    max-width 620ms var(--ease-out-expo),
-    border-radius 620ms var(--ease-out-expo),
-    color 320ms var(--ease-out-expo),
-    transform 620ms var(--ease-out-expo),
-    box-shadow 620ms var(--ease-out-expo);
+    padding 1100ms var(--ease-out-expo),
+    max-width 1100ms var(--ease-out-expo),
+    border-radius 1100ms var(--ease-out-expo),
+    transform 1100ms var(--ease-out-expo),
+    box-shadow 1100ms var(--ease-out-expo),
+    color 320ms var(--ease-out-expo);
 }
 
 .group {

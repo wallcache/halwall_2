@@ -114,7 +114,7 @@ export function Header() {
       href={item.href}
       className={`${styles.link} ${item.side === "verso" ? styles.linkVerso : styles.linkRecto}`}
       data-current={pathname === item.href || pathname.startsWith(item.href + "/")}
-      data-magnetic="0.45"
+      data-magnetic="0.203"
       // Focus mirrors hover exactly, so a keyboard gets the real thing.
       onFocus={() => enter(item.side)}
       onBlur={leave}
@@ -134,7 +134,7 @@ export function Header() {
           {versoNav.map(renderLink)}
         </div>
 
-        <Link href="/" className={styles.wordmark} aria-label={`${identity.name} — home`} data-magnetic="0.3">
+        <Link href="/" className={styles.wordmark} aria-label={`${identity.name} — home`}>
           <span className={styles.wordmarkVerso}>Hal</span>{" "}
           <span className={styles.wordmarkRecto}>Wall</span>
         </Link>

@@ -99,7 +99,7 @@ export function Lightbox({
       <button
         type="button"
         className={`${styles.btn} ${styles.close}`}
-        data-magnetic="0.6"
+        data-magnetic="0.27"
         onClick={onClose}
         aria-label="Close viewer"
       >

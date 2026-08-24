@@ -1,4 +1,5 @@
 import { getProject } from "./projects";
+import { tdcIcon } from "./media";
 
 /**
  * /canon is the recto's home page — the founder half of the argument.
@@ -108,6 +109,6 @@ export const canon = {
 
   press: { label: "App Store", honour: "Featured on the App Store" },
   wordmark: "/media/brand/tdc-wordmark-green.svg",
-  icon: "/media/brand/tdc-icon.webp",
+  icon: tdcIcon,
   appleMark: "/media/brand/apple-mark.svg",
 } as const;

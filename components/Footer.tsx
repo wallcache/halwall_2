@@ -11,7 +11,7 @@ export function Footer() {
           <h2 className={styles.colTitle}>Measured in runtime</h2>
           <div className={styles.list}>
             {versoNav.map((i) => (
-              <Link key={i.href} href={i.href} className={styles.link} data-magnetic="0.45">
+              <Link key={i.href} href={i.href} className={styles.link} data-magnetic="0.203">
                 {i.label}
               </Link>
             ))}

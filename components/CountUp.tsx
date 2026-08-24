@@ -13,10 +13,18 @@ export function CountUp({ figure, run }: { figure: Figure; run: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
   const played = useRef(false);
 
+  /*
+    Decimal places come from the target value rather than being assumed zero.
+    Rounding everything to an integer turned a 4.8 App Store rating into a
+    claim of 5, which is a different and untrue number.
+  */
+  const decimals = (String(figure.value).split(".")[1] ?? "").length;
+
   const format = (n: number) =>
-    `${figure.prefix ?? ""}${Math.round(n).toLocaleString("en-GB")}${figure.suffix ?? ""}${
-      figure.unit ? ` ${figure.unit}` : ""
-    }`;
+    `${figure.prefix ?? ""}${n.toLocaleString("en-GB", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })}${figure.suffix ?? ""}${figure.unit ? ` ${figure.unit}` : ""}`;
 
   useEffect(() => {
     const el = ref.current;

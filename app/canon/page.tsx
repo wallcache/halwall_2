@@ -96,7 +96,7 @@ export default function CanonPage() {
 
         <div className={styles.links}>
           {canonProject.links.map((l) => (
-            <a key={l.url} className={styles.link} href={l.url} target="_blank" rel="noopener noreferrer" data-magnetic="0.5">
+            <a key={l.url} className={styles.link} href={l.url} target="_blank" rel="noopener noreferrer" data-magnetic="0.225">
               <span>{l.text}</span>
               <span aria-hidden="true">↗</span>
             </a>

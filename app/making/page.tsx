@@ -54,7 +54,7 @@ export default function MakingPage() {
       <section className={shell.section}>
         <div className={styles.cards}>
           {cards.map((c) => (
-            <Link key={c.href} href={c.href} className={styles.card} data-magnetic="0.14">
+            <Link key={c.href} href={c.href} className={styles.card} data-magnetic="0.063">
               {c.image && (
                 <div className={styles.cardMedia} aria-hidden="true">
                   <Image src={c.image} alt="" fill sizes="(max-width: 760px) 100vw, 33vw" style={{ objectFit: "cover" }} />

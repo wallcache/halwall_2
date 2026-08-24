@@ -26,7 +26,7 @@ export default function WalkingPage() {
         </h2>
         <div className={styles.trips}>
           {walks.map((walk) => (
-            <Link key={walk.slug} href={`/walking/${walk.slug}`} className={styles.trip} data-magnetic="0.14">
+            <Link key={walk.slug} href={`/walking/${walk.slug}`} className={styles.trip} data-magnetic="0.063">
               <span className={styles.tripYear}>{walk.year}</span>
               <div>
                 <h3 className={styles.tripName}>{walk.name}</h3>

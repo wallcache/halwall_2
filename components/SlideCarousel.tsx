@@ -109,7 +109,7 @@ export function SlideCarousel() {
         <button
           type="button"
           className={styles.btn}
-          data-magnetic="0.55"
+          data-magnetic="0.248"
           onClick={() => step(-1)}
           disabled={atStart}
           aria-label="Previous screenshot"
@@ -119,7 +119,7 @@ export function SlideCarousel() {
         <button
           type="button"
           className={styles.btn}
-          data-magnetic="0.55"
+          data-magnetic="0.248"
           onClick={() => step(1)}
           disabled={atEnd}
           aria-label="Next screenshot"
