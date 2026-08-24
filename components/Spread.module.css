@@ -3,6 +3,21 @@
   min-height: 100dvh;
   overflow: hidden;
   isolation: isolate;
+  /*
+    The ground is CSS, not the canvas.
+
+    This used to rely on the shader to paint both grounds, which meant that
+    any browser where WebGL failed to initialise got the body colour behind
+    everything: black panes, near-black recto ink on top of them, and an
+    invisible masthead. A canvas is a decoration; it must never be the only
+    thing standing between the page and no background at all.
+  */
+  background:
+    linear-gradient(
+      to right,
+      var(--verso-ground) 0 var(--gutter-pct),
+      var(--recto-ground) var(--gutter-pct) 100%
+    );
   touch-action: pan-y;
   user-select: none;
   /* How far the portrait travels from centre at the extremes. Content columns
@@ -365,7 +380,16 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 760px) {
-  .hero { --portrait-travel: 0vw; --portrait-w: min(52vw, 240px); }
+  .hero {
+    --portrait-travel: 0vw;
+    --portrait-w: min(52vw, 240px);
+    background:
+      linear-gradient(
+        to bottom,
+        var(--verso-ground) 0 var(--gutter-pct),
+        var(--recto-ground) var(--gutter-pct) 100%
+      );
+  }
 
   .paneVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
   .paneRecto { clip-path: inset(var(--gutter-pct) 0 0 0); text-align: left; }

@@ -110,27 +110,25 @@ void main() {
   float grain = fbm(q * 3.4 + t * 0.9);
   light *= 0.86 + 0.26 * grain;
 
-  // -- palette, crossfaded by the gutter ---------------------------------
-  vec3 versoGround = vec3(0.043, 0.051, 0.059);
-  vec3 versoLight  = vec3(0.435, 0.545, 0.655);
-  vec3 rectoGround = vec3(0.984, 0.973, 0.945);
-  vec3 rectoLight  = vec3(0.918, 0.796, 0.612);
+  // -- tint, crossfaded at the seam --------------------------------------
+  // Only the light is drawn here. The grounds are painted in CSS underneath,
+  // so a failed or slow WebGL context costs the page some atmosphere and
+  // nothing else.
+  vec3 versoLight = vec3(0.435, 0.545, 0.655);
+  vec3 rectoLight = vec3(0.918, 0.796, 0.612);
 
   float g = clamp(u_gutter, 0.0, 1.0);
-  // Split at the seam rather than blending the whole screen, so the two
-  // worlds meet on the gutter line exactly as the panes above them do.
+  // Split on the seam, so the light changes colour exactly where the panes do.
   float side = smoothstep(g - 0.012, g + 0.012, uv.x);
-  vec3 ground = mix(versoGround, rectoGround, side);
-  vec3 tint   = mix(versoLight,  rectoLight,  side);
+  vec3 tint = mix(versoLight, rectoLight, side);
 
-  float strength = mix(0.78, 0.52, side);    // paper takes less light than ink
-  vec3 col = mix(ground, tint, light * strength);
+  float strength = mix(0.72, 0.4, side);   // paper takes less light than ink
 
   // Vignette, so the corners do not compete with the masthead.
   float vig = smoothstep(1.25, 0.25, length(uv - 0.5));
-  col = mix(ground, col, 0.35 + 0.65 * vig);
 
-  outColor = vec4(col, 1.0);
+  float alpha = clamp(light * strength * (0.35 + 0.65 * vig), 0.0, 1.0);
+  outColor = vec4(tint * alpha, alpha);   // premultiplied
 }`;
 
 function compile(gl: WebGL2RenderingContext, type: number, src: string) {
@@ -155,7 +153,8 @@ export function DappledLight() {
 
     const gl = canvas.getContext("webgl2", {
       antialias: false,
-      alpha: false,
+      alpha: true,
+      premultipliedAlpha: true,
       powerPreference: "low-power",
     });
     // No WebGL2 is not an error. The CSS ground underneath is the design.
@@ -174,6 +173,10 @@ export function DappledLight() {
       return;
     }
     gl.useProgram(prog);
+    gl.clearColor(0, 0, 0, 0);
+    // Premultiplied source-over: the light lays over the CSS ground.
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     const uRes = gl.getUniformLocation(prog, "u_res");
     const uTime = gl.getUniformLocation(prog, "u_time");
@@ -219,6 +222,7 @@ export function DappledLight() {
       gl.uniform1f(uTime, reduced ? 0 : (now - start) / 1000);
       gl.uniform2f(uMouse, mouse.x, mouse.y);
       gl.uniform1f(uGutter, read());
+      gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
       frame = requestAnimationFrame(draw);
@@ -229,6 +233,7 @@ export function DappledLight() {
       gl.uniform1f(uTime, 0);
       gl.uniform2f(uMouse, 0.5, 0.5);
       gl.uniform1f(uGutter, read());
+      gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     } else {
       frame = requestAnimationFrame(draw);
