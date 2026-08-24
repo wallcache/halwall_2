@@ -52,11 +52,7 @@
     border-color var(--dur-mid) var(--ease-out-expo);
 }
 
-.door:hover,
-.door:focus-visible {
-  transform: translateY(-4px);
-  border-color: var(--accent);
-}
+/* Lift and border now come from the sweep, in styles/sweep.css. */
 
 .doorMedia {
   position: absolute;

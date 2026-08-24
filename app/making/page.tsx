@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SweepLink } from "@/components/SweepLink";
 import Image from "next/image";
 import { PageShell } from "@/components/PageShell";
 import shell from "@/components/PageShell.module.css";
@@ -54,7 +55,7 @@ export default function MakingPage() {
       <section className={shell.section}>
         <div className={styles.cards}>
           {cards.map((c) => (
-            <Link key={c.href} href={c.href} className={styles.card} data-magnetic="0.063">
+            <SweepLink key={c.href} href={c.href} className={styles.card}>
               {c.image && (
                 <div className={styles.cardMedia} aria-hidden="true">
                   <Image src={c.image} alt="" fill sizes="(max-width: 760px) 100vw, 33vw" style={{ objectFit: "cover" }} />
@@ -64,7 +65,7 @@ export default function MakingPage() {
               <h2 className={styles.cardTitle}>{c.title}</h2>
               <p className={styles.cardLine}>{c.line}</p>
               <span className={styles.groupCount}>{c.meta}</span>
-            </Link>
+            </SweepLink>
           ))}
         </div>
       </section>

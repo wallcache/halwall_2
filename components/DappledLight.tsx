@@ -171,30 +171,36 @@ void main(){
 
 /** Hal's tuning, from the control panel. */
 const TUNING = {
-  angle: -50,
-  scale: 5.6,
-  aniso: 3.6, // streak length
-  soft: 0.4, // edge softness
+  angle: 43,
+  scale: 17.0,
+  aniso: 3.2, // streak length
+  soft: 0.47, // edge softness
   density: 0.355, // canopy density
   layers: 6,
   detail: 0.12,
   vary: 0.24, // size variance
   cut: 0.28, // light threshold
-  window: 0.34, // contrast band
+  window: 0.29, // contrast band
   falloff: 0.94, // falloff depth
-  radius: 1.2,
-  follow: 1.6,
+  radius: 0.48,
   /**
-   * Falloff lag. At 0 the two cursors lock together and the lit region becomes
-   * a torch bolted to the pointer. A little delay is where most of the life is,
-   * so this runs just above the panel's 0.
+   * Falloff follow at 0 pins the lit region to the centre of the frame rather
+   * than letting it track the pointer. That also makes falloff lag inert:
+   * the glow cursor is multiplied by follow, so at 0 it contributes nothing
+   * whatever its smoothing. Both are left at the panel's values.
    */
-  lag: 0.06,
-  tilt: 0.15, // ground tilt
+  follow: 0.0,
+  lag: 0.0,
+  tilt: 0.5, // ground tilt
   speed: 1.5, // flow speed
-  parallax: 1.88, // cursor force
-  spread: 0.32, // depth spread
-  bulk: 0.7, // bulk motion
+  parallax: 1.15, // cursor force
+  spread: 0.14, // depth spread
+  /**
+   * Bulk motion at 0 centres the depths completely: no shared translation at
+   * all, only shear. Near canopy one way, far canopy the other, mid stays put.
+   * This is the "nothing travels, yet the pattern rearranges" case in full.
+   */
+  bulk: 0.0,
   grain: 0.028,
 };
 

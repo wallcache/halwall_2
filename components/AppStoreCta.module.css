@@ -1,0 +1,93 @@
+/*
+  A standing invitation, bottom right of the Canon page.
+
+  Fixed rather than parked at the end of the page: someone reading about the
+  app halfway down should not have to find their way to a footer to act on it.
+  It appears once you have started reading rather than landing on top of the
+  masthead, and it never covers the last line of anything because the page
+  reserves room for it.
+*/
+.cta {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: calc(clamp(1rem, 3vw, 2rem) + env(safe-area-inset-bottom));
+  z-index: 45;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--recto-rule-strong);
+
+  background: color-mix(in srgb, var(--recto-ground) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: 0 18px 46px -26px rgb(0 0 0 / 0.5);
+
+  color: var(--recto-ink);
+  text-decoration: none;
+
+  /* Held out of the way until the page has been engaged with. */
+  opacity: 0;
+  transform: translateY(0.75rem);
+  pointer-events: none;
+  transition:
+    opacity 620ms var(--ease-out-expo),
+    transform 720ms var(--ease-out-expo),
+    border-color 320ms var(--ease-out-expo),
+    box-shadow 420ms var(--ease-out-expo);
+}
+
+.cta[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  border-color: var(--recto-accent);
+  box-shadow: 0 24px 54px -24px rgb(0 0 0 / 0.6);
+}
+
+.mark {
+  flex: 0 0 auto;
+  color: var(--recto-ink);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.small {
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--recto-ink-faint);
+}
+
+.big {
+  font-family: var(--font-serif);
+  font-size: var(--step-0);
+  letter-spacing: -0.005em;
+}
+
+.arrow {
+  color: var(--recto-accent);
+  transition: transform 420ms var(--ease-out-expo);
+}
+
+.cta:hover .arrow { transform: translate(2px, -2px); }
+
+@media (max-width: 560px) {
+  .cta { left: clamp(1rem, 4vw, 2rem); justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta { transition: opacity 200ms linear; transform: none; }
+  .cta:hover .arrow { transform: none; }
+}

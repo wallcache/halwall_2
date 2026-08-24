@@ -1,6 +1,6 @@
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(1rem, 3vw, 2rem); }
 .card { border-radius: var(--radius-lg); position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 0.9rem; min-height: 260px; padding: clamp(1.25rem, 3vw, 2rem); overflow: hidden; border: 1px solid var(--rule); background: var(--ground-raised); transition: border-color var(--dur-mid) var(--ease-out-expo), transform var(--dur-mid) var(--ease-out-expo); }
-.card:hover, .card:focus-visible { border-color: var(--accent); transform: translateY(-4px); }
+/* Lift and border now come from the sweep, in styles/sweep.css. */
 .cardMedia { position: absolute; inset: 0; opacity: 0.2; transition: opacity var(--dur-slow) var(--ease-out-expo); }
 .card:hover .cardMedia { opacity: 0.32; }
 .card > *:not(.cardMedia) { position: relative; z-index: 1; }

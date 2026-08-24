@@ -29,7 +29,12 @@
 
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-color: color-mix(in srgb, var(--verso-rule) 70%, transparent);
+  /*
+    Opaque, not a color-mix with transparent. A translucent border sits over
+    the blurred backdrop, and where the shader is bright behind the bar's left
+    edge that showed through as a pale vertical line down the side.
+  */
+  border-color: var(--verso-rule);
 }
 
 
@@ -193,10 +198,29 @@
 .wordmark:hover .wordmarkVerso { transform: translateY(-1px); }
 .wordmark:hover .wordmarkRecto { transform: translateY(1px); }
 
-/* At the extremes a half would sit on its opposite ground, so it borrows the
-   ink of whichever side has claimed that pixel. */
+/*
+  At the extremes the bar is one ground all the way across, so anything set in
+  the opposite side's ink goes nearly invisible: recto links are dark, and once
+  the bar has gone fully verso they sit dark-on-dark. Everything therefore
+  borrows the ink of whichever side has actually claimed that pixel.
+*/
 .wrap[data-mode="verso"] .wordmarkRecto { color: var(--verso-ink); }
 .wrap[data-mode="recto"] .wordmarkVerso { color: var(--recto-ink); }
+
+.wrap[data-mode="verso"] .linkRecto { color: var(--verso-ink-muted); }
+.wrap[data-mode="recto"] .linkVerso { color: var(--recto-ink-muted); }
+
+.wrap[data-mode="verso"] .linkRecto:hover,
+.wrap[data-mode="verso"] .linkRecto:focus-visible,
+.wrap[data-mode="verso"] .linkRecto[data-current="true"] {
+  color: var(--verso-accent);
+}
+
+.wrap[data-mode="recto"] .linkVerso:hover,
+.wrap[data-mode="recto"] .linkVerso:focus-visible,
+.wrap[data-mode="recto"] .linkVerso[data-current="true"] {
+  color: var(--recto-accent);
+}
 
 
 @media (max-width: 760px) {

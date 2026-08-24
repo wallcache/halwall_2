@@ -6,6 +6,7 @@ import { SlideCarousel } from "@/components/SlideCarousel";
 import { canon, canonProject } from "@/content/canon";
 import { workForDate, formatDay } from "@/lib/today";
 import { Reviews, Rating } from "@/components/Reviews";
+import { AppStoreCta } from "@/components/AppStoreCta";
 import Image from "next/image";
 import styles from "./Canon.module.css";
 
@@ -23,6 +24,9 @@ const maxForm = Math.max(...canon.composition.forms.map((f) => f.count));
 export default function CanonPage() {
   const now = new Date();
   const work = workForDate(now);
+
+  const appStore =
+    canonProject.links.find((l) => l.text === "App Store")?.url ?? canonProject.primary.url;
 
   return (
     <PageShell side="recto" eyebrow="Measured in readers" title={canon.title} standfirst={canon.standfirst}>
@@ -226,6 +230,7 @@ export default function CanonPage() {
           ))}
         </div>
       </section>
+      <AppStoreCta href={appStore} />
     </PageShell>
   );
 }

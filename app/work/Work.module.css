@@ -76,6 +76,7 @@
 /* Same reasoning as the ledger skills: no box drawn around icon plus word. */
 .stackItem {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: 0.4rem;
   font-family: var(--font-mono);

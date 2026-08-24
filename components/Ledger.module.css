@@ -77,15 +77,22 @@
   margin-top: 0.9rem;
 }
 
+/* Inline and unboxed. The <li> defaults to list-item, so without an explicit
+   display the icon and the label stacked; and a pill drawn around an icon plus
+   a word made the iconless entries look like a different species. */
 .skill {
-  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   letter-spacing: 0.06em;
-  padding: 0.18rem 0.45rem;
-  border: 1px solid var(--rule);
   color: var(--ink-faint);
+  transition: color 320ms var(--ease-out-expo);
+  white-space: nowrap;
 }
+
+.skill:hover { color: var(--ink); }
 
 .figure {
   text-align: right;

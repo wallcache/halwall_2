@@ -1,0 +1,56 @@
+/*
+  The sweep.
+
+  One filled layer behind the card's content, parked just outside whichever
+  edge the cursor came through, then slid to cover. On the way out it leaves by
+  the edge the cursor left through, so the fill follows the hand across the
+  card rather than snapping home.
+
+  It is a shared stylesheet rather than a module because three different card
+  components use it and they should not each own a copy of the geometry.
+*/
+
+[data-sweep] {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-sweep]::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--accent-wash, rgb(0 0 0 / 0.06));
+  transition: transform 620ms var(--ease-in-out-quart);
+  will-change: transform;
+}
+
+/* Parked off the entry edge. */
+[data-sweep="out"][data-dir="left"]::after   { transform: translateX(-101%); }
+[data-sweep="out"][data-dir="right"]::after  { transform: translateX(101%); }
+[data-sweep="out"][data-dir="top"]::after    { transform: translateY(-101%); }
+[data-sweep="out"][data-dir="bottom"]::after { transform: translateY(101%); }
+
+/* Default rest state before any pointer has touched it. */
+[data-sweep="out"]:not([data-dir])::after { transform: translateY(101%); }
+
+[data-sweep="in"]::after { transform: none; }
+
+/* The content lifts a touch as the fill arrives underneath it. */
+[data-sweep] {
+  transition:
+    border-color 420ms var(--ease-out-expo),
+    transform 520ms var(--ease-out-expo);
+}
+
+[data-sweep="in"] {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sweep]::after { transition: opacity 240ms linear; transform: none; opacity: 0; }
+  [data-sweep="in"]::after { opacity: 1; }
+  [data-sweep="in"] { transform: none; }
+}
