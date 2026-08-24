@@ -274,12 +274,10 @@ a {
 
 [data-magnetic] {
   translate: var(--mag-x, 0px) var(--mag-y, 0px);
-  /* Springs back slowly on release; follows quickly while engaged. */
-  transition: translate 620ms var(--ease-out-expo);
-}
-
-[data-magnetic][data-mag-active="true"] {
-  transition: translate 120ms linear;
+  /* No transition on purpose. The rAF loop in lib/magnetic.ts eases both the
+     pull and the release; a transition on top of it would be a second, slower
+     interpolation fighting the first, which is what made the earlier version
+     feel stepped. */
 }
 
 @media (prefers-reduced-motion: reduce) {

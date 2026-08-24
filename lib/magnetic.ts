@@ -1,101 +1,180 @@
 /**
  * Magnetic hover.
  *
- * One delegated listener for the whole document rather than a listener per
- * element: `pointermove` finds the nearest `[data-magnetic]` ancestor of the
- * event target, so elements added by a route change are picked up with no
- * registration and nothing to clean up.
+ * One delegated `pointermove` listener finds the nearest `[data-magnetic]`
+ * ancestor of the event target, so elements added by a route change are picked
+ * up with no registration and nothing to unbind.
  *
- * The offset is written as `--mag-x` / `--mag-y` and applied through the CSS
- * `translate` property, NOT `transform`. That matters here — the portrait
- * already carries a gutter offset in `transform` and a parallax offset written
- * by the scroll engine, and `translate` composes with both instead of
- * overwriting them.
+ * Smoothness comes from a continuous rAF loop easing the current offset toward
+ * the target every frame, NOT from a CSS transition chasing discrete pointer
+ * events. The first version set the offset straight to the cursor position and
+ * let `transition: translate 120ms` catch up; because pointermove fires at
+ * irregular intervals and each event restarted the transition, it read as a
+ * series of small steps rather than a pull. Here the pointer only ever moves
+ * the target, and the same loop handles both the pull and the release.
+ *
+ * The offset is applied through the CSS `translate` property rather than
+ * `transform`, so it composes with the transforms elements already carry — the
+ * gutter offset on the portrait, and the parallax the scroll engine writes.
  */
 
 const DEFAULT_STRENGTH = 0.32;
-/** Beyond this many pixels outside the element, the pull is released. */
-const SLACK = 28;
+/** Per-frame approach rate. Lower is heavier. */
+const EASE_IN = 0.14;
+/** The release is slower than the pull, which is what gives it weight. */
+const EASE_OUT = 0.085;
+/** Below this, snap to rest and stop the loop. */
+const EPSILON = 0.05;
 
-let active: HTMLElement | null = null;
+interface State {
+  el: HTMLElement;
+  /** Element centre with its own offset removed, so it cannot chase itself. */
+  cx: number;
+  cy: number;
+  limit: number;
+  strength: number;
+}
+
+let state: State | null = null;
+/** The element still easing home after the pointer has left it. */
+let releasing: HTMLElement | null = null;
+
+const cur = { x: 0, y: 0 };
+const target = { x: 0, y: 0 };
+
 let frame = 0;
 let started = false;
 
-const reset = (el: HTMLElement) => {
-  el.style.setProperty("--mag-x", "0px");
-  el.style.setProperty("--mag-y", "0px");
-  el.removeAttribute("data-mag-active");
+const write = (el: HTMLElement, x: number, y: number) => {
+  el.style.setProperty("--mag-x", `${x.toFixed(2)}px`);
+  el.style.setProperty("--mag-y", `${y.toFixed(2)}px`);
 };
 
-function apply(el: HTMLElement, clientX: number, clientY: number) {
-  const rect = el.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-
-  // Let an element opt out of, or exaggerate, the default pull.
-  // Parsed explicitly: `Number(x) || DEFAULT` would treat a deliberate "0" as
-  // absent and fall back to the default, which is exactly backwards for an
-  // element asking not to be pulled.
+function measure(el: HTMLElement): State | null {
+  // Explicit parse: `Number(x) || DEFAULT` would read a deliberate "0" as
+  // absent and fall back to the default, which is backwards for an element
+  // asking not to be pulled.
   const raw = Number.parseFloat(el.dataset.magnetic ?? "");
   const strength = Number.isFinite(raw) ? raw : DEFAULT_STRENGTH;
-  if (strength === 0) {
-    reset(el);
+  if (strength === 0) return null;
+
+  const rect = el.getBoundingClientRect();
+  return {
+    el,
+    // Subtracting the live offset gives the resting centre. Without this the
+    // element moves, its rect moves with it, and it drifts away under the
+    // cursor indefinitely.
+    cx: rect.left + rect.width / 2 - cur.x,
+    cy: rect.top + rect.height / 2 - cur.y,
+    // Clamped so a large element does not travel absurdly far.
+    limit: Math.min(rect.width, rect.height) * 0.18,
+    strength,
+  };
+}
+
+function tick() {
+  const easing = state ? EASE_IN : EASE_OUT;
+  cur.x += (target.x - cur.x) * easing;
+  cur.y += (target.y - cur.y) * easing;
+
+  const el = state?.el ?? releasing;
+  if (el) write(el, cur.x, cur.y);
+
+  const settled =
+    Math.abs(target.x - cur.x) < EPSILON && Math.abs(target.y - cur.y) < EPSILON;
+
+  if (!state && settled) {
+    // Home. Park exactly at rest and stop burning frames.
+    cur.x = 0;
+    cur.y = 0;
+    if (releasing) {
+      write(releasing, 0, 0);
+      releasing.removeAttribute("data-mag-active");
+      releasing = null;
+    }
+    frame = 0;
     return;
   }
 
-  // Clamped so a large element (the portrait) does not travel absurdly far
-  // just because the cursor is near its corner.
-  const limit = Math.min(rect.width, rect.height) * 0.18;
-  const dx = Math.max(-limit, Math.min(limit, (clientX - cx) * strength));
-  const dy = Math.max(-limit, Math.min(limit, (clientY - cy) * strength));
+  frame = requestAnimationFrame(tick);
+}
 
-  el.style.setProperty("--mag-x", `${dx.toFixed(2)}px`);
-  el.style.setProperty("--mag-y", `${dy.toFixed(2)}px`);
-  el.dataset.magActive = "true";
+const run = () => {
+  if (!frame) frame = requestAnimationFrame(tick);
+};
+
+function release() {
+  if (!state) return;
+  releasing = state.el;
+  state = null;
+  target.x = 0;
+  target.y = 0;
+  run();
 }
 
 function onMove(e: PointerEvent) {
   if (e.pointerType === "touch") return;
 
-  const hit = (e.target as HTMLElement | null)?.closest?.("[data-magnetic]") as HTMLElement | null;
+  const hit = (e.target as HTMLElement | null)?.closest?.(
+    "[data-magnetic]",
+  ) as HTMLElement | null;
 
-  if (active && active !== hit) {
-    reset(active);
-    active = null;
+  if (!hit) {
+    release();
+    return;
   }
-  if (!hit) return;
-  active = hit;
 
-  cancelAnimationFrame(frame);
-  frame = requestAnimationFrame(() => apply(hit, e.clientX, e.clientY));
+  if (!state || state.el !== hit) {
+    // A new element takes over from wherever the last one had got to, so the
+    // handover eases rather than jumping.
+    if (releasing && releasing !== hit) {
+      write(releasing, 0, 0);
+      releasing.removeAttribute("data-mag-active");
+    }
+    releasing = null;
+    const next = measure(hit);
+    if (!next) {
+      release();
+      return;
+    }
+    state = next;
+    hit.dataset.magActive = "true";
+  }
+
+  const s = state!;
+  target.x = Math.max(-s.limit, Math.min(s.limit, (e.clientX - s.cx) * s.strength));
+  target.y = Math.max(-s.limit, Math.min(s.limit, (e.clientY - s.cy) * s.strength));
+  run();
 }
 
-function onLeaveWindow() {
-  if (active) reset(active);
-  active = null;
+/** The page moved under the cursor, so the cached centre is stale. */
+function remeasure() {
+  if (!state) return;
+  const next = measure(state.el);
+  if (next) state = next;
 }
 
 export function initMagnetic() {
-  if (started) return () => {};
-  if (typeof window === "undefined") return () => {};
-  // Coarse pointers have no hover, and reduced motion should not be nudged at.
+  if (started || typeof window === "undefined") return () => {};
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return () => {};
 
   started = true;
   document.addEventListener("pointermove", onMove, { passive: true });
-  document.addEventListener("pointerleave", onLeaveWindow);
-  window.addEventListener("blur", onLeaveWindow);
+  document.addEventListener("pointerleave", release);
+  window.addEventListener("blur", release);
+  window.addEventListener("scroll", remeasure, { passive: true });
+  window.addEventListener("resize", remeasure);
 
   return () => {
     started = false;
     cancelAnimationFrame(frame);
+    frame = 0;
     document.removeEventListener("pointermove", onMove);
-    document.removeEventListener("pointerleave", onLeaveWindow);
-    window.removeEventListener("blur", onLeaveWindow);
-    if (active) reset(active);
-    active = null;
+    document.removeEventListener("pointerleave", release);
+    window.removeEventListener("blur", release);
+    window.removeEventListener("scroll", remeasure);
+    window.removeEventListener("resize", remeasure);
+    release();
   };
 }
-
-export { SLACK };
