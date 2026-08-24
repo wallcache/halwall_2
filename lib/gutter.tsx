@@ -262,6 +262,24 @@ export function useGutter() {
 }
 
 /**
+ * Which side a path belongs to, without asking the page.
+ *
+ * `useSideRoute` below is the runtime version of this, but it only takes
+ * effect once the page has mounted, so anything that needs the answer *before*
+ * the page is there -- the loader, which has to know which way to hand its
+ * seam -- would be racing hydration for it. On a slow first compile the loader
+ * won the race and handed a dark page the paper ground.
+ *
+ * This has to agree with the `side` prop each page passes to PageShell. Only
+ * /work and /private are the engineer's.
+ */
+export function sideForPath(path: string): Mode {
+  if (path === "/") return "spread";
+  if (path.startsWith("/work") || path.startsWith("/private")) return "verso";
+  return "recto";
+}
+
+/**
  * Pins the gutter for a route that belongs to one side, and hands it back on
  * the way out. /work is verso, /canon is recto.
  */

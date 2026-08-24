@@ -57,7 +57,7 @@
 .company {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.6rem;
   font-family: var(--font-mono);
   font-size: var(--step--1);
   color: var(--accent);
@@ -65,11 +65,15 @@
 
 /* The org mark. Small, square, and quiet: it identifies the employer without
    turning the ledger into a logo wall. */
+/* Sized in rem rather than em. Tied to the company name's own font size it
+   could never be more than a bullet beside the words; these are real marks and
+   they are worth reading as marks. */
 .orgLogo {
   flex: 0 0 auto;
-  width: 1.15em;
-  height: 1.15em;
-  border-radius: 3px;
+  width: 2rem;
+  height: 2rem;
+  padding: 2px;
+  border-radius: 5px;
   object-fit: contain;
   background: var(--ground-raised);
 }

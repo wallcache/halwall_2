@@ -20,7 +20,7 @@ export const identity = {
    */
   spreadLine: {
     verso: "I build the data systems an insurer runs on.",
-    recto: "I publish one work of literature a day.",
+    recto: "I run an app that gives you one work of literature a day.",
   },
 } as const;
 

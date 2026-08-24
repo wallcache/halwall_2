@@ -46,7 +46,13 @@ export function Doors() {
 
               {door.mark && (
                 <span className={styles.doorMark} aria-hidden="true">
-                  <Image src={door.mark} alt="" width={168} height={168} />
+                  <Image src={door.mark} alt="" width={512} height={512} />
+                </span>
+              )}
+
+              {door.figure && (
+                <span className={styles.doorFigure} aria-hidden="true">
+                  {door.figure}
                 </span>
               )}
 

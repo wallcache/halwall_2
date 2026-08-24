@@ -58,8 +58,8 @@ export function Ledger({ counts }: { counts: LiveCounts }) {
                   src={role.logo}
                   alt=""
                   aria-hidden="true"
-                  width={24}
-                  height={24}
+                  width={64}
+                  height={64}
                 />
               )}
               {role.company}

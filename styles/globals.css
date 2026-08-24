@@ -12,6 +12,17 @@
    undefined token in any theme state.
    ========================================================================== */
 
+/*
+  Registered so the loader can transition it. Without a declared syntax the
+  animation engine treats a custom property as an opaque string and jumps
+  between values instead of interpolating.
+*/
+@property --seam {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+
 :root {
   /* -- verso: the engineer -------------------------------------------- */
   --verso-ground: #242424;
@@ -330,3 +341,31 @@ a {
   [data-parallax="fade"] { opacity: 1; }
 }
 
+
+/*
+  The page arrives with the loader, not after it.
+
+  `data-revealed` is set on the document the moment the loader begins to lift,
+  so the two movements overlap: the plate fades forward while the page rises
+  into place behind it. Without this the site simply appeared, fully formed and
+  motionless, the instant the loader stopped covering it -- which on a page
+  that is one flat colour, like /work, meant no arrival at all.
+
+  Only ever true on a first load. Client navigations keep the attribute, so
+  moving between pages does not replay it.
+*/
+#main {
+  transition:
+    opacity 760ms var(--ease-out-expo),
+    translate 1000ms var(--ease-out-expo);
+}
+
+html[data-revealed="false"] #main {
+  opacity: 0;
+  translate: 0 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-revealed="false"] #main { translate: none; }
+  #main { transition: opacity 240ms linear; }
+}

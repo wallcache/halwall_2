@@ -17,7 +17,7 @@ import path from "node:path";
 import sharp from "sharp";
 
 const SLIDES_SRC = "/Users/henrywall/Desktop/EXPORT_AUG_SLIDES/round7/round9_appstore";
-const TDC_LOGOS = "/Users/henrywall/Desktop/Claude_Brain/1-apps/tdc/public/logos";
+const TDC_PUBLIC = "/Users/henrywall/Desktop/Claude_Brain/1-apps/tdc/public";
 
 const hash = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 8);
 
@@ -49,18 +49,21 @@ for (const file of slideFiles) {
 }
 
 // ---- The Daily Canon mark -------------------------------------------------
-// logo_green.png is the stacked books. logo_icon_green.png is Long Form Press,
-// a different company of Hal's entirely, and was the source of the wrong mark.
-const iconBuf = await sharp(path.join(TDC_LOGOS, "logo_green.png"))
-  .resize(256, 256, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
-  .webp({ quality: 92 })
+// icon-512.png is the shipped app icon: the stacked books on the Canon's own
+// green, already sized correctly inside its own square. Earlier builds took
+// logos/logo_green.png, which is the mark on transparency and needed a ground
+// invented for it, and before that logo_icon_green.png, which belongs to Long
+// Form Press -- a different company of Hal's entirely.
+const iconBuf = await sharp(path.join(TDC_PUBLIC, "icon-512.png"))
+  .resize(512, 512, { fit: "cover" })
+  .webp({ quality: 94 })
   .toBuffer();
 const iconName = `tdc-icon.${hash(iconBuf)}.webp`;
 for (const f of await readdir("public/media/brand")) {
   if (f.startsWith("tdc-icon")) await unlink(path.join("public/media/brand", f));
 }
 await writeFile(path.join("public/media/brand", iconName), iconBuf);
-console.log(`logo_green.png -> ${iconName}`);
+console.log(`icon-512.png -> ${iconName}`);
 
 await writeFile(
   "content/media.ts",

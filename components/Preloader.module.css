@@ -1,45 +1,96 @@
 /*
   The loader is the gutter.
 
-  The page arrives the way it works: the name sets either side of centre in the
-  two voices, then the two grounds part down the middle to reveal the site.
-  There is no drawn seam line: the join between the two grounds already reads
-  as one, and an accent hairline on top of it was a third element competing
-  with the two that matter.
+  The page arrives the way it works. It opens entirely on the engineer's dark
+  ground, with the name across it; the seam then travels in from the right edge
+  to the middle, laying the founder's paper down behind it and repainting the
+  half of the name it crosses; then both grounds part.
+
+  Everything hangs off one number, --seam, exactly as the site itself hangs off
+  --gutter. There is no drawn seam line: the join between the two grounds
+  already reads as one, and a coloured hairline on top of it was a third
+  element competing with the two that matter.
 */
 
 .root {
+  --seam: 100%;
   position: fixed;
   inset: 0;
   z-index: 100;
   pointer-events: none;
+  transition: --seam 980ms var(--ease-in-out-quart);
 }
 
+.root[data-split="true"] { --seam: 50%; }
 .root[data-done="true"] { display: none; }
 
-/*
-  Exactly half each. They used to be 50.5% so their edges would not leave a
-  sub-pixel gap, but that made them overlap from 49.5% to 50.5% and the seam
-  sat inside the overlap rather than on the join, which is why the line looked
-  off-centre. A half-pixel outset on each keeps the gap closed without moving
-  where they meet.
-*/
 .half {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: calc(50% + 0.5px);
-  transition: transform 1000ms var(--ease-in-out-quart);
+  transition: transform 900ms var(--ease-in-out-quart);
   will-change: transform;
 }
 
-.left  { left: 0;  background: var(--verso-ground); }
-.right { right: 0; background: var(--recto-ground); }
+/*
+  The paper is laid full-bleed and the ink is drawn over it, rather than the
+  two being sized against each other. Two panels meeting at a moving edge leave
+  a sub-pixel gap on half the frames of the travel, and a hairline of the page
+  flashing through the seam is the one artefact you would notice.
+*/
+.paper {
+  left: 0;
+  right: 0;
+  background: var(--recto-ground);
+}
 
-.root[data-open="true"] .left  { transform: translateX(-101%); }
-.root[data-open="true"] .right { transform: translateX(101%); }
+.ink {
+  left: 0;
+  width: var(--seam);
+  background: var(--verso-ground);
+}
 
-/* The name, set either side of the seam in the site's own two voices. */
+/*
+  The hand-off: the loader gives its seam to the page.
+
+  The two grounds used to slide off their own edges. On the homepage that was
+  fine, because what they uncovered was two grounds in the same places. On an
+  interior page it was not: /work is a single dark page, so the loader's paper
+  half swept a white bar the width of the screen across the content on its way
+  out, and /canon did the same in reverse. A page that is one colour has no
+  seam to part along, and fading the split plate over it is the same problem
+  standing still.
+
+  So the seam finishes its journey instead. It runs on to whichever side the
+  page belongs to -- all the way right for the verso, all the way left for the
+  recto, and nowhere at all on the spread -- which leaves the plate exactly the
+  colour of the page behind it. Only then does it fade, and by then there is
+  nothing to see it fade from. The page rises at the same moment, so the whole
+  hand-over reads as one movement.
+*/
+.root[data-hand="verso"] { --seam: 100%; }
+.root[data-hand="recto"] { --seam: 0%; }
+
+.root[data-open="true"] {
+  opacity: 0;
+  /*
+    The seam has to arrive before the fade begins, or the fade is once again
+    doing the thing this was written to avoid. Hence the delay, and hence a
+    linear fade rather than an expo one: ease-out-expo is so front-loaded that
+    a 620ms fade is visually over in 200, which put the two back in the wrong
+    order however long the delay was.
+  */
+  transition:
+    --seam 520ms var(--ease-in-out-quart),
+    opacity 520ms 520ms linear;
+}
+
+/* On the spread there is no journey left to make, so there is nothing to wait
+   for. */
+.root[data-open="true"][data-hand="spread"] {
+  transition: opacity 560ms linear;
+}
+
 .name {
   position: absolute;
   inset: 0;
@@ -49,12 +100,29 @@
 }
 
 .word {
+  grid-area: 1 / 1;
   display: flex;
   align-items: baseline;
-  gap: 0.22em;
+  /* Opens as the seam arrives, the same gesture the header's wordmark makes. */
+  gap: 0.12em;
   font-size: clamp(2rem, 7vw, 5rem);
   line-height: 0.95;
   white-space: nowrap;
+  transition: gap 980ms var(--ease-in-out-quart);
+}
+
+.root[data-split="true"] .word { gap: 0.26em; }
+
+/* Each copy is clipped to its own side of the seam. Same glyphs, same widths,
+   so the two halves meet exactly wherever the cut happens to fall. */
+.wordVerso {
+  clip-path: inset(0 calc(100% - var(--seam)) 0 0);
+  color: var(--verso-ink);
+}
+
+.wordRecto {
+  clip-path: inset(0 0 0 var(--seam));
+  color: var(--recto-ink);
 }
 
 .hal,
@@ -64,12 +132,10 @@
   transition: opacity 700ms var(--ease-out-expo), transform 900ms var(--ease-out-expo);
 }
 
-/* Each half rises from its own side of the seam, a beat apart. */
 .hal {
   font-family: var(--font-mono);
   font-weight: 600;
   letter-spacing: -0.055em;
-  color: var(--verso-ink);
   transition-delay: 120ms;
 }
 
@@ -77,7 +143,6 @@
   font-family: var(--font-serif);
   font-style: italic;
   letter-spacing: -0.025em;
-  color: var(--recto-ink);
   transition-delay: 260ms;
 }
 
@@ -95,6 +160,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .root { transition: none; }
+  .root[data-open="true"] { transition: opacity 200ms linear; }
   .half { transition-duration: 240ms; }
   .hal, .wall { transition: opacity 200ms linear; transform: none; }
 }

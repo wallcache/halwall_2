@@ -4,7 +4,11 @@
   The earlier build sized the columns off --gutter, which meant the section had
   a moving middle that tracked the hero continuously. It read as a third seam
   competing with the real one, and at narrow widths the percentage column broke
-  the layout outright. This is three discrete states instead: both, or one.
+  the layout outright. This is three discrete states instead: even, or leaning.
+
+  Leaning, not collapsing. The quieter half keeps a third of the width and
+  stays legible, because it also has to stay hoverable: a half collapsed to
+  zero is a state you cannot get back out of without leaving the section.
 */
 .section {
   display: grid;
@@ -17,27 +21,30 @@
   transition: grid-template-columns 700ms var(--ease-out-expo);
 }
 
-/* Committing upstairs gives that half the whole width down here. */
-.section[data-mode="verso"] { grid-template-columns: 1fr 0fr; }
-.section[data-mode="recto"] { grid-template-columns: 0fr 1fr; }
+.section[data-open="verso"] { grid-template-columns: 2.4fr 1fr; }
+.section[data-open="recto"] { grid-template-columns: 1fr 2.4fr; }
 
 .half {
   min-width: 0;
+  /* The inner holds a fixed width so the text slides out of view rather than
+     reflowing as the column narrows. Without clipping here it slides straight
+     over its neighbour instead. */
+  overflow: hidden;
   padding: clamp(2.5rem, 8vh, 5rem) var(--shell-x);
   background: var(--ground);
   color: var(--ink);
   transition: opacity 520ms var(--ease-out-expo);
 }
 
-.section[data-mode="verso"] .half:last-child,
-.section[data-mode="recto"] .half:first-child {
-  opacity: 0;
+.section[data-open="verso"] .half:last-child,
+.section[data-open="recto"] .half:first-child {
+  opacity: 0.5;
 }
 
 .inner {
-  /* Holds its width while the column collapses, so the text slides out of
-     view rather than reflowing to one word per line on the way. */
-  width: max(100%, 22rem);
+  /* Holds its width while the column narrows, so the text slides out of view
+     rather than reflowing to one word per line on the way. */
+  width: max(100%, 30rem);
 }
 
 .eyebrow {
@@ -89,13 +96,13 @@
   /* Always both, stacked. Collapsing a column to zero on a phone just hides
      half the content behind a state the reader cannot see. */
   .section,
-  .section[data-mode="verso"],
-  .section[data-mode="recto"] {
+  .section[data-open="verso"],
+  .section[data-open="recto"] {
     grid-template-columns: 1fr;
   }
 
-  .section[data-mode="verso"] .half:last-child,
-  .section[data-mode="recto"] .half:first-child {
+  .section[data-open="verso"] .half:last-child,
+  .section[data-open="recto"] .half:first-child {
     opacity: 1;
   }
 

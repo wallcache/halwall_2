@@ -15,4 +15,4 @@ export const slidePaths = [
   "/media/canon/slide-10.ca6fe8d7.webp",
 ];
 
-export const tdcIcon = "/media/brand/tdc-icon.c0998598.webp";
+export const tdcIcon = "/media/brand/tdc-icon.0115c066.webp";

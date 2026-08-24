@@ -69,7 +69,8 @@
 
 /* The one door that is a product shows its icon, not a photograph of
    something else. It sits on a wash of the Canon's own green. */
-.door:has(.doorMark) {
+.door:has(.doorMark),
+.door:has(.doorFigure) {
   background:
     radial-gradient(95% 70% at 78% 16%, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 68%),
     var(--ground-raised);
@@ -96,10 +97,13 @@
   );
 }
 
+/* Held well clear of the card's own corner. An app icon is itself a rounded
+   square, and two rounded squares sharing an edge read as a mistake rather
+   than as nesting. */
 .doorMark {
   position: absolute;
-  top: clamp(1.25rem, 3vw, 2.25rem);
-  right: clamp(1.25rem, 3vw, 2.25rem);
+  top: clamp(2rem, 4.5vw, 3.25rem);
+  right: clamp(2rem, 4.5vw, 3.25rem);
   z-index: 2;
   display: block;
   overflow: hidden;
@@ -110,8 +114,36 @@
 
 .doorMark img {
   display: block;
-  width: clamp(88px, 13vw, 168px);
+  width: clamp(76px, 11vw, 140px);
   height: auto;
+}
+
+/*
+  The verso door's subject does not photograph, so it takes the number the work
+  is remembered by, set large enough to be a texture rather than a claim. It
+  runs off the top edge deliberately: a figure that fits inside the card reads
+  as a statistic, and one that is cropped reads as a surface.
+*/
+.doorFigure {
+  position: absolute;
+  top: -0.14em;
+  right: 0.14em;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: clamp(6rem, 15vw, 12rem);
+  line-height: 0.86;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  opacity: 0.17;
+  transition: opacity var(--dur-card) var(--ease-out-expo), transform 1100ms var(--ease-out-expo);
+}
+
+.door:hover .doorFigure,
+.door:focus-visible .doorFigure {
+  opacity: 0.3;
+  transform: scale(1.04);
 }
 
 .door:hover .doorMark,
@@ -187,7 +219,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .door:hover .doorMark,
-  .door:focus-visible .doorMark { transform: none; }
+  .door:focus-visible .doorMark,
+  .door:hover .doorFigure,
+  .door:focus-visible .doorFigure { transform: none; }
 }
 
 /* Parallax wrappers sit between the grid and the cards, so they must stretch

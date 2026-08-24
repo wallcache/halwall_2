@@ -12,6 +12,8 @@ export interface Door {
   image?: string;
   /** An app icon instead of a photograph, for the one door that is a product. */
   mark?: string;
+  /** A number instead of either, for the one door whose subject is not visual. */
+  figure?: string;
 }
 
 /**
@@ -31,7 +33,10 @@ export const doors: Door[] = [
     line: "Entity resolution across millions of records, a 30,000-line pipeline taken apart, and the CV as a page rather than a download.",
     meta: "3 case studies \u00b7 full CV",
     side: "verso",
-    image: "/media/photography/cityscape/london-shard-light-trails.webp",
+    // No photograph. Pipelines do not photograph, and a stock city at night
+    // standing in for them is a picture of nothing in particular. The number
+    // the work is remembered by does the job instead.
+    figure: "300\u00d7",
   },
   {
     href: "/canon",
@@ -51,7 +56,7 @@ export const doors: Door[] = [
     line: "Photography as an exercise in attention, twelve brand identities, and eight years of motion work.",
     meta: "77 photographs \u00b7 12 identities \u00b7 10 films",
     side: "recto",
-    image: "/media/photography/landscape/arthurs-seat-edinburgh-sunset.webp",
+    image: "/media/photography/landscape/autumn-trees-rainbow.webp",
   },
   {
     href: "/walking",
