@@ -13,10 +13,8 @@ import styles from "./Making.module.css";
 export const metadata: Metadata = {
   title: "Making",
   description:
-    "Photography, brand identity and motion work. 77 photographs across six galleries, twelve identities, ten films.",
+    "Photography, brand identity and motion work: a selection from the WallCache years and the photography that never stopped.",
 };
-
-const commercialCount = photographyProjects.reduce((n, p) => n + p.images.length, 0);
 
 export default function MakingPage() {
   const cards = [
@@ -24,8 +22,8 @@ export default function MakingPage() {
       href: "/making/photography",
       label: "01",
       title: "Photography",
-      line: "Photography as an exercise in attention. Quiet scenes, unhurried light, ordinary beauty, plus commercial work for three clients.",
-      meta: `${allPhotos.length} personal · ${commercialCount} commercial`,
+      line: "Photography as an exercise in attention. Quiet scenes, unhurried light, ordinary beauty, and commercial work alongside it.",
+      meta: "personal \u00b7 commercial",
       image: "/media/photography/landscape/countryside-aerial-golden-hour.webp",
       video: undefined,
       posterTime: 0,
@@ -35,7 +33,7 @@ export default function MakingPage() {
       label: "02",
       title: "Identity",
       line: "Logo and brand identity work from the WallCache years, for businesses from startups through to established brands.",
-      meta: `${identityProjects.length} projects`,
+      meta: "brand identity",
       image: "/media/identity/onlyone/hero.webp",
       video: undefined,
       posterTime: 0,
@@ -47,7 +45,7 @@ export default function MakingPage() {
       // Motion has no still worth showing, so the card plays. The reel is the
       // work; a frozen frame of a logo animation is just the logo.
       line: "Logo animation and motion graphics, built in After Effects.",
-      meta: `${motionPieces.length} films`,
+      meta: "logo animation \u00b7 motion graphics",
       image: undefined,
       video: "/media/motion/wallcache-animations.mp4",
       posterTime: 7,

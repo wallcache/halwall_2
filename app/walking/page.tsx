@@ -9,7 +9,7 @@ import styles from "./Walking.module.css";
 export const metadata: Metadata = {
   title: "Walking",
   description:
-    "Two long-distance journals: the West Highland Way, 96 miles from Milngavie to Fort William, and a wildcamp at Cwm Llwch in the Brecon Beacons.",
+    "Long-distance journals: the West Highland Way from Milngavie to Fort William, and a wildcamp at Cwm Llwch in the Brecon Beacons.",
 };
 
 export default function WalkingPage() {

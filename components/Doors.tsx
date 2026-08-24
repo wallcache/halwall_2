@@ -3,6 +3,7 @@ import Image from "next/image";
 import { doors } from "@/content/doors";
 import { Parallax } from "./Parallax";
 import { ArrowUpRight } from "./icons";
+import { PrintStack } from "./PrintStack";
 import styles from "./Doors.module.css";
 
 export function Doors() {
@@ -53,6 +54,12 @@ export function Doors() {
               {door.figure && (
                 <span className={styles.doorFigure} aria-hidden="true">
                   {door.figure}
+                </span>
+              )}
+
+              {door.stack && (
+                <span className={styles.doorStack}>
+                  <PrintStack slots={door.stack} />
                 </span>
               )}
 

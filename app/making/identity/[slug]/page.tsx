@@ -34,7 +34,7 @@ export default async function IdentityProjectPage({
   return (
     <PageShell
       side="recto"
-      eyebrow={`Making · Identity · ${images.length} images`}
+      eyebrow="Making · Identity"
       title={project.name}
       standfirst={project.description}
     >

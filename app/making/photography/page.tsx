@@ -49,7 +49,6 @@ export default function PhotographyPage() {
           <div key={project.slug} id={project.slug}>
             <div className={styles.groupHead}>
               <h3 className={styles.groupTitle}>{project.name}</h3>
-              <span className={styles.groupCount}>{project.images.length} images</span>
             </div>
             <p className={shell.prose} style={{ marginBottom: "1.25rem" }}>
               {project.description}

@@ -70,7 +70,8 @@
 /* The one door that is a product shows its icon, not a photograph of
    something else. It sits on a wash of the Canon's own green. */
 .door:has(.doorMark),
-.door:has(.doorFigure) {
+.door:has(.doorFigure),
+.door:has(.doorStack) {
   background:
     radial-gradient(95% 70% at 78% 16%, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 68%),
     var(--ground-raised);
@@ -81,6 +82,23 @@
   inset: 0;
   z-index: 0;
   border-radius: inherit;
+}
+
+/*
+  On the pile card the scrim sits ABOVE the prints rather than below them, so
+  the bottom of the pile sinks into the page and the type always has a ground
+  of its own. Without it the words were landing on whichever photograph
+  happened to be in the front slot, and half of those are light.
+*/
+.door:has(.doorStack) .doorScrim {
+  z-index: 3;
+  background: linear-gradient(
+    to top,
+    var(--ground-raised) 26%,
+    color-mix(in srgb, var(--ground-raised) 86%, transparent) 40%,
+    color-mix(in srgb, var(--ground-raised) 30%, transparent) 54%,
+    transparent 68%
+  );
 }
 
 .doorScrim {
@@ -109,12 +127,15 @@
   overflow: hidden;
   border-radius: 23%;
   box-shadow: var(--card-shadow);
-  transition: transform var(--dur-card) var(--ease-out-expo);
+  /* Sprung rather than eased. It overshoots on the way out and again on the
+     way back, which is what makes it read as an object being picked up and put
+     down rather than a rectangle being interpolated between two states. */
+  transition: transform 640ms var(--ease-spring);
 }
 
 .doorMark img {
   display: block;
-  width: clamp(76px, 11vw, 140px);
+  width: clamp(86px, 12.5vw, 160px);
   height: auto;
 }
 
@@ -146,9 +167,46 @@
   transform: scale(1.04);
 }
 
+/*
+  A card that carries the pile is laid out in two rows rather than as a plate
+  with things placed on it. Absolutely positioned, the pile was free to cross
+  the title -- and did, at every width where the card was shorter than the
+  fan -- leaving the word Making sitting on a photograph in the one place it
+  had no scrim to hold it. Rows make the collision impossible rather than
+  unlikely.
+*/
+.door:has(.doorStack) {
+  display: grid;
+  /*
+    Both of these are undoing the flex base above, and both matter. The card is
+    `justify-content: flex-end` as a flex column, which is how its type sits at
+    the foot -- but the property survives the switch to grid, where it stops the
+    single track stretching and packs it against the right edge instead. The
+    pile was 330px wide in a 500px card and shoved into the corner, and the
+    percentage width that was meant to inset it was resolving against the wrong
+    number.
+  */
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: stretch;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.doorStack {
+  position: relative;
+  z-index: 2;
+  display: block;
+  /* Inset from its row, because the fan swings wider than the pile at rest and
+     the outermost print would otherwise clip on the card's edge. */
+  width: min(74%, 300px);
+  margin-inline: auto;
+  aspect-ratio: 4 / 3;
+  align-self: center;
+}
+
 .door:hover .doorMark,
 .door:focus-visible .doorMark {
-  transform: scale(1.05) rotate(-2deg);
+  transform: scale(1.16) rotate(-7deg) translate(-3%, 2%);
 }
 
 .doorLabel {
@@ -222,6 +280,7 @@
   .door:focus-visible .doorMark,
   .door:hover .doorFigure,
   .door:focus-visible .doorFigure { transform: none; }
+
 }
 
 /* Parallax wrappers sit between the grid and the cards, so they must stretch

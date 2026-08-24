@@ -70,7 +70,7 @@ export default async function CanonPage() {
         <TodayPhone work={work} date={formatDay(now)} href={appStore} />
         <div className={styles.links}>
           {canonProject.links.map((l) => (
-            <a key={l.url} className={styles.link} href={l.url} target="_blank" rel="noopener noreferrer" data-magnetic="0.225">
+            <a key={l.url} className={styles.link} href={l.url} target="_blank" rel="noopener noreferrer">
               <span>{l.text}</span>
               <span aria-hidden="true">↗</span>
             </a>

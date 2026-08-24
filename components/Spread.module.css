@@ -368,7 +368,21 @@
   */
   .hero {
     --portrait-travel: 0vw;
-    --portrait-w: min(42vw, 180px);
+    --portrait-w: min(36vw, 148px);
+    /*
+      The portrait's real height, published as a variable so the two bands can
+      reserve room for it instead of hoping. This is the whole fix: the copy
+      used to be positioned from the top of its band while the portrait was
+      positioned from the middle of the screen, so whether they collided
+      depended entirely on how tall the phone was. It cleared at 844 and ran
+      straight through the claim at 765.
+    */
+    --portrait-h: calc(var(--portrait-w) * 4 / 3);
+    --portrait-clear: calc(var(--portrait-h) / 2 + 1.1rem);
+    /* Where the seam actually is, in pixels. In viewport units rather than a
+       percentage, because a percentage padding resolves against the element's
+       WIDTH, and the thing being cleared here is vertical. */
+    --seam-y: calc(var(--gutter) * 100dvh);
     min-height: 100dvh;
     background:
       linear-gradient(
@@ -385,16 +399,34 @@
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
-    padding: clamp(8.5rem, 26vh, 12rem) var(--shell-x) clamp(2rem, 6vh, 3rem);
+    padding: 0 var(--shell-x);
   }
 
   /* The empty middle cell the desktop grid needs has no job here. */
   .pane > div:empty { display: none; }
 
-  /* Verso content gathers at the top of its band, recto at the bottom of its
-     own, so nothing sits under the clip. */
-  .paneVerso { justify-content: flex-start; }
-  .paneRecto { justify-content: flex-end; text-align: left; }
+  /*
+    Each band's copy hugs the seam from its own side, held off it by exactly
+    half the portrait. Measured from the seam rather than from the outer edge,
+    which is the only arrangement that cannot collide: whatever the screen
+    height, the copy stops where the photograph starts.
+  */
+  .paneVerso {
+    justify-content: flex-end;
+    /*
+      The pane is the full height of the hero with only its top band showing
+      through a clip, so flex-end alone parks the copy at the bottom of the
+      screen, inside the half that is clipped away. It has to be pushed up past
+      everything below the seam as well as past half the photograph.
+    */
+    padding-bottom: calc(100dvh - var(--seam-y) + var(--portrait-clear));
+  }
+
+  .paneRecto {
+    justify-content: flex-start;
+    padding-top: calc(var(--seam-y) + var(--portrait-clear));
+    text-align: left;
+  }
 
   .paneVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
   .paneRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
@@ -412,9 +444,11 @@
   .claim { font-size: var(--step-0); }
 
   /* The name sits in the top band, above everything else. */
+  /* Tucked up under the header, because the band below it now has to hold the
+     eyebrow, the claim and half a photograph. */
   .nameLayer {
     align-content: start;
-    padding: clamp(4.5rem, 13vh, 6rem) 0 0;
+    padding: clamp(3.75rem, 10vh, 5.25rem) 0 0;
   }
 
   .name {
@@ -483,12 +517,15 @@
    after another rather than as a block.
    -------------------------------------------------------------------------- */
 
+/* The transition itself, declared once on the elements rather than repeated in
+   every state, so all three states ease identically. */
 .eyebrow,
-.claim,
-
-
-
-
+.claim {
+  transition:
+    opacity 620ms var(--ease-out-expo),
+    transform 820ms var(--ease-out-expo),
+    filter 620ms var(--ease-out-expo);
+}
 
 .pane[data-state="lead"] .eyebrow,
 .pane[data-state="lead"] .claim {
@@ -499,8 +536,6 @@
 
 .pane[data-state="idle"] .eyebrow,
 .pane[data-state="idle"] .claim {
-/* removed */
-
   opacity: 1;
   transform: none;
   filter: none;
@@ -509,8 +544,6 @@
 /* Muted: pushed away from the seam, so each side exits toward its own edge. */
 .paneVerso[data-state="mute"] .eyebrow,
 .paneVerso[data-state="mute"] .claim {
-/* removed */
-
   opacity: 0;
   transform: translateX(-2.5rem);
   filter: blur(3px);
@@ -518,31 +551,22 @@
 
 .paneRecto[data-state="mute"] .eyebrow,
 .paneRecto[data-state="mute"] .claim {
-/* removed */
-
   opacity: 0;
   transform: translateX(2.5rem);
   filter: blur(3px);
 }
 
-
 @media (max-width: 760px) {
   /* The gutter is horizontal here, so muted content leaves vertically. */
   .paneVerso[data-state="mute"] .eyebrow,
-  .paneVerso[data-state="mute"] .claim {
-/* removed */
- transform: translateY(-1.5rem); }
+  .paneVerso[data-state="mute"] .claim { transform: translateY(-1.5rem); }
 
   .paneRecto[data-state="mute"] .eyebrow,
-  .paneRecto[data-state="mute"] .claim {
-/* removed */
- transform: translateY(1.5rem); }
+  .paneRecto[data-state="mute"] .claim { transform: translateY(1.5rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .eyebrow, .claim { transition: opacity 300ms linear; }
   .pane[data-state="mute"] .eyebrow,
-  .pane[data-state="mute"] .claim {
-/* removed */
- transform: none; filter: none; }
+  .pane[data-state="mute"] .claim { transform: none; filter: none; }
 }

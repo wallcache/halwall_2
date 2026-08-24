@@ -12,6 +12,21 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: clamp(2rem, 6vw, 5rem);
   align-items: center;
+  /*
+    The phone is pinned to the end of its column, which put it hard against the
+    page's own gutter with nothing between a rendered device and the edge of the
+    screen. It reads as a screenshot that has been cropped rather than as an
+    object sitting on the page, and the App Store pill hanging off its corner
+    made that worse. Padding here rather than a margin on the phone, so the
+    badge that overhangs it is inset by the same amount.
+  */
+  padding-right: clamp(0.5rem, 4vw, 4.5rem);
+  padding-bottom: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+@media (max-width: 900px) {
+  /* Stacked, so there is no end of a column to sit at. */
+  .wrap { padding-right: 0; }
 }
 
 /* ---- the phone --------------------------------------------------------- */

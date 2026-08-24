@@ -1,4 +1,8 @@
-/** Identity work. 12 projects, 342 images. Ported verbatim; asset paths remapped. */
+/*
+  Identity work from the WallCache years. A selection rather than the archive:
+  the site does not publish counts of Hal's own work anywhere, because the
+  numbers only ever describe what has been picked out, not what was made.
+*/
 
 export interface IdentityProject {
   src: string;

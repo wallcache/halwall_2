@@ -14,6 +14,13 @@ export interface Door {
   mark?: string;
   /** A number instead of either, for the one door whose subject is not visual. */
   figure?: string;
+  /**
+   * Three overlapping slots, for the one door that is three bodies of work.
+   * One photograph will always misrepresent an archive that is also twelve
+   * identities and ten films, and three fixed ones misrepresent it nearly as
+   * badly. Each slot cycles its own list.
+   */
+  stack?: readonly (readonly string[])[];
 }
 
 /**
@@ -31,7 +38,7 @@ export const doors: Door[] = [
     label: "01",
     title: "The engineering",
     line: "Entity resolution across millions of records, a 30,000-line pipeline taken apart, and the CV as a page rather than a download.",
-    meta: "3 case studies \u00b7 full CV",
+    meta: "case studies \u00b7 the full CV",
     side: "verso",
     // No photograph. Pipelines do not photograph, and a stock city at night
     // standing in for them is a picture of nothing in particular. The number
@@ -53,17 +60,38 @@ export const doors: Door[] = [
     href: "/making",
     label: "03",
     title: "Making",
-    line: "Photography as an exercise in attention, twelve brand identities, and eight years of motion work.",
-    meta: "77 photographs \u00b7 12 identities \u00b7 10 films",
+    line: "Photography as an exercise in attention, brand identity from the WallCache years, and the motion work that came with it.",
+    meta: "photography \u00b7 identity \u00b7 motion",
     side: "recto",
-    image: "/media/photography/landscape/autumn-trees-rainbow.webp",
+    // Prints on a desk, one slot per pile. Disjoint lists, so two slots can
+    // never land on the same piece.
+    stack: [
+      [
+        "/media/photography/landscape/cotswolds-village-autumn.webp",
+        "/media/identity/vineme/hero.webp",
+        "/media/photography/landscape/coastal-camping-cliffs.webp",
+        "/media/identity/nextdistrict/hero.webp",
+      ],
+      [
+        "/media/identity/assetlab/hero.webp",
+        "/media/photography/landscape/autumn-trees-rainbow.webp",
+        "/media/identity/artems-gym/hero.webp",
+        "/media/photography/cityscape/city-street-motion-blur.webp",
+      ],
+      [
+        "/media/photography/cityscape/london-shard-light-trails.webp",
+        "/media/identity/onlyone/hero.webp",
+        "/media/photography/landscape/countryside-aerial-golden-hour.webp",
+        "/media/identity/crowd0/hero.webp",
+      ],
+    ],
   },
   {
     href: "/walking",
     label: "04",
     title: "Walking",
     line: "Ninety-six miles from Milngavie to Fort William, a wildcamp under Pen y Fan, and a Wirehaired Vizsla named after a Kerouac character.",
-    meta: "2 journals \u00b7 106 miles",
+    meta: "journals from the trail",
     side: "recto",
     image: "/media/walking/hal-and-japhy.webp",
   },
