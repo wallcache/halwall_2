@@ -4,20 +4,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useGutter } from "@/lib/gutter";
 import { register } from "@/lib/parallax";
-import { identity, bio } from "@/content/identity";
-import { experience } from "@/content/experience";
-import { getProject } from "@/content/projects";
+import { identity, heroFigures } from "@/content/identity";
 import { CountUp } from "./CountUp";
 import { DappledLight } from "./DappledLight";
 import styles from "./Spread.module.css";
 
-const chubb = experience[0];
-const emea = experience.find((r) => r.slug === "chubb-emea-analytics")!;
-const quilter = experience.find((r) => r.slug === "quilter")!;
-const canon = getProject("the-daily-canon")!;
-
 const NARROW = "(max-width: 760px)";
-const PORTRAIT = "/media/portrait/hal.webp";
+/**
+ * Two photographs, not one image graded twice: the same face in the City with
+ * a work lanyard, and at a wildcamp under trees. The seam wipes between them,
+ * so the split stops being a colour treatment and becomes two actual lives.
+ */
+const PORTRAIT_VERSO = "/media/portrait/hal-city.webp";
+const PORTRAIT_RECTO = "/media/portrait/hal-camp.webp";
 /** How long after a drag before hovering a pane may take the gutter back. */
 const HOVER_SUPPRESS_MS = 700;
 
@@ -25,6 +24,8 @@ export function Spread() {
   const { mode, commit, set, read, settle } = useGutter();
   const heroRef = useRef<HTMLElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
+  const pillRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLDivElement>(null);
   const [touched, setTouched] = useState(false);
   const [narrow, setNarrow] = useState(false);
   /**
@@ -62,10 +63,16 @@ export function Spread() {
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  // The portrait drifts hardest, because it is the thing the eye tracks.
+  /*
+    Layered parallax. The portrait drifts hardest because it is the thing the
+    eye tracks; the masthead drifts against it, which is what reads as depth
+    rather than as two things sliding at the same rate.
+  */
   useEffect(() => {
-    if (!portraitRef.current) return;
-    return register(portraitRef.current, { speed: 0.26 });
+    const stop: (() => void)[] = [];
+    if (portraitRef.current) stop.push(register(portraitRef.current, { speed: 0.26 }));
+    if (nameRef.current) stop.push(register(nameRef.current, { speed: -0.1 }));
+    return () => stop.forEach((f) => f());
   }, []);
 
   const heroWidth = useCallback(
@@ -94,7 +101,7 @@ export function Spread() {
   );
 
   const startDrag = useCallback(
-    (e: React.PointerEvent, source: "seam" | "portrait") => {
+    (e: React.PointerEvent, source: "seam" | "portrait" | "pill") => {
       if (narrow || e.pointerType === "touch") return;
       if ((e.target as HTMLElement).closest("a")) return;
 
@@ -103,7 +110,15 @@ export function Spread() {
       grab.current = {
         x: e.clientX,
         gutter: read(),
-        gain: source === "seam" ? heroWidth() : portraitTravel(),
+        // Each grab point uses its own travel, so whatever you are holding
+        // stays under the cursor.
+        gain:
+          source === "seam"
+            ? heroWidth()
+            : source === "pill"
+              ? (pillRef.current?.querySelector("span[class*='pillTrack']") as HTMLElement)
+                  ?.getBoundingClientRect().width || 120
+              : portraitTravel(),
       };
       last.current = { frac: read(), t: e.timeStamp };
       setTouched(true);
@@ -176,9 +191,8 @@ export function Spread() {
         <div />
         <div className={`${styles.col} ${styles.foot}`}>
           <p className={`${styles.claim} ${styles.claimVerso}`}>{identity.spreadLine.verso}</p>
-          <p className={`${styles.deep} ${styles.deepVerso}`}>{bio.verso}</p>
           <ul className={styles.figures}>
-            {[chubb.figure!, emea.figure!, quilter.figure!].map((f) => (
+            {heroFigures.verso.map((f) => (
               <li key={f.label} className={styles.figure}>
                 <span className={styles.figureValue}>
                   <CountUp figure={f} run={mode === "verso"} />
@@ -208,9 +222,8 @@ export function Spread() {
         <div />
         <div className={`${styles.col} ${styles.foot}`}>
           <p className={`${styles.claim} ${styles.claimRecto}`}>{identity.spreadLine.recto}</p>
-          <p className={`${styles.deep} ${styles.deepRecto}`}>{bio.recto}</p>
           <ul className={styles.figures}>
-            {canon.figures.map((f) => (
+            {heroFigures.recto.map((f) => (
               <li key={f.label} className={styles.figure}>
                 <span className={styles.figureValue}>
                   <CountUp figure={f} run={mode === "recto"} />
@@ -227,7 +240,10 @@ export function Spread() {
         accessibility tree, so the name is still announced exactly once.
       */}
       <div className={styles.nameLayer}>
-        <div className={styles.nameStack}>
+        {/* .nameDrift carries the gutter lean, .nameStack the scroll parallax,
+            so neither overwrites the other's transform. */}
+        <div className={styles.nameDrift}>
+        <div ref={nameRef} className={styles.nameStack}>
           <h1 className={`${styles.name} ${styles.nameCopy} ${styles.nameVerso}`}>
             <span className={styles.nameHal}>Hal</span>{" "}
             <span className={styles.nameWall}>Wall</span>
@@ -239,6 +255,7 @@ export function Spread() {
             <span className={styles.nameHal}>Hal</span>{" "}
             <span className={styles.nameWall}>Wall</span>
           </span>
+        </div>
         </div>
       </div>
 
@@ -270,23 +287,23 @@ export function Spread() {
         <div ref={portraitRef} className={styles.portraitInner}>
           <Image
             className={`${styles.portrait} ${styles.portraitVerso}`}
-            src={PORTRAIT}
-            alt={`${identity.name}. Interim frame; the commissioned portrait is still to be shot.`}
+            src={PORTRAIT_VERSO}
+            alt={`${identity.name} in the City of London.`}
             fill
             priority
             sizes="(max-width: 760px) 52vw, 300px"
           />
           <Image
             className={`${styles.portrait} ${styles.portraitRecto}`}
-            src={PORTRAIT}
-            alt=""
-            aria-hidden="true"
+            src={PORTRAIT_RECTO}
+            alt={`${identity.name} at a wildcamp.`}
             fill
+            priority
             sizes="(max-width: 760px) 52vw, 300px"
           />
         </div>
         {/* Outside .portraitInner, which clips to round its corners. */}
-        <span className={styles.portraitCaption}>Interim frame · drag me</span>
+        <span className={styles.portraitCaption}>Drag me</span>
       </div>
 
       <div className={styles.seam} aria-hidden="true" />
@@ -302,12 +319,26 @@ export function Spread() {
             onPointerCancel={endDrag}
             aria-hidden="true"
           />
+
+          {/* The pill says what it does before you touch it. */}
+          <div
+            ref={pillRef}
+            className={styles.pill}
+            data-mode={mode}
+            onPointerDown={(e) => startDrag(e, "pill")}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            aria-hidden="true"
+          >
+            <span className={`${styles.pillLabel} ${styles.pillLabelVerso}`}>runtime</span>
+            <span className={styles.pillTrack}>
+              <span className={styles.pillKnob} />
+            </span>
+            <span className={`${styles.pillLabel} ${styles.pillLabelRecto}`}>readers</span>
+          </div>
         </>
       )}
-
-      <p className={styles.hint} aria-hidden="true">
-        {narrow ? "tap a side to open it" : "drag the seam · or use the menu"}
-      </p>
     </section>
   );
 }

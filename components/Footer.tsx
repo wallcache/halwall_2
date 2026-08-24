@@ -53,9 +53,6 @@ export function Footer() {
         <div>
           <h2 className={styles.colTitle}>About this site</h2>
           <div className={styles.list}>
-            <Link href="/colophon" className={styles.link}>
-              colophon
-            </Link>
             <span className={styles.link} style={{ color: "var(--verso-ink-faint)" }}>
               {identity.location}
             </span>

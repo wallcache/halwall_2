@@ -5,7 +5,8 @@
 }
 
 .header {
-  padding: clamp(3rem, 12vh, 7rem) var(--shell-x) clamp(2rem, 6vh, 4rem);
+  /* Clears the floating header with real air, on every page. */
+  padding: clamp(7rem, 22vh, 12rem) var(--shell-x) clamp(2.5rem, 7vh, 4.5rem);
   border-bottom: 1px solid var(--rule);
 }
 

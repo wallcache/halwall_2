@@ -72,10 +72,20 @@ void main() {
 
   // Pull the field toward the cursor. This is the part that reads as "the
   // light moves when you move" — the warp origin follows the pointer.
+  //
+  // The first pass of this was far too polite to notice: a 0.16 displacement
+  // inside a tight exp() falloff moved the canopy by a couple of pixels. Wider
+  // radius, much stronger displacement, and a swirl so the light rotates
+  // around the pointer rather than only sliding away from it.
   vec2 m = vec2(u_mouse.x * aspect, u_mouse.y);
   vec2 toMouse = p - m;
-  float pull = exp(-dot(toMouse, toMouse) * 2.2);
-  p += normalize(toMouse + 1e-5) * pull * 0.16;
+  float d2 = dot(toMouse, toMouse);
+  // Wide, soft falloff. A tight one turns the cursor into a starburst; the
+  // canopy should lean toward the hand, not detonate under it.
+  float pull = exp(-d2 * 1.5);
+  vec2 dir = normalize(toMouse + 1e-5);
+  p += dir * pull * 0.2;
+  p += vec2(-dir.y, dir.x) * pull * 0.085;   // a little swirl, not a vortex
 
   // Rotate so the dapples run on a diagonal, then squash one axis hard so they
   // stretch into leaf-shaped streaks rather than staying round.
@@ -122,12 +132,17 @@ void main() {
   float side = smoothstep(g - 0.012, g + 0.012, uv.x);
   vec3 tint = mix(versoLight, rectoLight, side);
 
-  float strength = mix(0.72, 0.4, side);   // paper takes less light than ink
+  // Pulled back from 0.72: the peaks were bright enough to wash out the
+  // orange company line sitting on top of them.
+  float strength = mix(0.62, 0.4, side);   // paper takes less light than ink
 
   // Vignette, so the corners do not compete with the masthead.
   float vig = smoothstep(1.25, 0.25, length(uv - 0.5));
 
-  float alpha = clamp(light * strength * (0.35 + 0.65 * vig), 0.0, 1.0);
+  // The canopy also opens up around the pointer, so the cursor reads as a
+  // break in the leaves rather than only as a distortion.
+  float bloom = exp(-d2 * 2.4);
+  float alpha = clamp(light * strength * (0.35 + 0.65 * vig) * (1.0 + bloom * 0.3), 0.0, 1.0);
   outColor = vec4(tint * alpha, alpha);   // premultiplied
 }`;
 
@@ -216,8 +231,9 @@ export function DappledLight() {
     const draw = (now: number) => {
       if (!running) return;
       // Ease toward the pointer so the field drifts rather than snapping.
-      mouse.x += (target.x - mouse.x) * 0.045;
-      mouse.y += (target.y - mouse.y) * 0.045;
+      // Fast enough to feel connected to the hand, slow enough to have weight.
+      mouse.x += (target.x - mouse.x) * 0.085;
+      mouse.y += (target.y - mouse.y) * 0.085;
 
       gl.uniform1f(uTime, reduced ? 0 : (now - start) / 1000);
       gl.uniform2f(uMouse, mouse.x, mouse.y);

@@ -9,20 +9,7 @@
      scrolling up, reaching the top, or simply pointing at it opens it again. */
 }
 
-/*
-  Liquid glass.
-
-  Four layers stacked, in this order, because the order is what sells it:
-   1. a heavy backdrop blur with the saturation pushed, so whatever is behind
-      bleeds through as colour rather than as detail;
-   2. the split tint, verso to the left of the gutter and recto to the right,
-      kept translucent so the blur still reads through it;
-   3. a specular sweep that follows the cursor (::before), which is the part
-      that makes it feel wet rather than merely frosted;
-   4. hairline inset highlights, bright along the top edge and dark along the
-      bottom, which is how glass catches light and what stops the bar looking
-      like a flat translucent rectangle.
-*/
+/* A plain bar. Solid, quiet, and out of the way. */
 .bar {
   position: relative;
   display: grid;
@@ -32,63 +19,19 @@
   padding: clamp(0.55rem, 1.1vw, 0.9rem) clamp(0.9rem, 2.2vw, 1.75rem);
   border: 1px solid transparent;
   border-radius: var(--radius-lg);
-  overflow: hidden;
-  isolation: isolate;
 
-  /* Thinner tint, heavier blur: the frosting should be doing most of the work,
-     with the tint only steering the colour of what bleeds through. */
   background:
     linear-gradient(
       to right,
-      color-mix(in srgb, var(--verso-ground) 38%, transparent) 0 var(--gutter-pct),
-      color-mix(in srgb, var(--recto-ground) 38%, transparent) var(--gutter-pct) 100%
+      color-mix(in srgb, var(--verso-ground) 92%, transparent) 0 var(--gutter-pct),
+      color-mix(in srgb, var(--recto-ground) 92%, transparent) var(--gutter-pct) 100%
     );
 
-  backdrop-filter: blur(44px) saturate(210%) brightness(1.08) contrast(1.04);
-  -webkit-backdrop-filter: blur(44px) saturate(210%) brightness(1.08) contrast(1.04);
-
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.28),
-    inset 0 -1px 0 rgb(0 0 0 / 0.16),
-    inset 1px 0 0 rgb(255 255 255 / 0.08),
-    inset -1px 0 0 rgb(255 255 255 / 0.08),
-    0 18px 50px -32px rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-color: color-mix(in srgb, var(--verso-rule) 70%, transparent);
 }
 
-/* The specular. Sits above the tint, below the content. */
-.bar::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      22rem 9rem at var(--sheen-x, 50%) var(--sheen-y, 0%),
-      rgb(255 255 255 / 0.34),
-      rgb(255 255 255 / 0.08) 42%,
-      transparent 70%
-    );
-  opacity: 0;
-  transition: opacity 700ms var(--ease-out-expo);
-}
-
-.wrap:hover .bar::before,
-.wrap:focus-within .bar::before {
-  opacity: 1;
-}
-
-/* A fixed sheen along the top edge, present whether or not you are pointing
-   at it, so the bar reads as glass at rest too. */
-.bar::after {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 45%;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0.13), transparent);
-}
 
 /*
   Compact <-> full has to interpolate, not cut.
@@ -121,27 +64,19 @@
   transform: scale(0.92);
 }
 
-.wrap[data-compact="true"]:not(:hover):not(:focus-within) .readout {
-  opacity: 0;
-  max-width: 0;
-  margin-left: 0;
-}
-
+/* Declared once, on the base rules, so every property eases in BOTH
+   directions rather than only on the way into compact. */
 .bar,
 .group,
 .link,
-.wordmark,
-.readout {
+.wordmark {
   transition:
     padding 620ms var(--ease-out-expo),
     max-width 620ms var(--ease-out-expo),
-    margin-left 620ms var(--ease-out-expo),
     border-radius 620ms var(--ease-out-expo),
-    opacity 460ms var(--ease-out-expo),
     color 320ms var(--ease-out-expo),
     transform 620ms var(--ease-out-expo),
     box-shadow 620ms var(--ease-out-expo);
-  will-change: transform;
 }
 
 .group {
@@ -152,10 +87,9 @@
   transform-origin: left center;
 }
 
-.groupRecto { transform-origin: right center; }
-
 .groupRecto {
   justify-content: flex-end;
+  transform-origin: right center;
 }
 
 /* ---- links ------------------------------------------------------------- */
@@ -171,12 +105,6 @@
     transform 420ms var(--ease-out-expo);
 }
 
-/* Sibling dimming: hovering one link quietens the others in its group, so the
-   bar has a focal point rather than four equal shouts. */
-.group:hover .link:not(:hover) {
-  opacity: 0.42;
-}
-
 .linkVerso {
   font-family: var(--font-mono);
   font-size: var(--step--1);
@@ -185,10 +113,13 @@
   color: var(--verso-ink-muted);
 }
 
+/* Same face, same size, both sides. The typographic split lives in the
+   wordmark and in the pages themselves, not in the nav labels. */
 .linkRecto {
-  font-family: var(--font-serif);
-  font-size: var(--step-0);
-  letter-spacing: 0.005em;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.09em;
+  text-transform: lowercase;
   color: var(--recto-ink-muted);
 }
 
@@ -196,14 +127,12 @@
 .linkVerso:focus-visible,
 .linkVerso[data-current="true"] {
   color: var(--verso-accent);
-  transform: translateY(-1px);
 }
 
 .linkRecto:hover,
 .linkRecto:focus-visible,
 .linkRecto[data-current="true"] {
   color: var(--recto-accent);
-  transform: translateY(-1px);
 }
 
 /* Underline sweeps in from the left, out to the right — it never rewinds. */
@@ -266,27 +195,6 @@
 .wrap[data-mode="verso"] .wordmarkRecto { color: var(--verso-ink); }
 .wrap[data-mode="recto"] .wordmarkVerso { color: var(--recto-ink); }
 
-/* ---- readout ----------------------------------------------------------- */
-
-.readout {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--verso-ink-faint);
-  white-space: nowrap;
-  overflow: hidden;
-  /* An explicit length in the open state, so the collapse can interpolate. */
-  max-width: 12rem;
-  margin-left: 0.4rem;
-  opacity: 1;
-}
-
-.wrap[data-mode="recto"] .readout { color: var(--recto-ink-faint); }
-
-@media (max-width: 900px) {
-  .readout { display: none; }
-}
 
 @media (max-width: 760px) {
   .bar {
@@ -299,15 +207,17 @@
     background: color-mix(in srgb, var(--recto-ground) 52%, transparent);
   }
   .group { gap: 0.75rem; }
-  .linkVerso { font-size: 0.7rem; }
-  .linkRecto { font-size: 0.82rem; }
+  .linkVerso, .linkRecto { font-size: 0.7rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bar, .link, .wordmark, .readout { transition: none; }
-  .link:hover, .linkVerso:hover, .linkRecto:hover { transform: none; }
+  .bar,
+  .group,
+  .link,
+  .wordmark {
+    transition: none;
+  }
 }
-
 
 /* Without backdrop-filter the tint alone is far too transparent to read
    against a photograph, so opacity goes up and the glass conceit goes away. */

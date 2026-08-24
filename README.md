@@ -30,7 +30,7 @@ app/                routes
 components/         UI. Nav, Spread, Gallery, Lightbox, Ledger, Footer
 content/            ALL copy and data. Nothing hardcoded in components.
 lib/gutter.tsx      the gutter state machine
-lib/tween.ts        forty-line rAF tween (see Colophon for why no GSAP)
+lib/tween.ts        forty-line rAF tween, in place of GSAP
 lib/gated.ts        HMAC access control for the locked gallery
 public/media/       61MB of optimised WebP (from 267MB of source)
 private-media/      the gated gallery. NOT under public/, deliberately.

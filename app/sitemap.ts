@@ -20,7 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/making/identity", priority: 0.7 },
     { path: "/making/motion", priority: 0.6 },
     { path: "/walking", priority: 0.6 },
-    { path: "/colophon", priority: 0.4 },
   ];
 
   return [

@@ -36,7 +36,7 @@
   z-index: 1;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  padding: calc(clamp(3.5rem, 9vh, 6rem) + 1rem) var(--shell-x) clamp(4.5rem, 11vh, 7rem);
+  padding: clamp(6rem, 15vh, 10rem) var(--shell-x) clamp(6rem, 14vh, 9rem);
   will-change: clip-path;
 }
 
@@ -122,26 +122,6 @@
   color: var(--recto-ink);
 }
 
-/* Depth staging: committing to a side gives it more to say. */
-.deep {
-  font-size: var(--step--1);
-  line-height: 1.7;
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition:
-    opacity 520ms var(--ease-out-expo),
-    max-height 880ms var(--ease-out-expo);
-}
-
-.pane[data-open="true"] .deep {
-  opacity: 1;
-  max-height: 18em;
-}
-
-.deepVerso { font-family: var(--font-mono); color: var(--verso-ink-muted); }
-.deepRecto { font-family: var(--font-serif); color: var(--recto-ink-muted); }
-
 .figures {
   display: flex;
   gap: clamp(0.9rem, 2.4vw, 2rem);
@@ -188,15 +168,22 @@
   display: grid;
   place-items: center;
   align-content: center;
-  padding-bottom: clamp(7rem, 26vh, 15rem);
+  padding-bottom: clamp(3.5rem, 15vh, 9rem);
   pointer-events: none;
   z-index: 3;
 }
 
-/* Both copies occupy the same grid cell, so they are exactly superimposed. */
+/* Both copies occupy the same grid cell, so they are exactly superimposed.
+   The stack drifts with the seam — a fraction of the portrait's travel, so the
+   name leans into whichever world is winning without ever leaving centre. */
+.nameDrift {
+  transform: translateX(calc((var(--gutter) - 0.5) * 9vw));
+}
+
 .nameStack {
   display: grid;
   place-items: center;
+  will-change: transform;
 }
 
 /*
@@ -247,7 +234,9 @@
 .portraitAnchor {
   position: absolute;
   left: 50%;
-  bottom: clamp(3rem, 9vh, 6rem);
+  /* Deliberately high enough to overlap the masthead. The name sits above it
+     on z-index, so the two read as layered rather than colliding. */
+  bottom: clamp(4.5rem, 13vh, 8rem);
   width: var(--portrait-w);
   aspect-ratio: 4 / 5;
   z-index: 2;
@@ -296,14 +285,14 @@
   object-position: center 22%;
 }
 
+/* No grading. The two frames are genuinely different places with genuinely
+   different light, which does the job a filter was faking. */
 .portraitVerso {
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
-  filter: grayscale(1) contrast(1.24) brightness(0.82);
 }
 
 .portraitRecto {
   clip-path: inset(0 0 0 var(--gutter-pct));
-  filter: sepia(0.2) saturate(0.86) contrast(1.03) brightness(1.06);
 }
 
 .portraitCaption {
@@ -359,21 +348,97 @@
   cursor: ew-resize;
 }
 
-.hint {
+/* --------------------------------------------------------------------------
+   The pill
+
+   A floating control on the floor of the hero. Drag it left or right and the
+   whole page follows. It exists because the seam and the portrait are both
+   discoverable only by trying them; this is the one affordance that says what
+   it does before you touch it.
+   -------------------------------------------------------------------------- */
+
+.pill {
   position: absolute;
-  left: var(--shell-x);
-  bottom: clamp(0.6rem, 2vh, 1rem);
-  z-index: 5;
-  font-family: var(--font-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--verso-ink-faint);
-  transition: opacity 900ms var(--ease-out-expo);
-  pointer-events: none;
+  left: 50%;
+  bottom: clamp(1.25rem, 4vh, 2.25rem);
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  /* Nearly opaque on purpose: the pill straddles the seam, so it needs a
+     ground of its own or its labels vanish over the paper side. */
+  background: color-mix(in srgb, var(--verso-ground) 82%, transparent);
+  backdrop-filter: blur(26px) saturate(190%);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 -1px 0 rgb(0 0 0 / 0.18),
+    0 18px 44px -28px rgb(0 0 0 / 0.7);
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+  transition: transform 420ms var(--ease-out-expo), box-shadow 420ms var(--ease-out-expo);
 }
 
-.hero[data-touched="true"] .hint { opacity: 0.3; }
+.pill:hover,
+.pill:focus-visible {
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 -1px 0 rgb(0 0 0 / 0.2),
+    0 24px 54px -26px rgb(0 0 0 / 0.8);
+}
+
+.pill:active { cursor: grabbing; }
+
+.pillLabel {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--verso-ink-muted);
+  transition: color 320ms var(--ease-out-expo);
+  white-space: nowrap;
+}
+
+/* Whichever side is winning lights up. */
+.pill[data-mode="verso"] .pillLabelVerso { color: var(--verso-accent); }
+.pill[data-mode="recto"] .pillLabelRecto { color: var(--recto-accent); }
+
+.pillTrack {
+  position: relative;
+  width: clamp(88px, 12vw, 140px);
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--verso-ink) 30%, transparent);
+}
+
+.pillKnob {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  border-radius: 50%;
+  background: var(--verso-accent);
+  box-shadow: 0 2px 10px -2px rgb(0 0 0 / 0.6);
+  /* Tracks the gutter directly. No JS writes this. */
+  transform: translate(calc(var(--gutter) * clamp(88px, 12vw, 140px)), -50%);
+}
+
+@media (max-width: 760px) {
+  .pill { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill:hover, .pill:focus-visible { transform: translateX(-50%); }
+  .nameDrift { transform: none; }
+}
 
 /* --------------------------------------------------------------------------
    Mobile: the gutter turns horizontal

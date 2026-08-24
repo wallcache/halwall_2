@@ -16,15 +16,23 @@ const DIRECTION_THRESHOLD = 8;
 const RELEASE_DELAY = 90;
 
 export function Header() {
-  const { mode, locked, commit, release } = useGutter();
+  const { mode, commit, release } = useGutter();
   const pathname = usePathname();
   const barRef = useRef<HTMLElement>(null);
 
   const [compact, setCompact] = useState(false);
 
+  /*
+    Re-synced on every navigation. The scroll position resets to the top on a
+    route change but this effect used to keep the previous page's baseline, so
+    the bar arrived already compact and stayed that way until you scrolled far
+    enough to beat the threshold. Keying on pathname re-reads the real
+    position and sets the correct state immediately.
+  */
   useEffect(() => {
     let last = window.scrollY;
     let ticking = false;
+    setCompact(last > COMPACT_AT);
 
     const update = () => {
       const y = window.scrollY;
@@ -51,7 +59,7 @@ export function Header() {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   /**
    * The specular highlight follows the pointer across the glass. Coordinates
@@ -135,17 +143,6 @@ export function Header() {
           onMouseLeave={leave}
         >
           {rectoNav.map(renderLink)}
-          <span className={styles.readout} aria-hidden="true">
-            {locked
-              ? mode === "verso"
-                ? "reading · runtime"
-                : "reading · readers"
-              : mode === "verso"
-                ? "runtime"
-                : mode === "recto"
-                  ? "readers"
-                  : "in balance"}
-          </span>
         </div>
       </nav>
     </div>

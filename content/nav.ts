@@ -20,7 +20,6 @@ export interface NavItem {
  */
 export const navItems: NavItem[] = [
   { label: "work", href: "/work", side: "verso" },
-  { label: "colophon", href: "/colophon", side: "verso" },
   { label: "Canon", href: "/canon", side: "recto" },
   { label: "Making", href: "/making", side: "recto" },
   { label: "Walking", href: "/walking", side: "recto" },
@@ -32,7 +31,6 @@ export const rectoNav = navItems.filter((i) => i.side === "recto");
 /** Which side a route pins the gutter to. Anything unlisted leaves it free. */
 export const routeSide: Record<string, Side> = {
   "/work": "verso",
-  "/colophon": "verso",
   "/canon": "recto",
   "/making": "recto",
   "/walking": "recto",

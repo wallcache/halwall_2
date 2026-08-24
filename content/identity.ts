@@ -20,6 +20,22 @@ export const identity = {
   },
 } as const;
 
+/**
+ * The two headline pairs, one per side, deliberately symmetrical: two numbers
+ * each, and only the ones worth reading. The pipeline internals (85% volume
+ * reduction, 30,000 lines) live on /work where there is room to explain them.
+ */
+export const heroFigures = {
+  verso: [
+    { value: 300, suffix: "\u00d7", label: "faster than the system it replaced" },
+    { from: 270, value: 45, unit: "min", label: "pipeline runtime, down from 270" },
+  ],
+  recto: [
+    { value: 6000, suffix: "+", label: "downloads" },
+    { value: 366, label: "works, one for every day" },
+  ],
+} as const;
+
 export const bio = {
   twoSentence:
     "Hal Wall is a data engineer at Chubb, where he builds the global data infrastructure behind underwriting and risk. He is also the founder of The Daily Canon, which sends one work of literature into the world every day and has been an App Store App of the Day.",
