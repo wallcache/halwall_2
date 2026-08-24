@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { experience } from "@/content/experience";
+import { iconFor } from "@/content/tech-map";
+import { TechIcon } from "./TechIcon";
 import { CountUp } from "./CountUp";
 import styles from "./Ledger.module.css";
 
@@ -43,16 +46,30 @@ export function Ledger() {
           <div>
             <h3 className={styles.role}>{role.title}</h3>
             <p className={styles.company}>
+              {role.logo && (
+                <Image
+                  className={styles.orgLogo}
+                  src={role.logo}
+                  alt=""
+                  aria-hidden="true"
+                  width={24}
+                  height={24}
+                />
+              )}
               {role.company}
               {role.via && <span className={styles.via}> · via {role.via}</span>}
             </p>
             <p className={styles.desc}>{role.description}</p>
             <ul className={styles.skills}>
-              {role.skills.map((s) => (
-                <li key={s} className={styles.skill}>
-                  {s}
-                </li>
-              ))}
+              {role.skills.map((s) => {
+                const icon = iconFor(s);
+                return (
+                  <li key={s} className={styles.skill}>
+                    {icon && <TechIcon slug={icon} size={12} brand />}
+                    {s}
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

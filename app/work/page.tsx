@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { PageShell } from "@/components/PageShell";
 import shell from "@/components/PageShell.module.css";
 import { Ledger } from "@/components/Ledger";
 import { caseStudies } from "@/content/case-studies";
 import { education } from "@/content/experience";
 import { cvPath } from "@/content/identity";
+import { Document, ArrowUpRight } from "@/components/icons";
+import { TechIcon } from "@/components/TechIcon";
+import { iconFor } from "@/content/tech-map";
 import styles from "./Work.module.css";
 
 export const metadata: Metadata = {
@@ -57,11 +61,15 @@ export default function WorkPage() {
             </div>
 
             <ul className={styles.stack}>
-              {study.stack.map((s) => (
-                <li key={s} className={styles.stackItem}>
-                  {s}
-                </li>
-              ))}
+              {study.stack.map((tech) => {
+                const icon = iconFor(tech);
+                return (
+                  <li key={tech} className={styles.stackItem}>
+                    {icon && <TechIcon slug={icon} size={12} brand />}
+                    {tech}
+                  </li>
+                );
+              })}
             </ul>
           </article>
         ))}
@@ -74,16 +82,40 @@ export default function WorkPage() {
         <div className={styles.education}>
           {education.map((e) => (
             <article key={e.slug} className={styles.eduItem}>
-              <h3 className={styles.eduInstitution}>{e.institution}</h3>
-              <p className={styles.eduDegree}>{e.degree}</p>
-              <p className={styles.eduDates}>{e.dateRange}</p>
-              {e.details && <p className={styles.eduDetails}>{e.details}</p>}
+              {e.logo && (
+                <Image
+                  className={styles.eduLogo}
+                  src={e.logo}
+                  alt=""
+                  aria-hidden="true"
+                  width={92}
+                  height={92}
+                />
+              )}
+              <div className={styles.eduHead}>
+                <h3 className={styles.eduInstitution}>{e.institution}</h3>
+                <p className={styles.eduDegree}>{e.degree}</p>
+                <p className={styles.eduDates}>{e.dateRange}</p>
+              </div>
+              <div className={styles.eduBody}>
+                {e.details && <p className={styles.eduDetails}>{e.details}</p>}
+                {e.highlights && (
+                  <ul className={styles.eduHighlights}>
+                    {e.highlights.map((h) => (
+                      <li key={h} className={styles.eduHighlight}>
+                        <span className={styles.eduBullet} aria-hidden="true" />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </article>
           ))}
         </div>
 
         <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.5">
-          Full CV (PDF) <span aria-hidden="true">↗</span>
+          <Document size={15} /> Full CV (PDF) <ArrowUpRight size={13} />
         </a>
       </section>
     </PageShell>

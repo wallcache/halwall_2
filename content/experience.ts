@@ -2,6 +2,8 @@ import type { Figure } from "./types";
 
 export interface Role {
   slug: string;
+  /** Org mark, fetched from the company's own site. See public/media/orgs. */
+  logo?: string;
   title: string;
   company: string;
   /** Kept separate from `company` so the consultancy placement never reads as churn. */
@@ -19,6 +21,7 @@ export interface Role {
 export const experience: Role[] = [
   {
     slug: "chubb-global-analytics",
+    logo: "/media/orgs/chubb.webp",
     title: "Data Engineer, Global Analytics",
     company: "Chubb Insurance",
     companyUrl: "https://www.chubb.com",
@@ -32,6 +35,7 @@ export const experience: Role[] = [
   },
   {
     slug: "axa",
+    logo: "/media/orgs/axa.webp",
     title: "Data Engineer",
     company: "AXA Insurance",
     via: "Kubrick Group",
@@ -46,6 +50,7 @@ export const experience: Role[] = [
   },
   {
     slug: "chubb-emea-analytics",
+    logo: "/media/orgs/chubb.webp",
     title: "Data Engineer, EMEA Analytics",
     company: "Chubb Insurance",
     companyUrl: "https://www.chubb.com",
@@ -59,6 +64,7 @@ export const experience: Role[] = [
   },
   {
     slug: "quilter",
+    logo: "/media/orgs/quilter.webp",
     title: "Junior Data Engineer",
     company: "Quilter Financial Planning",
     via: "Kubrick Group",
@@ -73,6 +79,7 @@ export const experience: Role[] = [
   },
   {
     slug: "twogether",
+    logo: "/media/orgs/twogether.webp",
     title: "Marketing Executive",
     company: "Twogether",
     companyUrl: "https://www.wearetwogether.com",
@@ -85,6 +92,7 @@ export const experience: Role[] = [
   },
   {
     slug: "wallcache",
+    logo: "/media/brand/wallcache-mono-alt.png",
     title: "Founder, Freelance Designer",
     company: "WallCache",
     companyUrl: "/making",
@@ -100,9 +108,12 @@ export const experience: Role[] = [
 export interface Education {
   slug: string;
   institution: string;
+  logo?: string;
   degree: string;
   dateRange: string;
   details?: string;
+  /** What it actually consisted of. The section is worth more than two lines. */
+  highlights?: string[];
 }
 
 /** Present on the old site's data layer but rendered nowhere. It belongs on /work. */
@@ -110,16 +121,30 @@ export const education: Education[] = [
   {
     slug: "imperial-physics",
     institution: "Imperial College London",
-    degree: "BSc Theoretical Physics (2:1)",
+    logo: "/media/orgs/imperial.webp",
+    degree: "BSc Theoretical Physics",
     dateRange: "2017 — 2020",
     details:
-      "Final year thesis on the mathematical derivation of the Black-Scholes-Merton model from physical first principles.",
+      "Three years of being taught to take a system apart until you can see what it is actually doing, which turns out to be the whole of data engineering with different notation.",
+    highlights: [
+      "Final year thesis deriving the Black-Scholes-Merton model from physical first principles, treating an option price as a diffusion problem rather than a finance one",
+      "Statistical mechanics, quantum theory and computational physics",
+      "Numerical methods and simulation in Python and C++",
+      "Graduated 2:1",
+    ],
   },
   {
     slug: "imperial-business-analytics",
     institution: "Imperial College Business School",
+    logo: "/media/orgs/imperial.webp",
     degree: "Business Analytics",
     dateRange: "2022",
-    details: "Machine learning techniques, data visualisation and optimisation in Python.",
+    details:
+      "A deliberate bridge from the physics to the commercial side: the same maths, pointed at questions someone is paying to have answered.",
+    highlights: [
+      "Machine learning techniques and model selection",
+      "Data visualisation and the honest presentation of uncertainty",
+      "Optimisation in Python",
+    ],
   },
 ];

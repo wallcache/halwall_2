@@ -74,6 +74,9 @@
 }
 
 .stackItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   border-radius: var(--radius-full);
   font-family: var(--font-mono);
   font-size: 0.6rem;
@@ -85,24 +88,46 @@
 
 .education {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
   gap: clamp(1rem, 3vw, 2rem);
 }
 
 .eduItem {
-  padding: 1.1rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "logo head"
+    "body body";
+  gap: 0 1rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
+  background: var(--ground-raised);
+  transition: border-color 420ms var(--ease-out-expo);
 }
+
+.eduItem:hover { border-color: var(--accent); }
+
+.eduLogo {
+  grid-area: logo;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  object-fit: contain;
+  background: var(--ground);
+}
+
+.eduHead { grid-area: head; }
 
 .eduInstitution {
   font-family: var(--font-voice);
-  font-size: var(--step-1);
-  line-height: 1.2;
+  font-size: var(--step-2);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
 .eduDegree {
-  margin-top: 0.35rem;
+  margin-top: 0.3rem;
   font-family: var(--font-mono);
   font-size: var(--step--1);
   color: var(--accent);
@@ -112,16 +137,55 @@
   margin-top: 0.15rem;
   font-family: var(--font-mono);
   font-size: 0.6rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--ink-faint);
 }
 
+.eduBody { grid-area: body; margin-top: 1.1rem; }
+
 .eduDetails {
-  margin-top: 0.7rem;
+  font-family: var(--font-voice);
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--ink-muted);
+  max-width: 54ch;
+}
+
+.eduHighlights {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.eduHighlight {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: start;
   font-family: var(--font-voice);
   font-size: var(--step--1);
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--ink-muted);
+}
+
+.eduBullet {
+  margin-top: 0.42em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .eduItem { grid-template-columns: 1fr; grid-template-areas: "logo" "head" "body"; gap: 0.75rem 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eduItem:hover { border-color: var(--rule); }
 }
 
 .cvLink {

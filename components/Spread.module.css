@@ -295,8 +295,8 @@
   would wash the faces out; this tints them.
 */
 .portrait {
-  /* Fully monochrome underneath, so the tint is the only colour present. */
-  filter: grayscale(1) contrast(1.08) brightness(1.02);
+  /* Ungraded. The photographs keep their own colour; the only colour added is
+     the ramp below, and it does not reach far enough to alter the face. */
 }
 
 .portraitVerso {
@@ -311,41 +311,40 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  mix-blend-mode: color;
 }
 
 /*
-  A cast, not a colour wash.
+  A ramp at the leading edge, not a wash over the whole frame.
 
-  The first version ran the accent at near-full alpha, which recoloured the
-  photographs outright — orange and green portraits rather than black-and-white
-  ones with a hue in them. These stay low enough that the frames read as
-  monochrome and the colour is something you notice second.
+  Each half takes a short gradient running in from its own left edge and gone
+  by roughly a third across, so the colour sits in the margin of the picture
+  and the photograph itself is untouched. The recto ramp starts at the seam
+  rather than at the element's edge, because the element spans the full
+  portrait and is clipped — without the offset its colour would land in the
+  half you cannot see.
 */
 .tintVerso {
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
   background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--verso-accent) 30%, transparent) 0%,
-    color-mix(in srgb, var(--verso-accent) 14%, transparent) 55%,
-    color-mix(in srgb, var(--verso-accent) 5%, transparent) 100%
+    to right,
+    color-mix(in srgb, var(--verso-accent) 70%, transparent) 0%,
+    color-mix(in srgb, var(--verso-accent) 30%, transparent) 11%,
+    transparent 30%
   );
 }
 
 .tintRecto {
   clip-path: inset(0 0 0 var(--gutter-pct));
   background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--recto-accent) 5%, transparent) 0%,
-    color-mix(in srgb, var(--recto-accent) 16%, transparent) 45%,
-    color-mix(in srgb, var(--recto-accent) 32%, transparent) 100%
+    to right,
+    transparent var(--gutter-pct),
+    color-mix(in srgb, var(--recto-accent) 70%, transparent) var(--gutter-pct),
+    color-mix(in srgb, var(--recto-accent) 30%, transparent) calc(var(--gutter-pct) + 11%),
+    transparent calc(var(--gutter-pct) + 30%)
   );
 }
 
-/* Without blend-mode support the tint would sit over the face as flat colour. */
-@supports not (mix-blend-mode: color) {
-  .tint { display: none; }
-}
+
 
 .portraitCaption {
   position: absolute;
@@ -436,5 +435,26 @@
 
   .portraitVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
   .portraitRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
+
+  .tintVerso {
+    clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--verso-accent) 70%, transparent) 0%,
+      color-mix(in srgb, var(--verso-accent) 30%, transparent) 11%,
+      transparent 30%
+    );
+  }
+
+  .tintRecto {
+    clip-path: inset(var(--gutter-pct) 0 0 0);
+    background: linear-gradient(
+      to bottom,
+      transparent var(--gutter-pct),
+      color-mix(in srgb, var(--recto-accent) 70%, transparent) var(--gutter-pct),
+      color-mix(in srgb, var(--recto-accent) 30%, transparent) calc(var(--gutter-pct) + 11%),
+      transparent calc(var(--gutter-pct) + 30%)
+    );
+  }
 }
 

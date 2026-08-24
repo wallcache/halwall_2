@@ -35,9 +35,23 @@
 }
 
 .company {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   font-family: var(--font-mono);
   font-size: var(--step--1);
   color: var(--accent);
+}
+
+/* The org mark. Small, square, and quiet: it identifies the employer without
+   turning the ledger into a logo wall. */
+.orgLogo {
+  flex: 0 0 auto;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 3px;
+  object-fit: contain;
+  background: var(--ground-raised);
 }
 
 /* "via Kubrick Group" must survive. Without it a two-month stint at AXA reads
