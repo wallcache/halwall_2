@@ -45,7 +45,15 @@ export function Spread() {
       const el = heroRef.current;
       if (!el) return;
       const { left, width } = el.getBoundingClientRect();
-      follow(Math.min(1, Math.max(0, (e.clientX - left) / width)));
+      /*
+        Inverted on purpose. The gutter runs 0 = recto (the Canon) to
+        1 = verso (the engineering), and the pane left of the seam is always
+        the verso one — so mapping the cursor straight through meant moving
+        AWAY from a side was what opened it. Taking one minus the fraction
+        makes the side you move toward the side that opens.
+      */
+      const fraction = (e.clientX - left) / width;
+      follow(Math.min(1, Math.max(0, 1 - fraction)));
       if (!touched) setTouched(true);
     },
     [narrow, follow, touched],

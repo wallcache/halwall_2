@@ -4,18 +4,33 @@
 }
 
 .row {
+  --row-inset: clamp(0.9rem, 2vw, 1.6rem);
+
   display: grid;
   grid-template-columns: minmax(140px, 1fr) minmax(0, 2.4fr) minmax(120px, 0.9fr);
   gap: clamp(0.5rem, 2vw, 2rem);
   align-items: start;
-  padding: clamp(1.1rem, 3vh, 1.9rem) 0;
+
+  /*
+    Padded, then pulled back out by the same amount. The hover fill needs room
+    around the text or it reads as a highlighter run right up to the letters —
+    but the text itself must stay on the page's column, so the inset is
+    cancelled by an equal negative margin rather than indenting the content.
+  */
+  padding: clamp(1.1rem, 3vh, 1.9rem) var(--row-inset);
+  margin-inline: calc(var(--row-inset) * -1);
+
   border-top: 1px solid var(--rule);
-  transition: background-color var(--dur-fast) var(--ease-out-expo);
+  transition:
+    background-color 380ms var(--ease-out-expo),
+    border-color 380ms var(--ease-out-expo);
 }
 
 .row:hover {
   background: var(--ground-hover);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
+  /* The rule above a hovered row would otherwise cut across its rounded top. */
+  border-top-color: transparent;
 }
 
 .dates {
