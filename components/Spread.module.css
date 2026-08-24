@@ -370,9 +370,22 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 760px) {
+  /*
+    A different composition, not the desktop one squeezed.
+
+    The gutter runs horizontally here: verso occupies the top band, recto the
+    bottom. That means each pane's content has to live inside its own band, and
+    it did not — the grid put the verso's figures at the bottom of the pane and
+    the recto's eyebrow at the top, so both landed in the half that gets
+    clipped away. Hence the missing text.
+
+    The masthead also moves off the portrait. Centred, it sat directly on the
+    photograph in dark ink over a bright frame, which was unreadable.
+  */
   .hero {
     --portrait-travel: 0vw;
-    --portrait-w: min(52vw, 240px);
+    --portrait-w: min(42vw, 180px);
+    min-height: 100dvh;
     background:
       linear-gradient(
         to bottom,
@@ -381,20 +394,77 @@
       );
   }
 
+  /* Flex, not the desktop grid. The three-row grid put a spacer between the
+     eyebrow and the foot, which on a half-height band pushed the figures out
+     of the visible area entirely. */
+  .pane {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: clamp(8.5rem, 26vh, 12rem) var(--shell-x) clamp(2rem, 6vh, 3rem);
+  }
+
+  /* The empty middle cell the desktop grid needs has no job here. */
+  .pane > div:empty { display: none; }
+
+  /* Verso content gathers at the top of its band, recto at the bottom of its
+     own, so nothing sits under the clip. */
+  .paneVerso { justify-content: flex-start; }
+  .paneRecto { justify-content: flex-end; text-align: left; }
+
   .paneVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
-  .paneRecto { clip-path: inset(var(--gutter-pct) 0 0 0); text-align: left; }
+  .paneRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
+
+  .col {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
   .paneRecto .col { margin-left: 0; }
   .paneRecto .figures { justify-content: flex-start; }
+  .paneRecto .foot { align-items: flex-start; }
 
-  .col { width: 100%; }
+  .claim { font-size: var(--step-0); }
+  .figureValue { font-size: var(--step-1); }
 
-  .name { font-size: clamp(2.6rem, 15vw, 4.4rem); flex-direction: column; align-items: center; gap: 0; }
-  .nameLayer { padding-bottom: 0; }
+  /* The name sits in the top band, above everything else. */
+  .nameLayer {
+    align-content: start;
+    padding: clamp(4.5rem, 13vh, 6rem) 0 0;
+  }
+
+  .name {
+    font-size: clamp(2.1rem, 12vw, 3.2rem);
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.22em;
+  }
+
+  .nameDrift { transform: none; }
+
+  /*
+    One copy only, in verso ink.
+
+    The masthead is drawn twice and clipped left/right, which is right on the
+    desktop where the seam is vertical. Here the seam is horizontal and the
+    whole name sits in the dark band, so the recto copy rendered "Wall" in dark
+    ink on a dark ground while its clip left it visible. The verso copy alone,
+    unclipped, is the correct picture.
+  */
+  .nameVerso { clip-path: none; }
+  .nameRecto { display: none; }
+
+  /* Centred on the seam, so it reads as the join between the two bands. */
+  .portraitAnchor {
+    top: var(--gutter-pct);
+    bottom: auto;
+    transform: translate(-50%, -50%);
+  }
 
   .seam { top: var(--gutter-pct); bottom: auto; left: 0; right: 0; width: auto; height: 1px; }
 
-  /* The split runs horizontally here, so the portrait halves and their ramps
-     divide top from bottom rather than left from right. */
   .portraitVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
   .portraitRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
 

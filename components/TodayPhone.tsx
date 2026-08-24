@@ -68,13 +68,10 @@ export function TodayPhone({
     <div ref={ref} className={styles.wrap} data-booting={booting} data-loaded={loaded}>
       <div className={styles.aside}>
         <p className={styles.heading}>
-          This is what The Daily Canon is serving today.
+          Today&rsquo;s work.
         </p>
         <p className={styles.body}>
-          Not an example, and not a screenshot taken once and left to age: the
-          work below is read from the same canon the app reads, so it is a
-          different book tomorrow. What is missing is the blurb, which is the
-          part worth opening the app for.
+          Read live from the canon. Tomorrow it is a different work.
         </p>
 
         <div className={styles.meta}>

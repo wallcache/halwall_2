@@ -21,27 +21,15 @@
   border-radius: var(--radius-lg);
 
   /*
-    Split at --bar-split, NOT at --gutter-pct.
+    One ground, always.
 
-    Following the live gutter meant the bar's own boundary swept across the
-    links as the cursor moved, so "work" ended up sitting on the recto ground
-    and the Canon links on the verso ground, each going invisible against it.
-    It read as the words fading out, and no amount of colour-swapping at the
-    extremes fixed the middle.
-
-    The bar holds a steady 50/50 instead, so the verso links are always on
-    verso ground and the recto links always on recto. It still commits fully
-    when a route pins the gutter, because that is a discrete change and it can
-    transition to it.
+    The bar used to be split like the spread below it, and that split was the
+    source of every contrast problem it had: a link could end up over the
+    opposite side's ground and vanish, and colour-swapping to compensate only
+    moved the problem. It is one dark ground on every page now, so a link is
+    over the same thing wherever it sits and whatever the seam is doing.
   */
-  --bar-split: 50%;
-
-  background:
-    linear-gradient(
-      to right,
-      color-mix(in srgb, var(--verso-ground) 92%, transparent) 0 var(--bar-split),
-      color-mix(in srgb, var(--recto-ground) 92%, transparent) var(--bar-split) 100%
-    );
+  background: color-mix(in srgb, var(--verso-ground) 92%, transparent);
 
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -144,7 +132,7 @@
   font-size: var(--step--1);
   letter-spacing: 0.09em;
   text-transform: lowercase;
-  color: var(--recto-ink-muted);
+  color: var(--verso-ink-muted);
 }
 
 .linkVerso:hover,
@@ -207,7 +195,7 @@
 .wordmarkRecto {
   font-family: var(--font-serif);
   font-style: italic;
-  color: var(--recto-ink);
+  color: var(--verso-ink);
   transition: transform 520ms var(--ease-out-expo), color 320ms var(--ease-out-expo);
 }
 
@@ -230,12 +218,7 @@
     grid-template-columns: 1fr auto 1fr;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    background:
-      linear-gradient(
-        to right,
-        color-mix(in srgb, var(--verso-ground) 94%, transparent) 0 50%,
-        color-mix(in srgb, var(--recto-ground) 94%, transparent) 50% 100%
-      );
+    background: color-mix(in srgb, var(--verso-ground) 94%, transparent);
   }
     .group { gap: 0.75rem; }
   .linkVerso, .linkRecto { font-size: 0.7rem; }
@@ -250,21 +233,13 @@
   }
 }
 
-/* Without backdrop-filter the tint alone is far too transparent to read
-   against a photograph, so opacity goes up and the glass conceit goes away. */
+/* Without backdrop-filter a 92% tint is too transparent to read against a
+   photograph, so it goes fully opaque. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .bar {
-    background:
-      linear-gradient(
-        to right,
-        var(--verso-ground) 0 var(--gutter-pct),
-        var(--recto-ground) var(--gutter-pct) 100%
-      );
+    background: var(--verso-ground);
     border-color: var(--verso-rule);
   }
-
-  .bar::before,
-  .bar::after { display: none; }
 }
 
 /* Under 760px the inline links give way to the three-dot sheet. */

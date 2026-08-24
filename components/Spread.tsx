@@ -52,9 +52,19 @@ export function Spread() {
         AWAY from a side was what opened it. Taking one minus the fraction
         makes the side you move toward the side that opens.
       */
-      // Straight edge-to-edge, so the seam is under the cursor the whole way.
+      /*
+        The middle 40% of the screen does the whole sweep; the outer 30% either
+        side is a commit zone that holds the seam at its extreme.
+
+        Straight edge-to-edge meant the seam only arrived fully open with the
+        cursor pressed against the very edge of the window, which is a place
+        nobody puts it. Snapping from 30% in means a decisive move to one side
+        actually finishes the gesture.
+      */
+      const EDGE = 0.3;
       const fraction = (e.clientX - left) / width;
-      follow(Math.min(1, Math.max(0, 1 - fraction)));
+      const t = (fraction - EDGE) / (1 - EDGE * 2);
+      follow(Math.min(1, Math.max(0, 1 - t)));
       if (!touched) setTouched(true);
     },
     [narrow, follow, touched],
