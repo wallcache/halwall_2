@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useGutter } from "@/lib/gutter";
 import { register } from "@/lib/parallax";
 import { identity, heroFigures } from "@/content/identity";
+import { portraits } from "@/content/portraits";
 import { CountUp } from "./CountUp";
 import { DappledLight } from "./DappledLight";
 import styles from "./Spread.module.css";
@@ -14,9 +15,12 @@ const NARROW = "(max-width: 760px)";
  * Two photographs, not one image graded twice: the same face in the City with
  * a work lanyard, and at a wildcamp under trees. The seam wipes between them,
  * so the split stops being a colour treatment and becomes two actual lives.
+ *
+ * Paths come from a generated module because the filenames are content-hashed
+ * — see scripts/crop-portraits.mjs.
  */
-const PORTRAIT_VERSO = "/media/portrait/hal-city.webp";
-const PORTRAIT_RECTO = "/media/portrait/hal-camp.webp";
+const PORTRAIT_VERSO = portraits.city;
+const PORTRAIT_RECTO = portraits.camp;
 /** How long after a drag before hovering a pane may take the gutter back. */
 const HOVER_SUPPRESS_MS = 700;
 
