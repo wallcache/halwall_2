@@ -107,8 +107,9 @@ export function Spread() {
       dragging.current = true;
       velocity.current = 0;
       // The magnet must let go of the portrait while it is being dragged, or
-      // the two pull the image in different directions at once.
-      if (source === "portrait") (e.currentTarget as HTMLElement).dataset.magnetic = "0";
+      // the two pull the image in different directions at once. This sets a
+      // lock attribute rather than rewriting data-magnetic, which React owns.
+      if (source === "portrait") (e.currentTarget as HTMLElement).dataset.magLock = "true";
       grab.current = {
         x: e.clientX,
         gutter: read(),
@@ -142,8 +143,7 @@ export function Spread() {
   const endDrag = useCallback((e?: React.PointerEvent) => {
     if (!dragging.current) return;
     dragging.current = false;
-    const el = e?.currentTarget as HTMLElement | undefined;
-    if (el?.dataset.magnetic === "0") el.dataset.magnetic = "0.12";
+    (e?.currentTarget as HTMLElement | undefined)?.removeAttribute("data-mag-lock");
     // Hold hover off while the seam settles, or the release is immediately
     // overridden by whichever pane the cursor happens to be resting on.
     suppressHoverUntil.current = performance.now() + HOVER_SUPPRESS_MS;

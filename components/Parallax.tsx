@@ -30,11 +30,9 @@ export function Parallax({
   }, [speed, fade]);
 
   return (
-    <Tag
-      ref={ref}
-      className={className}
-      style={fade ? { opacity: 0, ...style } : style}
-    >
+    // No inline opacity: the starting value lives in CSS, so React never owns
+    // a prop the scroll engine also writes.
+    <Tag ref={ref} className={className} style={style}>
       {children}
     </Tag>
   );

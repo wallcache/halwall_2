@@ -51,6 +51,13 @@ const write = (el: HTMLElement, x: number, y: number) => {
 };
 
 function measure(el: HTMLElement): State | null {
+  // `data-mag-lock` is set imperatively by whatever is currently in charge of
+  // the element — the portrait sets it for the duration of a drag. It is a
+  // separate attribute on purpose: `data-magnetic` is rendered by React, and
+  // writing to a prop React owns leaves the DOM and the vdom disagreeing,
+  // because React only patches props it believes changed.
+  if (el.dataset.magLock === "true") return null;
+
   // Explicit parse: `Number(x) || DEFAULT` would read a deliberate "0" as
   // absent and fall back to the default, which is backwards for an element
   // asking not to be pulled.

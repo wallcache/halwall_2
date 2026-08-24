@@ -55,12 +55,15 @@ function ensure() {
       const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
       const offset = progress * entry.speed * -100;
 
-      const base = entry.base?.() ?? "";
-      entry.el.style.transform = `${base} translate3d(0, ${offset.toFixed(2)}px, 0)`;
+      // Custom properties, applied by CSS — never `style.transform` or
+      // `style.opacity` directly. Those are props React renders for these
+      // elements, and writing to them leaves React's vdom and the DOM
+      // disagreeing until something forces a full remount.
+      entry.el.style.setProperty("--px-y", `${offset.toFixed(2)}px`);
 
       if (entry.fade) {
         const enter = 1 - Math.min(1, Math.max(0, (rect.top - vh * 0.92) / (vh * 0.2)));
-        entry.el.style.opacity = String(Math.min(1, Math.max(0, enter)));
+        entry.el.style.setProperty("--px-o", String(Math.min(1, Math.max(0, enter))));
       }
     }
     frame = requestAnimationFrame(tick);
@@ -84,16 +87,21 @@ export function register(el: HTMLElement, options: ParallaxOptions) {
   ensure();
   // Under reduced motion the element simply sits where the layout put it.
   if (reduced) {
-    if (options.fade) el.style.opacity = "1";
+    if (options.fade) el.style.setProperty("--px-o", "1");
     return () => {};
   }
 
   entries.set(el, { ...options, el, visible: false });
+  el.dataset.parallax = options.fade ? "fade" : "";
+  // Hidden only once JS is definitely running; the CSS default is visible.
+  if (options.fade) el.style.setProperty("--px-o", "0");
   observer!.observe(el);
 
   return () => {
     observer!.unobserve(el);
     entries.delete(el);
-    el.style.transform = "";
+    el.style.removeProperty("--px-y");
+    el.style.removeProperty("--px-o");
+    delete el.dataset.parallax;
   };
 }

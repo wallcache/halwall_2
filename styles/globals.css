@@ -287,3 +287,27 @@ a {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   Scroll parallax
+
+   Driven by custom properties written from lib/parallax.ts. Applied here in
+   CSS rather than assigned to element.style, so the scroll engine never writes
+   to a prop React also renders.
+   ========================================================================== */
+
+[data-parallax] {
+  transform: translate3d(0, var(--px-y, 0px), 0);
+}
+
+/* Defaults to visible. The engine sets --px-o to 0 when it registers an
+   element, which only happens with JS running — so a failed or blocked bundle
+   leaves the content readable rather than invisible. */
+[data-parallax="fade"] {
+  opacity: var(--px-o, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] { transform: none; }
+  [data-parallax="fade"] { opacity: 1; }
+}
