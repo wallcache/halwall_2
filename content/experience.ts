@@ -28,7 +28,7 @@ export const experience: Role[] = [
     companyUrl: "https://www.chubb.com",
     start: "2026-06",
     end: "present",
-    dateRange: "Jun 2026 — Present",
+    dateRange: "Jun 2026 to Present",
     description:
       "Building AI systems on top of the global data estate: applying language models and probabilistic methods to problems that were previously handled by rules, and putting the results somewhere underwriters can actually use them.",
     skills: ["Python", "SQL", "Databricks", "PySpark", "Azure", "Next.js", "FastAPI"],
@@ -41,7 +41,7 @@ export const experience: Role[] = [
     companyUrl: "https://www.chubb.com",
     start: "2025-08",
     end: "present",
-    dateRange: "Aug 2025 — Present",
+    dateRange: "Aug 2025 to Present",
     description:
       "Leading the design and build of Chubb's curated external company data asset across EMEA and Global, owning entity resolution, vendor data conflation, and data architecture across multiple commercial providers and millions of records. Built a probabilistic entity resolution pipeline with a 300× runtime improvement over the production system it replaced. Developed a full-stack automated pipeline dashboard using Next.js, FastAPI and Tailwind.",
     skills: ["Python", "SQL", "Databricks", "PySpark", "Azure", "Next.js", "FastAPI"],
@@ -55,7 +55,7 @@ export const experience: Role[] = [
     companyUrl: "https://thedailycanon.org",
     start: "2023-10",
     end: "present",
-    dateRange: "Oct 2023 — Present",
+    dateRange: "Oct 2023 to Present",
     description:
       "Built and runs a literary calendar on iOS and the web: one carefully chosen work of literature a day, drawn from a growing canon. Everything from the editorial curation to the Next.js and Supabase behind it, the Capacitor iOS build, and the subscriptions. Featured on the App Store.",
     skills: ["Next.js", "TypeScript", "Supabase", "Capacitor"],
@@ -70,7 +70,7 @@ export const experience: Role[] = [
     companyUrl: "https://www.axa.co.uk",
     start: "2025-06",
     end: "2025-08",
-    dateRange: "Jun 2025 — Aug 2025",
+    dateRange: "Jun 2025 to Aug 2025",
     description:
       "Built an automated deletion and retention framework ensuring GDPR compliance across every layer of a medallion architecture, tested to guarantee zero accidental deletions. Created architectural documentation for complex metadata-driven infrastructure, adopted by both the consultant and internal engineering teams.",
     skills: ["Python", "Databricks", "Azure Data Factory", "Azure DevOps"],
@@ -85,7 +85,7 @@ export const experience: Role[] = [
     companyUrl: "https://www.chubb.com",
     start: "2024-11",
     end: "2025-05",
-    dateRange: "Nov 2024 — May 2025",
+    dateRange: "Nov 2024 to May 2025",
     description:
       "Refactored a 30,000-line legacy pipeline from monolithic notebooks into modular PySpark, reducing runtime from 270 minutes to 45. Delivered end-to-end data products supporting AI-driven risk modelling and virtual portfolio analysis. Shaped platform governance during the Azure migration, implementing Unity Catalog and automating critical pipelines with Kafka and Databricks Workflows.",
     skills: ["Python", "SQL", "Databricks", "PySpark", "Azure", "Unity Catalog", "Kafka"],
@@ -100,7 +100,7 @@ export const experience: Role[] = [
     companyUrl: "https://www.quilter.com",
     start: "2022-10",
     end: "2024-11",
-    dateRange: "Oct 2022 — Nov 2024",
+    dateRange: "Oct 2022 to Nov 2024",
     description:
       "Designed a custom PySpark CDC solution on Databricks that reduced data volumes by 85% and cut file transfer times from over an hour to 15 minutes. Architected a JSON-driven contract system enabling dynamic toggling of data file production without code changes. Led sprint planning and backlog grooming across cross-functional squads.",
     skills: ["Databricks", "Azure Data Factory", "Python", "SQL", "PySpark", "Power BI"],
@@ -114,7 +114,7 @@ export const experience: Role[] = [
     companyUrl: "https://www.kubrickgroup.com",
     start: "2022-05",
     end: "2022-10",
-    dateRange: "May 2022 — Oct 2022",
+    dateRange: "May 2022 to Oct 2022",
     description:
       "Six months of full-time training in distributed data engineering before the first placement: Spark, cloud architecture, testing and the parts of SQL that only matter at scale.",
     skills: ["Python", "SQL", "PySpark", "Azure", "Git"],
@@ -127,7 +127,7 @@ export const experience: Role[] = [
     companyUrl: "https://www.wearetwogether.com",
     start: "2021-03",
     end: "2022-04",
-    dateRange: "Mar 2021 — Apr 2022",
+    dateRange: "Mar 2021 to Apr 2022",
     description:
       "Owned analytics reporting across B2B marketing campaigns. Piloted and scaled an employee advocacy programme. Collaborated on diversity and inclusion initiatives while managing stakeholder relationships.",
     skills: ["Analytics", "Campaign Management", "Stakeholder Engagement"],
@@ -140,7 +140,7 @@ export const experience: Role[] = [
     companyUrl: "/making",
     start: "2019-10",
     end: "2021-05",
-    dateRange: "Oct 2019 — May 2021",
+    dateRange: "Oct 2019 to May 2021",
     description:
       "Founded a creative consultancy delivering photography, branding and design work. Managed client relationships and design roadmaps, creating visual identities for businesses ranging from startups to established brands.",
     skills: ["Photography", "Graphic Design", "Creative Direction", "Branding"],
@@ -165,7 +165,7 @@ export const education: Education[] = [
     institution: "Imperial College London",
     logo: "/media/orgs/imperial.webp",
     degree: "BSc Physics with Theoretical Physics",
-    dateRange: "2017 — 2020",
+    dateRange: "2017 to 2020",
     details:
       "Three years of being taught to take a system apart until you can see what it is actually doing, which turns out to be most of data engineering in different notation. Every module carried real statistical analysis, experimental research or programming.",
     highlights: [
@@ -181,7 +181,7 @@ export const education: Education[] = [
     institution: "Imperial College Business School",
     logo: "/media/orgs/imperial.webp",
     degree: "Business Analytics: From Data to Decisions",
-    dateRange: "Feb — Jun 2022",
+    dateRange: "Feb to Jun 2022",
     details:
       "A deliberate bridge from the physics to the commercial side: the same maths, pointed at questions someone is paying to have answered.",
     highlights: [
@@ -195,7 +195,7 @@ export const education: Education[] = [
     institution: "DataCamp",
     logo: "/media/orgs/datacamp-cert.webp",
     degree: "Career Track: Data Science with Python",
-    dateRange: "Feb — Apr 2022",
+    dateRange: "Feb to Apr 2022",
     details: "Completed at 100%.",
     highlights: [
       "Statistical and machine learning techniques against real datasets, including decision trees and natural language processing",
@@ -217,7 +217,7 @@ export const education: Education[] = [
     institution: "Malvern College",
     logo: "/media/orgs/malvern.webp",
     degree: "A-Levels and iGCSEs",
-    dateRange: "2012 — 2017",
+    dateRange: "2012 to 2017",
     details:
       "A-Levels in Physics, Mathematics and Further Mathematics, all at A*. Twelve iGCSEs, all at A*.",
     highlights: [

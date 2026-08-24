@@ -16,7 +16,7 @@ export async function generateMetadata({
   const project = getIdentityProject((await params).slug);
   if (!project) return {};
   return {
-    title: `${project.name} — Identity`,
+    title: `${project.name} · Identity`,
     description: project.description ?? `Brand identity work for ${project.name}.`,
   };
 }

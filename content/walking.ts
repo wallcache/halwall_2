@@ -151,7 +151,7 @@ const cwmLlwchDays: JournalDay[] = [
     day: 1,
     title: "Ascent to the Cwm",
     date: "Day 1",
-    description: "Started from the Pont ar Daf car park on the A470. The path climbs steadily alongside the Blaen Taf Fawr stream, gaining height with every step. The landscape transforms from farmland to open moorland as the peaks of Corn Du and Pen y Fan emerge from the clouds ahead. Breaking away from the main tourist path, we descended into the hidden valley of Cwm Llwch. The glacial lake appeared below — dark, still waters surrounded by the steep walls of the cwm. We pitched camp on the grassy banks as the sun began to set behind the ridgeline.",
+    description: "Started from the Pont ar Daf car park on the A470. The path climbs steadily alongside the Blaen Taf Fawr stream, gaining height with every step. The landscape transforms from farmland to open moorland as the peaks of Corn Du and Pen y Fan emerge from the clouds ahead. Breaking away from the main tourist path, we descended into the hidden valley of Cwm Llwch. The glacial lake appeared below, dark, still waters surrounded by the steep walls of the cwm. We pitched camp on the grassy banks as the sun began to set behind the ridgeline.",
     highlights: ["Corn Du views", "Cwm Llwch lake", "Wild camping spot"],
     images: [
       { src: "/media/walking/cwm-llwch/img-2491.webp", caption: "Through the gate and onto the mountain" },
@@ -170,7 +170,7 @@ const cwmLlwchDays: JournalDay[] = [
     day: 2,
     title: "Summit and Return",
     date: "Day 2",
-    description: "Woke to a layer of mist hanging over the lake. After packing up camp, we climbed the steep path up to the ridge between Corn Du and Pen y Fan. The clouds parted just as we reached the summit of Pen y Fan — the highest point in southern Britain. Views stretched across the Brecon Beacons and beyond into England. The descent via the Storey Arms route was busy with day walkers, a contrast to the solitude of our wild camp the night before. A perfect two-day adventure in the Welsh mountains.",
+    description: "Woke to a layer of mist hanging over the lake. After packing up camp, we climbed the steep path up to the ridge between Corn Du and Pen y Fan. The clouds parted just as we reached the summit of Pen y Fan, the highest point in southern Britain. Views stretched across the Brecon Beacons and beyond into England. The descent via the Storey Arms route was busy with day walkers, a contrast to the solitude of our wild camp the night before. A perfect two-day adventure in the Welsh mountains.",
     highlights: ["Pen y Fan summit", "Corn Du traverse", "Storey Arms descent"],
     images: [
       { src: "/media/walking/cwm-llwch/img-2587.webp", caption: "Morning mist lifting over the cwm" },

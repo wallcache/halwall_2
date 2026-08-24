@@ -40,12 +40,12 @@ const plexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://halwall.me"),
   title: {
-    default: `${identity.name} — ${identity.role}, ${identity.company}`,
-    template: `%s — ${identity.name}`,
+    default: `${identity.name} · ${identity.role}, ${identity.company}`,
+    template: `%s · ${identity.name}`,
   },
   description: bio.twoSentence,
   openGraph: {
-    title: `${identity.name} — ${identity.tagline}`,
+    title: `${identity.name} · ${identity.tagline}`,
     description: bio.twoSentence,
     url: "https://halwall.me",
     siteName: identity.name,

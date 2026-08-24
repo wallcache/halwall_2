@@ -73,7 +73,7 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         heading: "The outcome",
-        body: "270 minutes to 45 — a six-fold reduction, which is the difference between a pipeline you run overnight and one you run when you have a question. The modular structure is the more durable half of the result: the runtime is what people notice, the boundaries are what let the next person change it.",
+        body: "270 minutes to 45, a six-fold reduction, which is the difference between a pipeline you run overnight and one you run when you have a question. The modular structure is the more durable half of the result: the runtime is what people notice, the boundaries are what let the next person change it.",
       },
     ],
     stack: ["PySpark", "Databricks", "Azure", "Unity Catalog", "Kafka"],

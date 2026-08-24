@@ -89,7 +89,7 @@ export function SlideCarousel() {
         onPointerCancel={endDrag}
         tabIndex={0}
         role="region"
-        aria-label="The Daily Canon on the App Store — screenshots"
+        aria-label="The Daily Canon on the App Store: screenshots"
       >
         {slides.map((slide, i) => (
           <figure key={slide.src} className={styles.slide} data-slide>

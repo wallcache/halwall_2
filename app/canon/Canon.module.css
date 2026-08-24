@@ -264,3 +264,59 @@
   letter-spacing: 0.04em;
   color: var(--ink);
 }
+
+/* ---- literary themes ---------------------------------------------------- */
+
+.themeList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.theme {
+  display: grid;
+  gap: 0.2rem;
+  padding: clamp(1rem, 2.4vw, 1.4rem);
+  background: var(--ground);
+  transition: background-color 420ms var(--ease-out-expo);
+}
+
+.theme:hover { background: var(--ground-raised); }
+
+.themeWork {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.themeAuthor {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.themeDetail {
+  margin-top: 0.35rem;
+  font-family: var(--font-serif);
+  font-size: var(--step--1);
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+.themeNote {
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}

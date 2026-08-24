@@ -23,7 +23,7 @@ export default function MakingPage() {
       href: "/making/photography",
       label: "01",
       title: "Photography",
-      line: "Photography as an exercise in attention. Quiet scenes, unhurried light, ordinary beauty — plus commercial work for three clients.",
+      line: "Photography as an exercise in attention. Quiet scenes, unhurried light, ordinary beauty, plus commercial work for three clients.",
       meta: `${allPhotos.length} personal · ${commercialCount} commercial`,
       image: "/media/photography/landscape/moorland-hikers-mist.webp",
     },

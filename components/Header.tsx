@@ -99,7 +99,7 @@ export function Header() {
       <nav ref={barRef} className={styles.bar} aria-label="Primary" onPointerMove={onBarPointerMove}>
         <div className={styles.group}>{versoNav.map(renderLink)}</div>
 
-        <Link href="/" className={styles.wordmark} aria-label={`${identity.name} — home`}>
+        <Link href="/" className={styles.wordmark} aria-label={`${identity.name}, home`}>
           <span className={styles.wordmarkVerso}>Hal</span>{" "}
           <span className={styles.wordmarkRecto}>Wall</span>
         </Link>

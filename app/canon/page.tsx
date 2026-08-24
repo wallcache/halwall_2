@@ -20,8 +20,6 @@ export const metadata: Metadata = {
 /** Today's work changes at midnight; there is no reason to hold it longer. */
 export const revalidate = 3600;
 
-const maxForm = Math.max(...canon.composition.forms.map((f) => f.count));
-
 export default function CanonPage() {
   const now = new Date();
   const work = workForDate(now);
@@ -78,79 +76,51 @@ export default function CanonPage() {
           What it looks like · drag
         </h2>
         <SlideCarousel />
-        <p className={styles.honour} style={{ marginTop: "0.5rem" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={canon.appleMark} alt="" aria-hidden="true" />
-          Featured on the App Store
-        </p>
       </section>
 
-      {/* ---------------- reading like fishing ---------------- */}
-      <section className={shell.section} aria-labelledby="fishing">
-        <h2 id="fishing" className={shell.sectionHead}>
-          {canon.fishing.heading}
+      {/* ---------------- why I built it ---------------- */}
+      <section className={shell.section} aria-labelledby="origin">
+        <h2 id="origin" className={shell.sectionHead}>
+          {canon.origin.heading}
         </h2>
-        <Parallax speed={0.05}>
-          {canon.fishing.body.map((p) => (
+        <Parallax speed={0.04}>
+          {canon.origin.body.map((p) => (
             <p key={p.slice(0, 24)} className={styles.prose}>
               {p}
             </p>
           ))}
-          <p className={styles.pull}>{canon.fishing.pull}</p>
+          <p className={styles.pull}>{canon.origin.pull}</p>
+          {canon.origin.after.map((p) => (
+            <p key={p.slice(0, 24)} className={styles.prose} style={{ marginTop: "1.25rem" }}>
+              {p}
+            </p>
+          ))}
         </Parallax>
       </section>
 
-      {/* ---------------- composition ---------------- */}
-      <section className={shell.section} aria-labelledby="composition">
-        <h2 id="composition" className={shell.sectionHead}>
-          {canon.composition.heading}
+      {/* ---------------- one day, one work ---------------- */}
+      <section className={shell.section} aria-labelledby="idea">
+        <h2 id="idea" className={shell.sectionHead}>
+          {canon.idea.heading}
         </h2>
-        <p className={`${styles.prose} ${styles.small}`}>{canon.composition.note}</p>
-
-        <div className={styles.forms}>
-          {canon.composition.forms.map((f) => (
-            <div key={f.name} className={styles.form}>
-              <span>{f.name}</span>
-              <span className={styles.formBar}>
-                <span className={styles.formFill} style={{ ["--w" as string]: f.count / maxForm }} />
-              </span>
-              <span className={styles.formCount}>{f.count}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.span}>
-          {canon.composition.span.map((s) => (
-            <div key={s.label} className={styles.spanItem}>
-              <span className={styles.spanLabel}>{s.label}</span>
-              <span className={styles.spanValue}>{s.value}</span>
-              <span className={styles.spanMeta}>{s.meta}</span>
-            </div>
-          ))}
-          <div className={styles.spanItem}>
-            <span className={styles.spanLabel}>Languages</span>
-            <span className={styles.spanValue}>34</span>
-            <span className={styles.spanMeta}>46 nationalities</span>
-          </div>
-        </div>
+        {canon.idea.body.map((p) => (
+          <p key={p.slice(0, 24)} className={styles.prose}>
+            {p}
+          </p>
+        ))}
       </section>
 
-      {/* ---------------- the fixed feasts ---------------- */}
-      <section className={shell.section} aria-labelledby="feasts">
-        <h2 id="feasts" className={shell.sectionHead}>
-          {canon.feasts.heading}
+      {/* ---------------- the curation ---------------- */}
+      <section className={shell.section} aria-labelledby="curation">
+        <h2 id="curation" className={shell.sectionHead}>
+          {canon.curation.heading}
         </h2>
-        <p className={`${styles.prose} ${styles.small}`}>{canon.feasts.note}</p>
-        <div className={styles.feasts}>
-          {canon.feasts.items.map((f) => (
-            <article key={f.date} className={styles.feast}>
-              <span className={styles.feastDate}>{f.date}</span>
-              <h3 className={styles.feastWork}>{f.work}</h3>
-              <span className={styles.feastAuthor}>{f.author}</span>
-              <p className={styles.feastWhy}>{f.why}</p>
-            </article>
-          ))}
-        </div>
+        {canon.curation.body.map((p) => (
+          <p key={p.slice(0, 24)} className={styles.prose}>
+            {p}
+          </p>
+        ))}
+        <p className={styles.pull}>{canon.curation.pull}</p>
       </section>
 
       {/* ---------------- why these dates ---------------- */}
@@ -165,7 +135,37 @@ export default function CanonPage() {
         ))}
       </section>
 
-      {/* ---------------- features ---------------- */}
+      {/* ---------------- the literary themes ---------------- */}
+      <section className={shell.section} aria-labelledby="themes">
+        <h2 id="themes" className={shell.sectionHead}>
+          {canon.themes.heading}
+        </h2>
+        <p className={styles.prose}>{canon.themes.body}</p>
+        <ul className={styles.themeList}>
+          {canon.themes.items.map((t) => (
+            <li key={t.work} className={styles.theme}>
+              <span className={styles.themeWork}>{t.work}</span>
+              <span className={styles.themeAuthor}>{t.author}</span>
+              <span className={styles.themeDetail}>{t.detail}</span>
+            </li>
+          ))}
+        </ul>
+        <p className={styles.themeNote}>{canon.themes.note}</p>
+      </section>
+
+      {/* ---------------- the progress map ---------------- */}
+      <section className={shell.section} aria-labelledby="progress">
+        <h2 id="progress" className={shell.sectionHead}>
+          {canon.progress.heading}
+        </h2>
+        {canon.progress.body.map((p) => (
+          <p key={p.slice(0, 24)} className={styles.prose}>
+            {p}
+          </p>
+        ))}
+      </section>
+
+      {/* ---------------- what it does ---------------- */}
       <section className={shell.section} aria-labelledby="features">
         <h2 id="features" className={shell.sectionHead}>
           {canon.features.heading}
@@ -180,9 +180,25 @@ export default function CanonPage() {
         </div>
       </section>
 
+      {/* ---------------- building it ---------------- */}
+      <section className={shell.section} aria-labelledby="building">
+        <h2 id="building" className={shell.sectionHead}>
+          {canon.building.heading}
+        </h2>
+        <p className={styles.prose}>{canon.building.body}</p>
+        <div className={styles.build}>
+          {canon.building.log.map((l) => (
+            <div key={l.what} className={styles.buildRow}>
+              <span className={styles.buildLayer}>{l.what}</span>
+              <span className={styles.buildTech}>{l.detail}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ---------------- how it is built ---------------- */}
-      <section className={shell.section} aria-labelledby="build">
-        <h2 id="build" className={shell.sectionHead}>
+      <section className={shell.section} aria-labelledby="stack">
+        <h2 id="stack" className={shell.sectionHead}>
           {canon.build.heading}
         </h2>
         <div className={styles.build}>
@@ -194,6 +210,20 @@ export default function CanonPage() {
           ))}
         </div>
       </section>
+
+      {/* ---------------- what it is for ---------------- */}
+      <section className={shell.section} aria-labelledby="purpose">
+        <h2 id="purpose" className={shell.sectionHead}>
+          {canon.purpose.heading}
+        </h2>
+        {canon.purpose.body.map((p) => (
+          <p key={p.slice(0, 24)} className={styles.prose}>
+            {p}
+          </p>
+        ))}
+        <p className={styles.pull}>{canon.purpose.pull}</p>
+      </section>
+
       <AppStoreCta href={appStore} />
     </PageShell>
   );

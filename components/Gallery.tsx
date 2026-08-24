@@ -50,7 +50,7 @@ export function Gallery({
 
       {remaining > 0 && (
         <button type="button" className={styles.more} data-magnetic="0.225" onClick={() => setShown(items.length)}>
-          Show all {items.length} — {remaining} more
+          Show all {items.length}, {remaining} more
         </button>
       )}
 

@@ -2,11 +2,15 @@ import { getProject } from "./projects";
 import { tdcIcon } from "./media";
 
 /**
- * /canon is the recto's home page — the founder half of the argument.
+ * /canon, told in Hal's own voice.
  *
- * Everything here is drawn from the live app and its repo (1-apps/tdc):
- * the 366-work dataset, the README, and the shipped feature set. The counts
- * are real counts, not marketing.
+ * Drawn from his Medium piece and the app's own docs. First person here, and
+ * third person elsewhere on the site, deliberately: this is the one page where
+ * he is the founder rather than the subject.
+ *
+ * Two house rules from the app's docs are observed. The canon is never framed
+ * as a fixed "366" — each year adds another year of daily works and the
+ * library grows underneath it — and the premium tier is Folio.
  */
 
 export const canonProject = getProject("the-daily-canon")!;
@@ -15,81 +19,100 @@ export const canon = {
   title: "The Daily Canon",
   standfirst: "One work of literature a day, drawn from a growing canon that reaches back roughly four millennia.",
 
-  intro: [
-    `A literary calendar. Each day surfaces one curated work with a blurb, author context and metadata. You track what you have read, build a reading list, keep a streak, and with Folio you read the full text in the app.`,
-    `It is not about speed-reading the classics or ticking boxes. It is about returning, daily, to language that has endured. The rhythm turns reading from an aspiration into a practice: modest enough to keep, meaningful enough to compound.`,
-  ],
-
-  /** The best writing in the whole project. It belongs on the page verbatim. */
-  fishing: {
-    heading: "Reading like fishing",
+  origin: {
+    heading: "Why I built it",
     body: [
-      `Imagine sitting on a riverbank with a line in the water. While you wait, you are reading. Most of the time nothing bites. You move on, you try another stretch of river. But occasionally something does bite, and when it does you know immediately. A writer reaches you in a way you were not expecting. A sentence stops you. A book follows you around for weeks after you have finished it.`,
-      `The Daily Canon is designed to keep your line in the water across as broad a stretch of the literary river as possible. You may find that Tolstoy leaves you cold but Borges will not let you go. That you can take or leave the great realists but something in Kafka speaks directly to you. That a short story you had never heard of, on an unremarkable Tuesday in March, turns out to be the book you needed.`,
+      `When I was young I devoured books. Then my parents and teachers noticed I had a mathematical brain, and the conveyor belt did what conveyor belts do: I was moved from English literature toward physics, from Dickens toward differential equations. I read Theoretical Physics at Imperial and became, as physics graduates tend to, an extremely rational kind of guy.`,
+      `It took years to find my way back to reading, and it did not happen naturally. I had to decide to come back, the way you decide to call an old friend you have been avoiding. And I had a new problem: I could not find the time. So I made myself a rule.`,
     ],
-    pull: `We can't tell you which works will bite. We can only put enough of them in front of you that some will.`,
-  },
-
-  /** Straight from the 366-work dataset. */
-  composition: {
-    heading: "What is in it",
-    note: "The house rule is that this is never a fixed list. Each year adds another year of daily works, every past year stays browsable, and the full-text library keeps growing underneath it. This is the shape of it today: 34 original languages, 46 nationalities, and a span from the Epic of Gilgamesh to Bola\u00f1o.",
-    forms: [
-      { name: "Novel", count: 164 },
-      { name: "Poem", count: 51 },
-      { name: "Philosophy", count: 31 },
-      { name: "Play", count: 31 },
-      { name: "Short story", count: 23 },
-      { name: "Epic poem", count: 15 },
-      { name: "Novella", count: 12 },
-      { name: "Essay", count: 8 },
-      { name: "Other forms", count: 31 },
-    ],
-    span: [
-      { label: "Oldest", value: "The Epic of Gilgamesh", meta: "c. 2100 BC" },
-      { label: "Newest", value: "2666", meta: "Bolaño, 2004" },
+    pull: `If I am going to read something, it had better be worth reading, because it might well be the last thing I read.`,
+    after: [
+      `That rule changed everything. I started asking anyone who would answer which books are actually worth it, the ones where the time invested cannot possibly be wasted. Across conversations and subreddits the verdict kept converging on the same answer: the classics. Not because they are prestigious or difficult, but because they have already survived the only real test. Centuries of readers have tried to forget them and failed.`,
+      `I have since read hundreds of books from the canon and it has changed how I see nearly everything. I used to be an assured atheist. I am no longer sure that stance holds for anyone who reads great literature consistently enough. Something in the accumulated weight of all that human searching makes certainty feel cheap.`,
+      `I also build software for a living. So the question became inevitable: what if I built something that brought the two halves together?`,
     ],
   },
 
-  /** Six dates every reader shares, every year. */
-  feasts: {
-    heading: "The fixed feasts",
-    note: "Most works are movable. Each carries several candidate days and reaches you on whichever arrives first in your own journey, so the same book finds one reader in October and another in March. A handful are fixed, and those are the days the whole readership turns the same page.",
-    items: [
-      { date: "25 December", work: "A Christmas Carol", author: "Dickens", why: "Christmas Day" },
-      { date: "16 June", work: "Ulysses", author: "Joyce", why: "Bloomsday" },
-      { date: "6 January", work: "The Dead", author: "Joyce", why: "Epiphany" },
-      { date: "14 February", work: "Wuthering Heights", author: "Brontë", why: "Valentine's Day" },
-      { date: "31 October", work: "Dracula", author: "Stoker", why: "Halloween" },
-      {
-        date: "29 February",
-        work: "In Search of Lost Time",
-        author: "Proust",
-        why: "What better day for a book consumed with the moments that happen in between things",
-      },
+  idea: {
+    heading: "One day, one work",
+    body: [
+      `You open the app and it shows you one work of literature for today. Tomorrow, a different one. Novels, poems, short stories, essays, plays, philosophy. The only criterion for inclusion is that a work has survived the one test that matters: rereading.`,
+      `The inspiration was Tolstoy's A Calendar of Wisdom. Late in life he compiled quotes and reflections from everything he had read, one page for every day of the year. You turn to today's date and find a handful of ideas arranged around a theme. Some of it is questionable; most of it is very good. I loved the quotidian nature of it, the way it turned reading into a ritual rather than an ambition.`,
+      `The Daily Canon points that idea at whole works rather than quotations. Each day you meet a title. Sometimes familiar, sometimes long-intended, often completely new. When something catches you, you save it. When you have read it, you mark it done. The daily rhythm turns reading from an aspiration into a practice: modest enough to keep, meaningful enough to compound.`,
     ],
+  },
+
+  curation: {
+    heading: "The list was argued into existence",
+    body: [
+      `Hundreds of hours went into cross-referencing the great literary lists of the Western and Eastern traditions: the Modern Library's hundred, Harold Bloom's Western Canon, LibraryThing's aggregated rankings, and the heated and occasionally unhinged debates of r/classicliterature and r/TrueLit. A work appearing on one list and nowhere else was treated with suspicion. A work appearing on every list was treated with more, because consensus can be a symptom of laziness as easily as of truth.`,
+      `Every inclusion is also an exclusion, and a calendar makes that calculus merciless. Shakespeare alone could justify a third of it: King Lear takes one place, Hamlet another, and the rest must yield so that Sophocles and Ibsen and Woolf can breathe. Dickens wrote a dozen masterpieces and gets three, because Tolstoy and Austen and Hugo are waiting. Plath loses Daddy so she can gain The Bell Jar, because Ariel already holds the poetry and the novel does something the poem cannot.`,
+    ],
+    pull: `The constraint is the point. Without it the exercise is a catalogue. With it, every work has to earn its place against four thousand years of human expression.`,
   },
 
   dates: {
     heading: "Why these dates",
     body: [
-      `Works arrive on days that carry meaning. Each one holds several candidate days — an author's birthday, a national day, a festival, a sly topical wink — and a greedy picker assigns it to whichever of its days comes first in your particular journey. The same book finds one reader in October and another in March, each on a day with a real claim to it.`,
-      `This does mean a work sometimes arrives not because it is a writer's greatest achievement but because it is the right work for a particular day. A Christmas Carol is not Dickens at his most ambitious. But something has to belong to Christmas Day, and there it is, exactly where it belongs.`,
+      `Works arrive on days that carry meaning. Hamlet on Shakespeare's birthday. Ulysses on Bloomsday. Frankenstein at Halloween. Wuthering Heights on Valentine's Day, because love should always be a little unhinged. In Search of Lost Time on the 29th of February, because what better day for a book consumed with the moments that happen in between things. The calendar reaches well beyond the Western tradition, to Diwali, Nowruz, Vesak and the lunar new year.`,
+      `These alignments are not decorative. They root the reading in something larger than the text. Where no birthday or occasion fits, a work is placed in the season that suits it, so the rhythm of the year shapes the rhythm of the reading. Each reader walks their own sequence, so the same book finds one person in October and another in March. A handful of feasts are fixed and shared by everyone, and those are the days the whole readership turns the same page.`,
     ],
+  },
+
+  themes: {
+    heading: "Making the books feel like themselves",
+    body: `Once the app worked I could not leave it alone. The engineer wanted features; the reader wanted atmosphere. So I started building visual environments tuned to particular works. They are just for fun, a way to feel a book as well as read about it, and they took an absurd amount of work.`,
+    items: [
+      { work: "The Dead", author: "Joyce", detail: "A dark page with snow falling across it." },
+      { work: "King Lear", author: "Shakespeare", detail: "A deep green storm, lightning striking across the screen." },
+      { work: "The Great Gatsby", author: "Fitzgerald", detail: "A distant green light." },
+      { work: "Frankenstein", author: "Shelley", detail: "Purple mist, crackling." },
+      { work: "A Christmas Carol", author: "Dickens", detail: "Ghostly wisps." },
+      { work: "Huckleberry Finn", author: "Twain", detail: "A bird's-eye view of a small boat meandering down the Mississippi." },
+      { work: "Siddhartha", author: "Hesse", detail: "A WebGL shader of dappled light on water, fish darting through it." },
+    ],
+    note: "Around fifty of these now, and counting.",
+  },
+
+  progress: {
+    heading: "A map of where you have been",
+    body: [
+      `The reading list was obvious: save what interests you, check off what you finish. The progress view is the part I am pleased with. It draws the whole canon as roughly a thousand thin vertical bars, ordered through the year, and the number of bars a work gets is proportional to its length. War and Peace takes a wide block. A Chekhov story takes a sliver. Mark something read and its bars fill in.`,
+      `Over time the grid becomes a map of where you have been, and a provocation about where you have not. Below it, a tier system counts what you have finished. Every work counts equally, whether it is a three-line poem or Proust's three thousand pages.`,
+    ],
+  },
+
+  building: {
+    heading: "Building it",
+    body: `The commit history tells the real story of how software gets made: not in clean arcs but in dozens of small corrections, reversals and obsessive refinements. About twelve months of them.`,
+    log: [
+      { what: "Mobile navigation", detail: "A full weekend getting it right, then scrapped and rebuilt." },
+      { what: "The progress bars", detail: "From blocky rectangles to a thousand thin vertical lines, proportionally sized by page count, with hover tooltips and bidirectional highlighting." },
+      { what: "The tiers", detail: "From a handful of levels to thirty-two, colours running from steel blue through to maroon." },
+      { what: "The reading list", detail: "Gained sort controls, time estimates, a reader-speed picker, persistent state, a footer that changed colour with your tier. Then half of it was removed, because it cluttered the thing." },
+      { what: "The iOS app", detail: "A privacy policy, a support page, timezone-aware push, offline handling, portrait lock, and about fifteen separate attempts at the status bar colour in Safari's PWA mode." },
+      { what: "Everything else", detail: "Visit tracking on Redis, a sitemap for Google, country-level analytics with city breakdowns." },
+    ],
+  },
+
+  purpose: {
+    heading: "What it is for",
+    body: [
+      `The Daily Canon is not a productivity tool or a gamification engine. It is a daily encounter with something worth your attention.`,
+      `If you used to read and want a way back, it is a low-friction place to start. If you are already deep in the canon, it is a way to find the gaps you did not know you had. If you have never read much at all, it is as good a map as I know how to draw.`,
+    ],
+    pull: `You will not read everything. But you will read enough to recognise the silence where the rest belongs.`,
   },
 
   features: {
     heading: "What it does",
     items: [
       { name: "The library", detail: "A growing full-text library read in-app, chapter by chapter, with bookmarks and progress. Many works written in other languages carry a toggle to the original alongside the translation." },
-      { name: "Visual themes", detail: "48 work-specific themes — CSS, animation and WebGL — that transform the page for works like Hamlet, Moby-Dick and Wuthering Heights." },
-      { name: "Reading paths and immersions", detail: "Curated journeys through the canon, and time-boxed events read together: a Chekhov story each morning for ten mornings, a Dickinson poem a day for three weeks." },
-      { name: "Bloomy", detail: "A literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next. Bloomy is genderless, and labelled as AI wherever it appears." },
       { name: "Its own weather", detail: "Every book gets an ambience: rain, wind, fire, waves, a train. Use the suggested mix or build your own from The storm, By the fire, The riverbank, A window seat." },
-      { name: "Immersions", detail: "One work, held for days, read together with a cohort. The Chekhov Ten, The Dickinson Immersion, Aesop's Fables." },
-      { name: "My Canon", detail: "Rank what you have read against what you have read before, one binary choice at a time, and get a reader type out of it." },
-      { name: "Streaks and badges", detail: "Consecutive days of reading, freezes when life happens, milestone badges, reader tiers and a leaderboard." },
-      { name: "On iOS", detail: "A native wrapper via Capacitor, with push notifications, deep links, Spotlight indexing and haptics." },
+      { name: "Bloomy", detail: "A literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next. Bloomy is genderless, and labelled as AI wherever it appears." },
+      { name: "Immersions", detail: "One work, held for days, read together with a cohort. A Chekhov story each morning for ten mornings; a Dickinson poem a day for three weeks." },
+      { name: "My Canon", detail: "Your own ranking of everything you have read, dragged into the order you actually believe." },
+      { name: "Streaks and laurels", detail: "Consecutive days of reading, freezes for when life happens, and laurels for finishing a path. There is no leaderboard: rank against other readers is the one number the app refuses to show." },
     ],
   },
 
@@ -99,8 +122,8 @@ export const canon = {
       { layer: "Framework", tech: "Next.js 15, App Router, TypeScript" },
       { layer: "Database", tech: "Supabase Postgres with row-level security" },
       { layer: "Cache", tech: "Upstash Redis" },
-      { layer: "AI", tech: "Anthropic Claude — Bloomy and reading summaries" },
-      { layer: "Payments", tech: "RevenueCat, iOS in-app purchases" },
+      { layer: "AI", tech: "Anthropic Claude, Bloomy and reading summaries" },
+      { layer: "Payments", tech: "RevenueCat on iOS, Stripe on the web" },
       { layer: "Push", tech: "Apple Push Notification Service, hourly cron" },
       { layer: "iOS", tech: "Capacitor wrapper, PWA service worker" },
       { layer: "Type", tech: "Crimson Text, Spectral, Caveat" },
