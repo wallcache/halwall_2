@@ -89,6 +89,15 @@
   transform: translateY(-2px);
 }
 
+.linkMark {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 5px;
+  /* Pulled in tight to the word: the pill's own gap is sized for text and an
+     arrow, and a square mark at that distance floats away from its label. */
+  margin-right: -0.1rem;
+}
+
 .arrow { transition: transform 420ms var(--ease-out-expo); }
 .link:hover .arrow { transform: translateX(3px); }
 

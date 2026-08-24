@@ -9,6 +9,8 @@ import { workForDate, formatDay } from "@/lib/today";
 import { Reviews, Rating } from "@/components/Reviews";
 import { AppStoreCta } from "@/components/AppStoreCta";
 import { TodayPhone } from "@/components/TodayPhone";
+import { UiIcon } from "@/components/UiIcon";
+import { TechIcon } from "@/components/TechIcon";
 import Image from "next/image";
 import styles from "./Canon.module.css";
 
@@ -149,15 +151,6 @@ export default async function CanonPage() {
           {canon.themes.heading}
         </h2>
         <p className={styles.prose}>{canon.themes.body}</p>
-        <ul className={styles.themeList}>
-          {canon.themes.items.map((t) => (
-            <li key={t.work} className={styles.theme}>
-              <span className={styles.themeWork}>{t.work}</span>
-              <span className={styles.themeAuthor}>{t.author}</span>
-              <span className={styles.themeDetail}>{t.detail}</span>
-            </li>
-          ))}
-        </ul>
         <p className={styles.themeNote}>{canon.themes.note}</p>
       </section>
 
@@ -181,7 +174,10 @@ export default async function CanonPage() {
         <div className={styles.features}>
           {canon.features.items.map((f) => (
             <article key={f.name} className={styles.feature}>
-              <h3 className={styles.featureName}>{f.name}</h3>
+              <h3 className={styles.featureName}>
+                <UiIcon name={f.icon} className={styles.featureIcon} size={19} />
+                {f.name}
+              </h3>
               <p className={styles.featureDetail}>{f.detail}</p>
             </article>
           ))}
@@ -213,7 +209,16 @@ export default async function CanonPage() {
           {canon.build.items.map((b) => (
             <div key={b.layer} className={styles.buildRow}>
               <span className={styles.buildLayer}>{b.layer}</span>
-              <span className={styles.buildTech}>{b.tech}</span>
+              <span className={styles.buildTech}>
+                {/* The company's own mark where there is one, the site's own
+                    icon for the two layers nobody owns. */}
+                {"mark" in b ? (
+                  <TechIcon slug={b.mark} size={15} brand className={styles.buildIcon} />
+                ) : (
+                  <UiIcon name={"icon" in b ? b.icon : undefined} size={15} className={styles.buildIcon} />
+                )}
+                {b.tech}
+              </span>
             </div>
           ))}
         </div>

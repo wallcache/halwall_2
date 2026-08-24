@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { bio } from "@/content/identity";
+import { tdcIcon } from "@/content/media";
 import type { Side } from "@/content/types";
 import styles from "./TwoLives.module.css";
 
@@ -21,20 +23,29 @@ import styles from "./TwoLives.module.css";
  * upstairs. It owns its own state now: hover a half and that half takes the
  * room, leave and they go back to even.
  */
-const HALVES = [
+const HALVES: {
+  side: Side;
+  eyebrow: string;
+  body: string;
+  href: string;
+  label: string;
+  /** Only the half that links to a product has one. */
+  mark?: string;
+}[] = [
   {
-    side: "verso" as const,
+    side: "verso",
     eyebrow: "Measured in runtime",
     body: bio.verso,
     href: "/work",
     label: "The engineering",
   },
   {
-    side: "recto" as const,
+    side: "recto",
     eyebrow: "Measured in readers",
     body: bio.recto,
     href: "/canon",
     label: "The Daily Canon",
+    mark: tdcIcon,
   },
 ];
 
@@ -66,6 +77,11 @@ export function TwoLives() {
             <p className={styles.eyebrow}>{half.eyebrow}</p>
             <p className={styles.body}>{half.body}</p>
             <Link href={half.href} className={styles.link} data-magnetic="0.225">
+              {/* The app's own icon, because this is the one link on the page
+                  that goes to a product rather than to a section. */}
+              {half.mark && (
+                <Image className={styles.linkMark} src={half.mark} alt="" width={64} height={64} />
+              )}
               {half.label} <span className={styles.arrow} aria-hidden="true">→</span>
             </Link>
           </div>

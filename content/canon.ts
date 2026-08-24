@@ -59,18 +59,14 @@ export const canon = {
     ],
   },
 
+  /*
+   * No list of individual themes here. Naming seven of them and describing each
+   * in a line reads as a features table; the ones worth seeing have to be seen,
+   * and they live in the app.
+   */
   themes: {
     heading: "Making the books feel like themselves",
     body: `Once the app worked I could not leave it alone. The engineer wanted features; the reader wanted atmosphere. So I started building visual environments tuned to particular works. They are just for fun, a way to feel a book as well as read about it, and they took an absurd amount of work.`,
-    items: [
-      { work: "The Dead", author: "Joyce", detail: "A dark page with snow falling across it." },
-      { work: "King Lear", author: "Shakespeare", detail: "A deep green storm, lightning striking across the screen." },
-      { work: "The Great Gatsby", author: "Fitzgerald", detail: "A distant green light." },
-      { work: "Frankenstein", author: "Shelley", detail: "Purple mist, crackling." },
-      { work: "A Christmas Carol", author: "Dickens", detail: "Ghostly wisps." },
-      { work: "Huckleberry Finn", author: "Twain", detail: "A bird's-eye view of a small boat meandering down the Mississippi." },
-      { work: "Siddhartha", author: "Hesse", detail: "A WebGL shader of dappled light on water, fish darting through it." },
-    ],
     note: "More than a hundred of these now, and counting.",
   },
 
@@ -108,29 +104,35 @@ export const canon = {
   features: {
     heading: "What it does",
     items: [
-      { name: "The library", detail: "A growing full-text library read in-app, chapter by chapter, with bookmarks and progress. A couple of books are free to read in full; the rest come with Folio, the premium tier." },
-      { name: "Your own day", detail: "Every reader gets their own assignment, scored against a table of work-and-occasion pairings rather than handed the same page as everyone else. It is the part of the app I would show another engineer first." },
-      { name: "Ten languages", detail: "The reading experience and the app's own chrome in ten languages, translated offline and served as static files. No runtime translation API, no rate limit, and guests get it too." },
-      { name: "Bloomy", detail: "A literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next. Bloomy is genderless, and labelled as AI wherever it appears." },
-      { name: "Reading guides", detail: "Hand-written companions for the books that defeat people. How to read Finnegans Wake. Where to stand in the Critique of Pure Reason. What to skip in Clarissa and what you will regret skipping." },
-      { name: "Immersions", detail: "One work, held for days, read alone or with a cohort. A Chekhov story each morning for ten mornings; a Dickinson poem a day for three weeks. Dozens more behind Folio." },
-      { name: "My Canon", detail: "Your own ranking of everything you have read, dragged into the order you actually believe." },
-      { name: "Streaks and laurels", detail: "Consecutive days of reading, freezes for when life happens, and laurels for finishing a path. There is no leaderboard: rank against other readers is the one number the app refuses to show." },
+      { icon: "book", name: "The library", detail: "A growing full-text library read in-app, chapter by chapter, with bookmarks and progress. A couple of books are free to read in full; the rest come with Folio, the premium tier." },
+      { icon: "calendar", name: "Your own day", detail: "Every reader gets their own assignment, scored against a table of work-and-occasion pairings rather than handed the same page as everyone else. It is the part of the app I would show another engineer first." },
+      { icon: "globe", name: "Ten languages", detail: "The reading experience and the app's own chrome in ten languages, translated offline and served as static files. No runtime translation API, no rate limit, and guests get it too." },
+      { icon: "sparkle", name: "Bloomy", detail: "A literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next. Bloomy is genderless, and labelled as AI wherever it appears." },
+      { icon: "compass", name: "Reading guides", detail: "Hand-written companions for the books that defeat people. How to read Finnegans Wake. Where to stand in the Critique of Pure Reason. What to skip in Clarissa and what you will regret skipping." },
+      { icon: "layers", name: "Immersions", detail: "One work, held for days, read alone or with a cohort. A Chekhov story each morning for ten mornings; a Dickinson poem a day for three weeks. Dozens more behind Folio." },
+      { icon: "ranking", name: "My Canon", detail: "Your own ranking of everything you have read, dragged into the order you actually believe." },
+      { icon: "flame", name: "Streaks and laurels", detail: "Consecutive days of reading, freezes for when life happens, and laurels for finishing a path. There is no leaderboard: rank against other readers is the one number the app refuses to show." },
     ],
   },
 
+  /**
+   * `mark` is a brand icon from the generated simple-icons subset; `icon` is
+   * one of the site's own, for the two layers no company owns. The cache row
+   * carries the Next.js mark deliberately: the cache IS the framework's, which
+   * is the whole reason Redis came out.
+   */
   build: {
     heading: "How it is built",
     items: [
-      { layer: "Framework", tech: "Next.js 15, App Router, TypeScript" },
-      { layer: "Database", tech: "Supabase Postgres with row-level security" },
-      { layer: "Cache", tech: "Next.js Data Cache, tag-based invalidation" },
-      { layer: "AI", tech: "Anthropic Claude, Bloomy and reading summaries" },
-      { layer: "Payments", tech: "RevenueCat on iOS, Stripe on the web" },
-      { layer: "Push", tech: "Apple Push Notification Service, hourly cron" },
-      { layer: "iOS", tech: "Capacitor over the web bundle, with a native SwiftUI rewrite in the pipeline" },
-      { layer: "Web", tech: "PWA service worker, offline-capable" },
-      { layer: "Type", tech: "Crimson Text, Spectral, Hanken Grotesk" },
+      { mark: "nextdotjs", layer: "Framework", tech: "Next.js 15, App Router, TypeScript" },
+      { mark: "supabase", layer: "Database", tech: "Supabase Postgres with row-level security" },
+      { mark: "nextdotjs", layer: "Cache", tech: "Next.js Data Cache, tag-based invalidation" },
+      { mark: "anthropic", layer: "AI", tech: "Anthropic Claude, Bloomy and reading summaries" },
+      { mark: "stripe", layer: "Payments", tech: "RevenueCat on iOS, Stripe on the web" },
+      { mark: "apple", layer: "Push", tech: "Apple Push Notification Service, hourly cron" },
+      { mark: "capacitor", layer: "iOS", tech: "Capacitor over the web bundle, with a native SwiftUI rewrite in the pipeline" },
+      { icon: "globe", layer: "Web", tech: "PWA service worker, offline-capable" },
+      { icon: "letterform", layer: "Type", tech: "Crimson Text, Spectral, Hanken Grotesk" },
     ],
   },
 

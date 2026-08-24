@@ -20,8 +20,8 @@
     made that worse. Padding here rather than a margin on the phone, so the
     badge that overhangs it is inset by the same amount.
   */
-  padding-right: clamp(0.5rem, 4vw, 4.5rem);
-  padding-bottom: clamp(0.5rem, 2vw, 1.5rem);
+  padding-right: clamp(1.5rem, 9vw, 8rem);
+  padding-bottom: clamp(1rem, 3vw, 2.5rem);
 }
 
 @media (max-width: 900px) {

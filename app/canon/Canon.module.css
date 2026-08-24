@@ -208,13 +208,18 @@
 .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(1rem, 2.5vw, 2rem); margin-top: 1.5rem; }
 .feature { padding: clamp(1rem, 2.5vw, 1.5rem); border: 1px solid var(--rule); border-radius: var(--radius-lg); transition: border-color 420ms var(--ease-out-expo), transform 520ms var(--ease-out-expo); }
 .feature:hover { border-color: var(--accent); transform: translateY(-3px); }
-.featureName { font-family: var(--font-serif); font-size: var(--step-1); color: var(--ink); }
+.featureName { display: flex; align-items: center; gap: 0.55rem; font-family: var(--font-serif); font-size: var(--step-1); color: var(--ink); }
+/* Sits on the accent, and on its own wash, so a row of eight reads as a set of
+   marks rather than as eight grey glyphs stuck to eight headings. */
+.featureIcon { flex: none; color: var(--accent); }
+.feature:hover .featureIcon { color: var(--accent); }
 .featureDetail { margin-top: 0.5rem; font-family: var(--font-serif); font-size: var(--step--1); line-height: 1.65; color: var(--ink-muted); }
 
 .build { margin-top: 1.5rem; }
 .buildRow { display: grid; grid-template-columns: minmax(90px, 10rem) 1fr; gap: 1rem; padding: 0.8rem 0; border-top: 1px solid var(--rule); font-size: var(--step--1); }
 .buildLayer { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); padding-top: 0.15rem; }
-.buildTech { font-family: var(--font-serif); color: var(--ink-muted); }
+.buildTech { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-serif); color: var(--ink-muted); }
+.buildIcon { flex: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .feature:hover { transform: none; }
@@ -266,51 +271,6 @@
 }
 
 /* ---- literary themes ---------------------------------------------------- */
-
-.themeList {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-top: 1.5rem;
-}
-
-.theme {
-  display: grid;
-  gap: 0.2rem;
-  padding: clamp(1rem, 2.4vw, 1.4rem);
-  background: var(--ground);
-  transition: background-color 420ms var(--ease-out-expo);
-}
-
-.theme:hover { background: var(--ground-raised); }
-
-.themeWork {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: var(--step-1);
-  line-height: 1.15;
-  color: var(--ink);
-}
-
-.themeAuthor {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.themeDetail {
-  margin-top: 0.35rem;
-  font-family: var(--font-serif);
-  font-size: var(--step--1);
-  line-height: 1.6;
-  color: var(--ink-muted);
-}
 
 .themeNote {
   margin-top: 1rem;

@@ -142,3 +142,68 @@ export const Play = ({ size = 18, className, strokeWidth = 1.6 }: IconProps) => 
     <path d="M8 5.5v13l11-6.5z" />
   </svg>
 );
+
+export const Globe = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18" />
+    <path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z" />
+  </svg>
+);
+
+export const Calendar = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+    <path d="M3.5 10h17M8 3v4M16 3v4" />
+    <path d="M8 14.5h3" />
+  </svg>
+);
+
+export const Compass = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M15.4 8.6l-2 4.8-4.8 2 2-4.8z" />
+  </svg>
+);
+
+export const Layers = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <path d="M12 3.5l8.5 4.4L12 12.3 3.5 7.9z" />
+    <path d="M3.5 12.3l8.5 4.4 8.5-4.4" />
+    <path d="M3.5 16.4l8.5 4.4 8.5-4.4" />
+  </svg>
+);
+
+export const Flame = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <path d="M12 21c3.6 0 6-2.4 6-5.6 0-3.7-3-5.4-3.6-9.4-1.9 1.2-2.6 3-2.6 4.6-1-.6-1.6-1.7-1.6-3C8.3 9 6 11.5 6 15.4 6 18.6 8.4 21 12 21z" />
+  </svg>
+);
+
+export const Ranking = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <path d="M4 19.5h4V11H4zM10 19.5h4V4h-4zM16 19.5h4v-5.5h-4z" />
+  </svg>
+);
+
+export const Letterform = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <path d="M3.5 18.5L8.5 5.5l5 13M5.2 14.5h6.6" />
+    <path d="M20.5 11.5v7M20.5 13.4a3.4 3.4 0 1 0 0 3.4" />
+  </svg>
+);
+
+export const Cache = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <ellipse cx="12" cy="6" rx="7.5" ry="3" />
+    <path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6" />
+    <path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" />
+  </svg>
+);
+
+export const Bell = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <path d="M6 9.5a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 13.5 6 9.5z" />
+    <path d="M10 18.5a2.2 2.2 0 0 0 4 0" />
+  </svg>
+);

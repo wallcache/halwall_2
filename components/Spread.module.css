@@ -297,33 +297,40 @@
 }
 
 /*
-  A ramp at the leading edge, not a wash over the whole frame.
+  A ramp at each outer edge, not a wash over the whole frame.
 
-  Each half takes a short gradient running in from its own left edge and gone
-  by roughly a third across, so the colour sits in the margin of the picture
-  and the photograph itself is untouched. The recto ramp starts at the seam
-  rather than at the element's edge, because the element spans the full
-  portrait and is clipped — without the offset its colour would land in the
-  half you cannot see.
+  Each half takes a gradient running in from the outside of the picture: the
+  verso's from the left edge, the recto's from the right. So the colour sits in
+  the two margins and the middle of the photograph — the face, the join — is
+  untouched. The recto's used to run in from the seam instead, which put both
+  ramps on the same side of the image and left its outer edge bare.
+
+  It reaches about two fifths across now rather than a fifth. At the shorter
+  length the colour read as a hairline at the edge; at this one it reads as
+  light falling across the frame from outside it.
 */
 .tintVerso {
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
   background: linear-gradient(
     to right,
-    color-mix(in srgb, var(--verso-accent) 46%, transparent) 0%,
-    color-mix(in srgb, var(--verso-accent) 16%, transparent) 9%,
-    transparent 22%
+    color-mix(in srgb, var(--verso-accent) 52%, transparent) 0%,
+    color-mix(in srgb, var(--verso-accent) 30%, transparent) 12%,
+    color-mix(in srgb, var(--verso-accent) 11%, transparent) 26%,
+    transparent 42%
   );
 }
 
+/* From the right edge, so no offset for the seam is needed: the element spans
+   the whole portrait, and its right edge is the picture's right edge whatever
+   the gutter is doing. */
 .tintRecto {
   clip-path: inset(0 0 0 var(--gutter-pct));
   background: linear-gradient(
-    to right,
-    transparent var(--gutter-pct),
-    color-mix(in srgb, var(--recto-accent) 46%, transparent) var(--gutter-pct),
-    color-mix(in srgb, var(--recto-accent) 16%, transparent) calc(var(--gutter-pct) + 9%),
-    transparent calc(var(--gutter-pct) + 22%)
+    to left,
+    color-mix(in srgb, var(--recto-accent) 52%, transparent) 0%,
+    color-mix(in srgb, var(--recto-accent) 30%, transparent) 12%,
+    color-mix(in srgb, var(--recto-accent) 11%, transparent) 26%,
+    transparent 42%
   );
 }
 
@@ -488,20 +495,21 @@
     clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--verso-accent) 46%, transparent) 0%,
-      color-mix(in srgb, var(--verso-accent) 16%, transparent) 9%,
-      transparent 22%
+      color-mix(in srgb, var(--verso-accent) 52%, transparent) 0%,
+      color-mix(in srgb, var(--verso-accent) 30%, transparent) 12%,
+      color-mix(in srgb, var(--verso-accent) 11%, transparent) 26%,
+      transparent 42%
     );
   }
 
   .tintRecto {
     clip-path: inset(var(--gutter-pct) 0 0 0);
     background: linear-gradient(
-      to bottom,
-      transparent var(--gutter-pct),
-      color-mix(in srgb, var(--recto-accent) 46%, transparent) var(--gutter-pct),
-      color-mix(in srgb, var(--recto-accent) 16%, transparent) calc(var(--gutter-pct) + 9%),
-      transparent calc(var(--gutter-pct) + 22%)
+      to top,
+      color-mix(in srgb, var(--recto-accent) 52%, transparent) 0%,
+      color-mix(in srgb, var(--recto-accent) 30%, transparent) 12%,
+      color-mix(in srgb, var(--recto-accent) 11%, transparent) 26%,
+      transparent 42%
     );
   }
 }
