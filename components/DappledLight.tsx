@@ -5,24 +5,37 @@ import { useGutter } from "@/lib/gutter";
 import styles from "./DappledLight.module.css";
 
 /**
- * Light through leaves.
+ * Dappled light.
  *
- * One full-screen fragment shader: domain-warped fractal noise, stretched
- * along a diagonal so the highlights read as elongated dapples rather than
- * blobs, drifting slowly and bending toward the cursor.
+ * Six canopies, all the same size, differing only in seed and in how far each
+ * one shifts. Three ideas do the work:
  *
- * Deliberately raw WebGL2 rather than three.js — this is a single triangle
- * with no geometry, no camera and no scene graph, so the library would have
- * been about 150KB to draw two triangles' worth of nothing. The whole effect
- * is the shader below.
+ *  1. They accumulate rather than multiply. Multiplying is the physically
+ *     correct operator and it collapses in practice: each layer is nearly
+ *     binary, so the product of six is zero almost everywhere and the few
+ *     survivors are needle-thin. Averaging optical density keeps every layer's
+ *     contribution partial, so the stack stays legible at six.
+ *  2. Averaging N fields shrinks their variance by sqrt(N), which would flatten
+ *     the picture toward grey as layers are added. Dividing the cut band by the
+ *     same sqrt(N) cancels it exactly, so the look holds from one layer to six.
+ *  3. The depths are centred before the parallax is applied. Physically every
+ *     layer shifts the same way and only the amount differs, and that shared
+ *     component is what reads as a spotlight dragging across the page. Subtract
+ *     it and only the shear survives: near canopy one way, far the other, net
+ *     translation zero. Nothing travels, yet the gaps re-register completely.
  *
- * The palette is driven by the gutter, so the light runs cold over the
- * engineer and warm over the Canon, and crosses at the seam.
+ * The falloff attenuates the dapple MASK, never the colour. A vignette that
+ * multiplies the output darkens the ground itself and reads as a black edge;
+ * this simply stops light arriving out there.
+ *
+ * Adapted in one respect from the reference: it outputs premultiplied alpha
+ * rather than an opaque rust ground, so it composites over this site's two CSS
+ * grounds and the seam still divides them. The hero is never left with nothing
+ * behind it if the context fails.
  */
 
 const VERT = `#version 300 es
 void main() {
-  // Full-screen triangle from gl_VertexID. No buffers, no attributes.
   vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
   gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
 }`;
@@ -30,128 +43,167 @@ void main() {
 const FRAG = `#version 300 es
 precision highp float;
 
-uniform vec2  u_res;
-uniform float u_time;
-uniform vec2  u_mouse;   // 0..1, smoothed
-uniform float u_gutter;  // 0 = recto, 1 = verso
+uniform vec2  uRes;
+uniform float uTime;
+uniform vec2  uMouse;   // smoothed fast: drives parallax
+uniform vec2  uGlow;    // smoothed slower: drives the falloff centre
+uniform float uAngle, uScale, uAniso, uSoft, uDensity, uLayers, uDetail;
+uniform float uSpeed, uParallax, uSpread, uBulk, uVary, uCut, uWindow;
+uniform float uFalloff, uFollow, uRadius, uTilt, uGrain;
+uniform float uGutter;
 out vec4 outColor;
 
-// -- value noise ----------------------------------------------------------
-float hash(vec2 p) {
-  p = fract(p * vec2(123.34, 456.21));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123); }
+
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f*f*(3.0-2.0*f);
+  return mix(mix(hash(i), hash(i+vec2(1.0,0.0)), u.x),
+             mix(hash(i+vec2(0.0,1.0)), hash(i+vec2(1.0,1.0)), u.x), u.y);
 }
 
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);      // smoothstep
-  return mix(
-    mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-    mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-    u.y);
+// uDetail is the octave gain, and it decides the CHARACTER of the field.
+// At 0.5 you get classic fractal noise: clumps, voids, wildly uneven blobs.
+// Low, and the base octave dominates so every dapple comes out the same size.
+float fbm(vec2 p){
+  float v = 0.0, a = 1.0, tot = 0.0;
+  mat2 rot = mat2(0.80, 0.60, -0.60, 0.80);
+  for(int i=0;i<4;i++){ v += a*vnoise(p); tot += a; p = rot*p*2.03; a *= uDetail; }
+  return v / tot;
 }
 
-float fbm(vec2 p) {
-  float v = 0.0, a = 0.5;
-  for (int i = 0; i < 4; i++) {
-    v += a * noise(p);
-    p *= 2.03;                            // slightly off 2.0 to avoid grid echo
-    a *= 0.5;
-  }
-  return v;
+vec2  gWind;
+vec2  gPar;
+float gK;
+
+// Every canopy is the SAME size. They differ only in seed, in depth, and
+// therefore in how far they shift. Returns occlusion: 1 = leaf, 0 = gap.
+float canopy(vec2 q, float depth, float phase, float freq){
+  float ctr = 0.55;
+  // Centring the depths is the whole trick: subtract the common component and
+  // only the shear is left, so the field rearranges without travelling.
+  vec2 shift = gPar * (((depth - ctr) + uBulk*ctr) * uSpread);
+  vec2 s = q * freq + shift;
+  s.x += uTime * uSpeed * (0.05 + depth * 0.22);
+  s += (gWind - 0.5) * (0.30 + depth * 0.40);
+  return smoothstep(uDensity + gK, uDensity - gK, fbm(s + phase));
 }
 
-void main() {
-  vec2 uv = gl_FragCoord.xy / u_res;
-  float aspect = u_res.x / u_res.y;
-  vec2 p = vec2(uv.x * aspect, uv.y);
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec2 p  = uv - 0.5;
+  p.x *= uRes.x / uRes.y;
 
-  float t = u_time * 0.045;
+  float a = radians(uAngle);
+  mat2  R = mat2(cos(a), -sin(a), sin(a), cos(a));
+  vec2  q = R * p * uScale;
+  q.x /= uAniso;
 
-  // Pull the field toward the cursor. This is the part that reads as "the
-  // light moves when you move" — the warp origin follows the pointer.
-  //
-  // The first pass of this was far too polite to notice: a 0.16 displacement
-  // inside a tight exp() falloff moved the canopy by a couple of pixels. Wider
-  // radius, much stronger displacement, and a swirl so the light rotates
-  // around the pointer rather than only sliding away from it.
-  vec2 m = vec2(u_mouse.x * aspect, u_mouse.y);
-  vec2 toMouse = p - m;
-  float d2 = dot(toMouse, toMouse);
-  // Wide, soft falloff. A tight one turns the cursor into a starburst; the
-  // canopy should lean toward the hand, not detonate under it.
-  float pull = exp(-d2 * 1.5);
-  vec2 dir = normalize(toMouse + 1e-5);
-  p += dir * pull * 0.2;
-  p += vec2(-dir.y, dir.x) * pull * 0.085;   // a little swirl, not a vortex
+  vec2 mo = uMouse - 0.5;  mo.x *= uRes.x / uRes.y;
+  gPar = R * (mo * uParallax * uScale);
+  gPar.x /= uAniso;
 
-  // Rotate so the dapples run on a diagonal, then squash one axis hard so they
-  // stretch into leaf-shaped streaks rather than staying round.
-  const float ang = 0.52;
-  mat2 rot = mat2(cos(ang), -sin(ang), sin(ang), cos(ang));
-  vec2 q = rot * p * vec2(2.6, 7.4);
+  gK = uSoft;
 
-  // Domain warp: noise displacing the lookup of more noise. Two layers of it
-  // is what turns regular fbm into something organic.
-  // Gentle warp only. Strong warping is what produced marble rather than
-  // leaf-shadow: the streaks curled back on themselves instead of drifting.
-  vec2 w = vec2(fbm(q + vec2(t, t * 0.7)), fbm(q + vec2(5.2, 1.3) - t * 0.8));
-  float n = fbm(q + 1.15 * w);
+  float t = uTime * uSpeed;
+  gWind = vec2(fbm(q*0.5 + t*0.10), fbm(q*0.5 + 7.3 - t*0.08));
 
-  // A second canopy at a different scale and angle, multiplied through, so the
-  // gaps overlap the way two layers of leaves actually do.
-  vec2 q2 = mat2(cos(-0.9), -sin(-0.9), sin(-0.9), cos(-0.9)) * p * vec2(1.7, 4.3);
-  float n2 = fbm(q2 + 0.9 * w + t * 0.6);
-  n = mix(n, n * 1.25 * n2 + 0.28, 0.55);
+  // uVary spreads the layer frequencies apart. At 0 every canopy is identical
+  // in scale, which is what you want when stacking a lot of them.
+  float f0 = 1.0 - uVary*0.45, f1 = 1.0 - uVary*0.27, f2 = 1.0 - uVary*0.09;
+  float f3 = 1.0 + uVary*0.09, f4 = 1.0 + uVary*0.27, f5 = 1.0 + uVary*0.45;
 
-  // Lift into separated pools. A narrow window is what makes them read as
-  // distinct dapples with dark between, rather than one continuous wash.
-  float light = smoothstep(0.44, 0.66, n);
-  light = pow(light, 1.15);
+  // ACCUMULATE, do not multiply. See the note at the top of the file.
+  float occ = canopy(q, 1.00,  0.0, f0);
+  if(uLayers > 1.5) occ += canopy(q, 0.80, 11.3, f1);
+  if(uLayers > 2.5) occ += canopy(q, 0.62, 23.7, f2);
+  if(uLayers > 3.5) occ += canopy(q, 0.45, 37.1, f3);
+  if(uLayers > 4.5) occ += canopy(q, 0.28, 51.9, f4);
+  if(uLayers > 5.5) occ += canopy(q, 0.12, 67.3, f5);
 
-  // A second, tighter pass puts a brighter core inside the larger pools —
-  // the gaps in the canopy where the sun gets through cleanly.
-  float core = smoothstep(0.58, 0.72, n);
-  light += core * 0.55;
+  float shade = occ / uLayers;   // mean occlusion, same scale at any N
 
-  // A fine break-up so edges shimmer rather than being perfectly smooth blobs.
-  float grain = fbm(q * 3.4 + t * 0.9);
-  light *= 0.86 + 0.26 * grain;
+  // uCut is how much accumulated leaf it takes to put a spot in shadow, and
+  // uWindow how abruptly. Dividing by sqrt(N) holds the look steady as layers
+  // are added, because averaging N fields shrinks the variance by that much.
+  float w = max(0.02, uWindow / sqrt(uLayers));
+  float open = smoothstep(uCut + w, uCut - w, shade);
 
-  // -- tint, crossfaded at the seam --------------------------------------
-  // Only the light is drawn here. The grounds are painted in CSS underneath,
-  // so a failed or slow WebGL context costs the page some atmosphere and
-  // nothing else.
-  vec3 versoLight = vec3(0.435, 0.545, 0.655);
-  vec3 rectoLight = vec3(0.918, 0.796, 0.612);
+  // The falloff attenuates the MASK, never the colour. uGlow is a second,
+  // slower-smoothed cursor, so the lit region trails the parallax rather than
+  // being welded to it. That lag is most of the feeling.
+  vec2  gc = (uGlow - 0.5) * uFollow;  gc.x *= uRes.x / uRes.y;
+  float r    = length((p - gc) * vec2(0.78, 1.0));
+  float fall = 1.0 - uFalloff * smoothstep(uRadius, uRadius + 0.55, r);
+  open *= fall;
 
-  float g = clamp(u_gutter, 0.0, 1.0);
-  // Split on the seam, so the light changes colour exactly where the panes do.
-  float side = smoothstep(g - 0.012, g + 0.012, uv.x);
-  vec3 tint = mix(versoLight, rectoLight, side);
+  float core = smoothstep(0.55, 0.98, open);
 
-  // Pulled back from 0.72: the peaks were bright enough to wash out the
-  // orange company line sitting on top of them.
-  float strength = mix(0.62, 0.4, side);   // paper takes less light than ink
+  // Two palettes, split on the seam, so the light runs cold over the engineer
+  // and warm over the Canon and changes colour exactly where the panes do.
+  float side = smoothstep(uGutter - 0.012, uGutter + 0.012, uv.x);
 
-  // Vignette, so the corners do not compete with the masthead.
-  float vig = smoothstep(1.25, 0.25, length(uv - 0.5));
+  vec3 versoMid  = vec3(0.560, 0.640, 0.720);
+  vec3 versoLite = vec3(0.898, 0.941, 0.980);
+  vec3 rectoMid  = vec3(0.949, 0.627, 0.502);
+  vec3 rectoLite = vec3(0.992, 0.941, 0.894);
 
-  // The canopy also opens up around the pointer, so the cursor reads as a
-  // break in the leaves rather than only as a distortion.
-  float bloom = exp(-d2 * 2.4);
-  float alpha = clamp(light * strength * (0.35 + 0.65 * vig) * (1.0 + bloom * 0.3), 0.0, 1.0);
+  vec3 cMid  = mix(versoMid,  rectoMid,  side);
+  vec3 cLite = mix(versoLite, rectoLite, side);
+
+  float g = clamp(uv.x*0.55 + uv.y*0.45, 0.0, 1.0) * uTilt;
+  vec3 tint = mix(cMid, cLite, core * 0.30 + g * 0.25);
+
+  /*
+    Pulled well back on the verso. The ground moved from near-black to #333,
+    which halves the contrast the light had to work against: at the old
+    strength the canopy washed the whole side out to fog and took the type's
+    legibility with it. Less light on grey than on ink, not more.
+  */
+  float strength = mix(0.30, 0.40, side);
+  float alpha = clamp(open * strength, 0.0, 1.0);
+
+  float grain = hash(gl_FragCoord.xy + fract(uTime)*137.0) - 0.5;
+  alpha = clamp(alpha + grain * uGrain, 0.0, 1.0);
+
   outColor = vec4(tint * alpha, alpha);   // premultiplied
 }`;
+
+/** Hal's tuning, from the control panel. */
+const TUNING = {
+  angle: -50,
+  scale: 5.6,
+  aniso: 3.6, // streak length
+  soft: 0.4, // edge softness
+  density: 0.355, // canopy density
+  layers: 6,
+  detail: 0.12,
+  vary: 0.24, // size variance
+  cut: 0.28, // light threshold
+  window: 0.34, // contrast band
+  falloff: 0.94, // falloff depth
+  radius: 1.2,
+  follow: 1.6,
+  /**
+   * Falloff lag. At 0 the two cursors lock together and the lit region becomes
+   * a torch bolted to the pointer. A little delay is where most of the life is,
+   * so this runs just above the panel's 0.
+   */
+  lag: 0.06,
+  tilt: 0.15, // ground tilt
+  speed: 1.5, // flow speed
+  parallax: 1.88, // cursor force
+  spread: 0.32, // depth spread
+  bulk: 0.7, // bulk motion
+  grain: 0.028,
+};
 
 function compile(gl: WebGL2RenderingContext, type: number, src: string) {
   const sh = gl.createShader(type)!;
   gl.shaderSource(sh, src);
   gl.compileShader(sh);
   if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-    console.error(gl.getShaderInfoLog(sh));
+    console.error("[DappledLight]", gl.getShaderInfoLog(sh));
     gl.deleteShader(sh);
     return null;
   }
@@ -172,7 +224,6 @@ export function DappledLight() {
       premultipliedAlpha: true,
       powerPreference: "low-power",
     });
-    // No WebGL2 is not an error. The CSS ground underneath is the design.
     if (!gl) {
       console.warn("[DappledLight] WebGL2 unavailable; the hero keeps its CSS ground.");
       canvas.dataset.light = "unavailable";
@@ -189,24 +240,46 @@ export function DappledLight() {
     gl.attachShader(prog, fs);
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-      console.error(gl.getProgramInfoLog(prog));
+      console.error("[DappledLight]", gl.getProgramInfoLog(prog));
       return;
     }
     gl.useProgram(prog);
     gl.clearColor(0, 0, 0, 0);
-    // Premultiplied source-over: the light lays over the CSS ground.
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-    const uRes = gl.getUniformLocation(prog, "u_res");
-    const uTime = gl.getUniformLocation(prog, "u_time");
-    const uMouse = gl.getUniformLocation(prog, "u_mouse");
-    const uGutter = gl.getUniformLocation(prog, "u_gutter");
+    const u = (name: string) => gl.getUniformLocation(prog, name);
+    const uRes = u("uRes"), uTime = u("uTime"), uMouse = u("uMouse"), uGlow = u("uGlow"), uGutter = u("uGutter");
+
+    // Constants, set once.
+    gl.uniform1f(u("uAngle"), TUNING.angle);
+    gl.uniform1f(u("uScale"), TUNING.scale);
+    gl.uniform1f(u("uAniso"), TUNING.aniso);
+    gl.uniform1f(u("uSoft"), TUNING.soft);
+    gl.uniform1f(u("uDensity"), TUNING.density);
+    gl.uniform1f(u("uLayers"), TUNING.layers);
+    gl.uniform1f(u("uDetail"), TUNING.detail);
+    gl.uniform1f(u("uVary"), TUNING.vary);
+    gl.uniform1f(u("uCut"), TUNING.cut);
+    gl.uniform1f(u("uWindow"), TUNING.window);
+    gl.uniform1f(u("uFalloff"), TUNING.falloff);
+    gl.uniform1f(u("uRadius"), TUNING.radius);
+    gl.uniform1f(u("uFollow"), TUNING.follow);
+    gl.uniform1f(u("uTilt"), TUNING.tilt);
+    gl.uniform1f(u("uSpeed"), TUNING.speed);
+    gl.uniform1f(u("uParallax"), TUNING.parallax);
+    gl.uniform1f(u("uSpread"), TUNING.spread);
+    gl.uniform1f(u("uBulk"), TUNING.bulk);
+    gl.uniform1f(u("uGrain"), TUNING.grain);
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const mouse = { x: 0.5, y: 0.5 };
+    // Two cursors. The first chases the pointer; the second chases the first,
+    // so the lag compounds and the lit region arrives late and overshoots
+    // slightly, the way a patch of sun does when a branch swings.
     const target = { x: 0.5, y: 0.5 };
+    const mouse = { x: 0.5, y: 0.5 };
+    const glow = { x: 0.5, y: 0.5 };
 
     const onMove = (e: PointerEvent) => {
       target.x = e.clientX / window.innerWidth;
@@ -215,14 +288,11 @@ export function DappledLight() {
     if (!reduced) window.addEventListener("pointermove", onMove, { passive: true });
 
     /**
-     * Push the size to the GPU. Kept separate from the resize check on purpose.
-     *
-     * This used to bail out early whenever the canvas dimensions were already
-     * correct, which quietly broke the whole effect in development: React
-     * StrictMode mounts the effect twice, the second mount reuses the same
-     * canvas at the same size, so the freshly linked program never received
-     * u_res. It stayed (0, 0), every fragment divided by zero, and the canvas
-     * rendered nothing at all. Fine in a production build, invisible in dev.
+     * Size is pushed unconditionally after linking. An earlier version returned
+     * early when the dimensions already matched, which broke the whole effect
+     * in development: StrictMode mounts the effect twice, the second mount
+     * reuses the same canvas at the same size, and the fresh program never
+     * received uRes. It stayed (0,0) and every fragment divided by zero.
      */
     const pushSize = (w: number, h: number) => {
       gl.viewport(0, 0, w, h);
@@ -230,7 +300,6 @@ export function DappledLight() {
     };
 
     const resize = () => {
-      // Capped DPR: this is a soft, blurred field. Nobody can see the extra pixels.
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const w = Math.max(1, Math.floor(canvas.clientWidth * dpr));
       const h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
@@ -238,7 +307,6 @@ export function DappledLight() {
         canvas.width = w;
         canvas.height = h;
       }
-      // Always pushed, never conditionally.
       pushSize(w, h);
     };
     resize();
@@ -251,13 +319,17 @@ export function DappledLight() {
 
     const draw = (now: number) => {
       if (!running) return;
-      // Ease toward the pointer so the field drifts rather than snapping.
-      // Fast enough to feel connected to the hand, slow enough to have weight.
-      mouse.x += (target.x - mouse.x) * 0.085;
-      mouse.y += (target.y - mouse.y) * 0.085;
+
+      mouse.x += (target.x - mouse.x) * 0.05;
+      mouse.y += (target.y - mouse.y) * 0.05;
+      // Chases the first cursor rather than the pointer: that is the delay.
+      const chase = 0.05 / (1 + TUNING.lag * 40);
+      glow.x += (mouse.x - glow.x) * chase;
+      glow.y += (mouse.y - glow.y) * chase;
 
       gl.uniform1f(uTime, reduced ? 0 : (now - start) / 1000);
       gl.uniform2f(uMouse, mouse.x, mouse.y);
+      gl.uniform2f(uGlow, glow.x, glow.y);
       gl.uniform1f(uGutter, read());
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -266,9 +338,9 @@ export function DappledLight() {
     };
 
     if (reduced) {
-      // One static frame. The light is a texture, not an animation.
       gl.uniform1f(uTime, 0);
       gl.uniform2f(uMouse, 0.5, 0.5);
+      gl.uniform2f(uGlow, 0.5, 0.5);
       gl.uniform1f(uGutter, read());
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -276,7 +348,6 @@ export function DappledLight() {
       frame = requestAnimationFrame(draw);
     }
 
-    // A backgrounded tab gets no frames; do not burn the GPU or replay the gap.
     const onVisibility = () => {
       if (document.hidden) {
         running = false;

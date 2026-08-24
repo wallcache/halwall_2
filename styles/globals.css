@@ -13,14 +13,14 @@
 
 :root {
   /* -- verso: the engineer -------------------------------------------- */
-  --verso-ground: #0b0d0f;
-  --verso-ground-raised: #14171a;
-  --verso-ground-hover: #1a1e22;
+  --verso-ground: #333333;
+  --verso-ground-raised: #3b3b3b;
+  --verso-ground-hover: #414141;
   --verso-ink: #e9edf1;
-  --verso-ink-muted: #8a949e;
-  --verso-ink-faint: #5a626b;
-  --verso-rule: #22272b;
-  --verso-rule-strong: #333a40;
+  --verso-ink-muted: #b4b4b4;
+  --verso-ink-faint: #8e8e8e;
+  --verso-rule: #484848;
+  --verso-rule-strong: #5a5a5a;
   --verso-accent: #f0562a;
   --verso-accent-hover: #ff6b3d;
   --verso-accent-wash: rgb(240 86 42 / 0.14);
@@ -94,7 +94,7 @@
   :root {
     --recto-ground: #f4f0e6;
     --recto-ground-raised: #ebe6d9;
-    --verso-ground: #08090b;
+    --verso-ground: #2e2e2e;
   }
 }
 

@@ -73,8 +73,8 @@
 .skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.8rem;
+  gap: 0.4rem clamp(0.9rem, 2vw, 1.4rem);
+  margin-top: 0.9rem;
 }
 
 .skill {

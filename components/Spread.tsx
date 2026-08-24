@@ -199,8 +199,6 @@ export function Spread() {
           <span className={`${styles.tint} ${styles.tintVerso}`} aria-hidden="true" />
           <span className={`${styles.tint} ${styles.tintRecto}`} aria-hidden="true" />
         </div>
-        {/* Outside .portraitInner, which clips to round its corners. */}
-        <span className={styles.portraitCaption}>Move your cursor</span>
       </div>
 
       <div className={styles.seam} aria-hidden="true" />

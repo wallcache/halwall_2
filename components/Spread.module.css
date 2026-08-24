@@ -345,31 +345,7 @@
 
 
 
-.portraitCaption {
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 0.6rem);
-  z-index: 1;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-full);
-  /* Its own ground, so it stays legible wherever the seam leaves it. */
-  background: color-mix(in srgb, var(--verso-ground) 72%, transparent);
-  backdrop-filter: blur(6px);
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--verso-ink-muted);
-  transition: opacity 420ms var(--ease-out-expo);
-}
-
-.portraitAnchor[data-draggable="true"]:hover .portraitCaption {
-  color: var(--verso-accent);
-}
-
-/* --------------------------------------------------------------------------
+.portraitAnchor[data-draggable="true"]:hover /* --------------------------------------------------------------------------
    Seam
    -------------------------------------------------------------------------- */
 
@@ -417,8 +393,8 @@
 
   .seam { top: var(--gutter-pct); bottom: auto; left: 0; right: 0; width: auto; height: 1px; }
 
-  .portraitCaption { display: none; }
-
+  /* The split runs horizontally here, so the portrait halves and their ramps
+     divide top from bottom rather than left from right. */
   .portraitVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
   .portraitRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
 
@@ -443,7 +419,6 @@
     );
   }
 }
-
 
 /* --------------------------------------------------------------------------
    Pane content states
