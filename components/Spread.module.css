@@ -294,7 +294,8 @@
   would wash the faces out; this tints them.
 */
 .portrait {
-  filter: grayscale(1) contrast(1.06);
+  /* Fully monochrome underneath, so the tint is the only colour present. */
+  filter: grayscale(1) contrast(1.08) brightness(1.02);
 }
 
 .portraitVerso {
@@ -312,13 +313,21 @@
   mix-blend-mode: color;
 }
 
+/*
+  A cast, not a colour wash.
+
+  The first version ran the accent at near-full alpha, which recoloured the
+  photographs outright — orange and green portraits rather than black-and-white
+  ones with a hue in them. These stay low enough that the frames read as
+  monochrome and the colour is something you notice second.
+*/
 .tintVerso {
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
   background: linear-gradient(
     155deg,
-    color-mix(in srgb, var(--verso-accent) 92%, transparent) 0%,
-    color-mix(in srgb, var(--verso-accent) 52%, transparent) 55%,
-    color-mix(in srgb, var(--verso-accent) 28%, transparent) 100%
+    color-mix(in srgb, var(--verso-accent) 30%, transparent) 0%,
+    color-mix(in srgb, var(--verso-accent) 14%, transparent) 55%,
+    color-mix(in srgb, var(--verso-accent) 5%, transparent) 100%
   );
 }
 
@@ -326,9 +335,9 @@
   clip-path: inset(0 0 0 var(--gutter-pct));
   background: linear-gradient(
     155deg,
-    color-mix(in srgb, var(--recto-accent) 28%, transparent) 0%,
-    color-mix(in srgb, var(--recto-accent) 62%, transparent) 45%,
-    color-mix(in srgb, var(--recto-accent) 95%, transparent) 100%
+    color-mix(in srgb, var(--recto-accent) 5%, transparent) 0%,
+    color-mix(in srgb, var(--recto-accent) 16%, transparent) 45%,
+    color-mix(in srgb, var(--recto-accent) 32%, transparent) 100%
   );
 }
 
