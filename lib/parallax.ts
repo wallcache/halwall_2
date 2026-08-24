@@ -21,6 +21,9 @@ export interface ParallaxOptions {
 interface Entry extends ParallaxOptions {
   el: HTMLElement;
   visible: boolean;
+  /** Document-relative top, cached. See the note in `tick`. */
+  top: number;
+  height: number;
 }
 
 const entries = new Map<HTMLElement, Entry>();
@@ -28,6 +31,15 @@ let observer: IntersectionObserver | null = null;
 let frame = 0;
 let running = false;
 let reduced = false;
+let lastY = -1;
+let idleFrames = 0;
+
+/** Re-reads an element's document position. Only on register and on resize. */
+function measure(entry: Entry) {
+  const rect = entry.el.getBoundingClientRect();
+  entry.top = rect.top + window.scrollY - (parseFloat(entry.el.style.getPropertyValue("--px-y")) || 0);
+  entry.height = rect.height;
+}
 
 function ensure() {
   if (observer) return;
@@ -45,14 +57,33 @@ function ensure() {
   );
 
   const tick = () => {
+    const y = window.scrollY;
+
+    // Nothing moved and everything has settled: stop until the next scroll.
+    if (y === lastY && idleFrames > 2) {
+      running = false;
+      frame = 0;
+      return;
+    }
+    if (y === lastY) idleFrames++;
+    else idleFrames = 0;
+    lastY = y;
+
     const vh = window.innerHeight;
 
     for (const entry of entries.values()) {
       if (!entry.visible) continue;
 
-      const rect = entry.el.getBoundingClientRect();
+      /*
+        Position is derived from a cached document-relative top rather than
+        getBoundingClientRect(). The old version read the rect for every
+        visible element on every frame, which forces a synchronous layout each
+        time — with a dozen registered elements that is a dozen layouts per
+        frame, and it is most of why scrolling felt heavy.
+      */
+      const top = entry.top - y;
       // -1 above the viewport, 0 centred, +1 below.
-      const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
+      const progress = (top + entry.height / 2 - vh / 2) / vh;
       const offset = progress * entry.speed * -100;
 
       // Custom properties, applied by CSS — never `style.transform` or
@@ -62,7 +93,7 @@ function ensure() {
       entry.el.style.setProperty("--px-y", `${offset.toFixed(2)}px`);
 
       if (entry.fade) {
-        const enter = 1 - Math.min(1, Math.max(0, (rect.top - vh * 0.92) / (vh * 0.2)));
+        const enter = 1 - Math.min(1, Math.max(0, (top - vh * 0.92) / (vh * 0.2)));
         entry.el.style.setProperty("--px-o", String(Math.min(1, Math.max(0, enter))));
       }
     }
@@ -72,13 +103,21 @@ function ensure() {
   const start = () => {
     if (running || reduced) return;
     running = true;
+    idleFrames = 0;
     frame = requestAnimationFrame(tick);
   };
   const stop = () => {
     running = false;
     cancelAnimationFrame(frame);
+    frame = 0;
   };
 
+  // Woken by scroll rather than spinning forever: an idle page runs no frames.
+  window.addEventListener("scroll", start, { passive: true });
+  window.addEventListener("resize", () => {
+    for (const e of entries.values()) measure(e);
+    start();
+  });
   document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
   start();
 }
@@ -91,7 +130,9 @@ export function register(el: HTMLElement, options: ParallaxOptions) {
     return () => {};
   }
 
-  entries.set(el, { ...options, el, visible: false });
+  const entry: Entry = { ...options, el, visible: false, top: 0, height: 0 };
+  entries.set(el, entry);
+  measure(entry);
   el.dataset.parallax = options.fade ? "fade" : "";
   // Hidden only once JS is definitely running; the CSS default is visible.
   if (options.fade) el.style.setProperty("--px-o", "0");

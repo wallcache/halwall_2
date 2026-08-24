@@ -28,8 +28,8 @@ export const doors: Door[] = [
     href: "/canon",
     label: "02",
     title: "The Daily Canon",
-    line: "One carefully chosen work of literature for each day of the year, on iOS and the web. An App Store App of the Day.",
-    meta: "366 works · iOS + web",
+    line: "One carefully chosen work of literature every day, on iOS and the web. Featured on the App Store.",
+    meta: "iOS + web · App Store featured",
     side: "recto",
   },
   {

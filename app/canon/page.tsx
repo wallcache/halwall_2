@@ -4,7 +4,9 @@ import shell from "@/components/PageShell.module.css";
 import { Parallax } from "@/components/Parallax";
 import { SlideCarousel } from "@/components/SlideCarousel";
 import { canon, canonProject } from "@/content/canon";
-import { workForDate, formatDay, dayOfYear, canonSize } from "@/lib/today";
+import { workForDate, formatDay } from "@/lib/today";
+import { Reviews, Rating } from "@/components/Reviews";
+import Image from "next/image";
 import styles from "./Canon.module.css";
 
 export const metadata: Metadata = {
@@ -21,10 +23,34 @@ const maxForm = Math.max(...canon.composition.forms.map((f) => f.count));
 export default function CanonPage() {
   const now = new Date();
   const work = workForDate(now);
-  const day = dayOfYear(now);
 
   return (
     <PageShell side="recto" eyebrow="Measured in readers" title={canon.title} standfirst={canon.standfirst}>
+      {/* ---------------- what readers say ---------------- */}
+      <section className={shell.section} aria-labelledby="reviews">
+        <div className={styles.brandRow}>
+          <Image
+            className={styles.brandIcon}
+            src={canon.icon}
+            alt=""
+            aria-hidden="true"
+            width={128}
+            height={128}
+          />
+          <div>
+            <h2 id="reviews" className={styles.brandTitle}>
+              On the App Store
+            </h2>
+            <p className={styles.brandRating}>
+              <Rating value={4.8} size={14} />
+              <span>4.8 on the App Store</span>
+            </p>
+            <p className={styles.brandMeta}>10,000+ downloads · featured by Apple</p>
+          </div>
+        </div>
+        <Reviews />
+      </section>
+
       {/* ----------------------------------------------------------------
           Today. The page does the thing rather than describing it: this is
           the actual work the app serves today, from the same 366-entry
@@ -39,7 +65,6 @@ export default function CanonPage() {
           <div>
             <p className={styles.stamp}>
               <span>{formatDay(now)}</span>
-              <span>Day {day} of {canonSize}</span>
               {work.day && <span className={styles.stampDay}>{work.day}</span>}
             </p>
 

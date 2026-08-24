@@ -1,49 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
-
 /**
- * Smooth scroll, loaded after paint and never on the critical path.
+ * Deliberately empty.
  *
- * Lenis is imported dynamically because nothing about the first frame depends
- * on it, and it is skipped outright for reduced-motion and for coarse pointers,
- * where the platform's own scrolling is already better than anything we would
- * impose on it.
+ * This used to mount Lenis. Smooth-scroll libraries interpose an easing curve
+ * between the wheel and the page, and that curve is exactly what "laggy, too
+ * much friction" describes: every gesture arrives late by design, and the
+ * lateness compounds with anything else animating on scroll.
+ *
+ * Native scrolling is immediate, matches the platform, respects the trackpad's
+ * own momentum and costs nothing. The parallax in lib/parallax.ts supplies the
+ * depth that Lenis was being asked to supply feel for.
+ *
+ * The component is kept as a no-op so the layout does not need rewiring if a
+ * scroll driver is ever wanted again.
  */
 export function SmoothScroll() {
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-
-    let lenis: { raf: (t: number) => void; destroy: () => void; stop: () => void; start: () => void } | null = null;
-    let frame = 0;
-    let cancelled = false;
-
-    const loop = (time: number) => {
-      lenis?.raf(time);
-      frame = requestAnimationFrame(loop);
-    };
-
-    const onVisibility = () => {
-      // A backgrounded tab gets no frames; resuming should not replay the gap.
-      if (document.hidden) lenis?.stop();
-      else lenis?.start();
-    };
-
-    import("lenis").then(({ default: Lenis }) => {
-      if (cancelled) return;
-      lenis = new Lenis({ duration: 1.05, smoothWheel: true });
-      frame = requestAnimationFrame(loop);
-      document.addEventListener("visibilitychange", onVisibility);
-    });
-
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(frame);
-      document.removeEventListener("visibilitychange", onVisibility);
-      lenis?.destroy();
-    };
-  }, []);
-
   return null;
 }

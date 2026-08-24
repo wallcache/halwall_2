@@ -31,8 +31,8 @@ export const heroFigures = {
     { from: 270, value: 45, unit: "min", label: "pipeline runtime, down from 270" },
   ],
   recto: [
-    { value: 6000, suffix: "+", label: "downloads" },
-    { value: 366, label: "works, one for every day" },
+    { value: 10000, suffix: "+", label: "downloads" },
+    { value: 4.8, suffix: "\u2605", label: "on the App Store" },
   ],
 } as const;
 

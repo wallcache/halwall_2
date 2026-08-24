@@ -134,6 +134,24 @@ export const education: Education[] = [
     ],
   },
   {
+    slug: "databricks-lakehouse",
+    institution: "Databricks",
+    logo: "/media/orgs/databricks-cert.webp",
+    degree: "Lakehouse Fundamentals",
+    dateRange: "2022",
+    details:
+      "The platform most of the last four years has been built on, certified the year he started building on it in earnest.",
+  },
+  {
+    slug: "datacamp-data-engineer",
+    institution: "DataCamp",
+    logo: "/media/orgs/datacamp-cert.webp",
+    degree: "Data Engineer Associate",
+    dateRange: "2024",
+    details:
+      "Formal coverage of the ground already being worked daily: ingestion, modelling, orchestration and the parts of SQL people skip.",
+  },
+  {
     slug: "imperial-business-analytics",
     institution: "Imperial College Business School",
     logo: "/media/orgs/imperial.webp",

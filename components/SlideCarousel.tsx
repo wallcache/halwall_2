@@ -92,7 +92,7 @@ export function SlideCarousel() {
         aria-label="The Daily Canon on the App Store — screenshots"
       >
         {slides.map((slide, i) => (
-          <figure key={slide.src} className={styles.slide} data-slide data-magnetic="0.18">
+          <figure key={slide.src} className={styles.slide} data-slide>
             <Image
               src={slide.src}
               alt={slide.caption}

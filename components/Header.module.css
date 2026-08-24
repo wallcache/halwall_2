@@ -235,3 +235,9 @@
   .bar::before,
   .bar::after { display: none; }
 }
+
+/* Under 760px the inline links give way to the three-dot sheet. */
+@media (max-width: 760px) {
+  .group .link { display: none; }
+  .groupRecto { justify-content: flex-end; }
+}

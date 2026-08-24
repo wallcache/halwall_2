@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useGutter, type Side } from "@/lib/gutter";
 import { identity } from "@/content/identity";
 import { versoNav, rectoNav, type NavItem } from "@/content/nav";
+import { MobileNav } from "./MobileNav";
 import styles from "./Header.module.css";
 
 /** Past this, the bar goes compact and starts hiding on downward scroll. */
@@ -144,6 +145,7 @@ export function Header() {
           onMouseLeave={leave}
         >
           {rectoNav.map(renderLink)}
+          <MobileNav />
         </div>
       </nav>
     </div>

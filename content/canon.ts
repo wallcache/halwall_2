@@ -12,10 +12,10 @@ export const canonProject = getProject("the-daily-canon")!;
 
 export const canon = {
   title: "The Daily Canon",
-  standfirst: "One work of literature a day, from four thousand years of it.",
+  standfirst: "One work of literature a day, drawn from a growing canon that reaches back roughly four millennia.",
 
   intro: [
-    `A literary calendar. Each day surfaces one curated work with a blurb, author context and metadata. You track what you have read, build a reading list, keep a streak, and — with a subscription — read the full text in the app.`,
+    `A literary calendar. Each day surfaces one curated work with a blurb, author context and metadata. You track what you have read, build a reading list, keep a streak, and with Folio you read the full text in the app.`,
     `It is not about speed-reading the classics or ticking boxes. It is about returning, daily, to language that has endured. The rhythm turns reading from an aspiration into a practice: modest enough to keep, meaningful enough to compound.`,
   ],
 
@@ -32,7 +32,7 @@ export const canon = {
   /** Straight from the 366-work dataset. */
   composition: {
     heading: "What is in it",
-    note: "366 works, one for every day of the year including the leap. 34 original languages, 46 nationalities, and a span from the Epic of Gilgamesh to Bolaño.",
+    note: "The house rule is that this is never a fixed list. Each year adds another year of daily works, every past year stays browsable, and the full-text library keeps growing underneath it. This is the shape of it today: 34 original languages, 46 nationalities, and a span from the Epic of Gilgamesh to Bola\u00f1o.",
     forms: [
       { name: "Novel", count: 164 },
       { name: "Poem", count: 51 },
@@ -53,7 +53,7 @@ export const canon = {
   /** Six dates every reader shares, every year. */
   feasts: {
     heading: "The fixed feasts",
-    note: "Most works are movable — each carries several candidate days and reaches you on whichever arrives first in your journey. Six are fixed, and every reader gets them on the same day.",
+    note: "Most works are movable. Each carries several candidate days and reaches you on whichever arrives first in your own journey, so the same book finds one reader in October and another in March. A handful are fixed, and those are the days the whole readership turns the same page.",
     items: [
       { date: "25 December", work: "A Christmas Carol", author: "Dickens", why: "Christmas Day" },
       { date: "16 June", work: "Ulysses", author: "Joyce", why: "Bloomsday" },
@@ -80,10 +80,10 @@ export const canon = {
   features: {
     heading: "What it does",
     items: [
-      { name: "The library", detail: "128+ full texts read in-app, chapter by chapter, with bookmarks and progress. Sourced from Project Gutenberg and formatted by hand." },
+      { name: "The library", detail: "A growing full-text library read in-app, chapter by chapter, with bookmarks and progress. Many works written in other languages carry a toggle to the original alongside the translation." },
       { name: "Visual themes", detail: "48 work-specific themes — CSS, animation and WebGL — that transform the page for works like Hamlet, Moby-Dick and Wuthering Heights." },
-      { name: "Reading paths", detail: "Curated thematic journeys through the canon: The Dark Mirror for gothic and horror, Woolf's Room for women writers, The Philosopher's Path." },
-      { name: "Bloomy", detail: "An AI literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next." },
+      { name: "Reading paths and immersions", detail: "Curated journeys through the canon, and time-boxed events read together: a Chekhov story each morning for ten mornings, a Dickinson poem a day for three weeks." },
+      { name: "Bloomy", detail: "A literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next. Bloomy is genderless, and labelled as AI wherever it appears." },
       { name: "Its own weather", detail: "Every book gets an ambience: rain, wind, fire, waves, a train. Use the suggested mix or build your own from The storm, By the fire, The riverbank, A window seat." },
       { name: "Immersions", detail: "One work, held for days, read together with a cohort. The Chekhov Ten, The Dickinson Immersion, Aesop's Fables." },
       { name: "My Canon", detail: "Rank what you have read against what you have read before, one binary choice at a time, and get a reader type out of it." },
@@ -107,6 +107,7 @@ export const canon = {
   },
 
   press: { label: "App Store", honour: "Featured on the App Store" },
-  wordmark: "/media/brand/tdc-wordmark.svg",
+  wordmark: "/media/brand/tdc-wordmark-green.svg",
+  icon: "/media/brand/tdc-icon.webp",
   appleMark: "/media/brand/apple-mark.svg",
 } as const;

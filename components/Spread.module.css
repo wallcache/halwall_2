@@ -386,19 +386,6 @@
   pointer-events: none;
 }
 
-/* A wide, invisible grab strip. Dragging engages only here, which is what
-   stops a stray pointer-down anywhere on the hero from yanking the seam. */
-.grab {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--gutter-pct);
-  width: 120px;
-  transform: translateX(-50%);
-  z-index: 4;
-  cursor: ew-resize;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .nameDrift { transform: none; }
 }
@@ -431,7 +418,7 @@
 
   .seam { top: var(--gutter-pct); bottom: auto; left: 0; right: 0; width: auto; height: 1px; }
 
-  .grab, .portraitCaption { display: none; }
+  .portraitCaption { display: none; }
 
   .portraitVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
   .portraitRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }

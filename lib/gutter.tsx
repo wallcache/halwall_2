@@ -46,7 +46,15 @@ interface GutterValue {
   release: () => void;
   lockTo: (mode: Mode) => void;
   unlock: () => void;
-  /** Direct write, for the drag gesture. Bypasses tweening entirely. */
+  /**
+   * Follow the pointer. Eases continuously toward `value` rather than tweening
+   * to a fixed state, so the seam trails the cursor with a little weight
+   * instead of being pinned to it.
+   */
+  follow: (value: number) => void;
+  /** Stop following and settle back to the spread. */
+  endFollow: () => void;
+  /** Direct write. Bypasses easing entirely. */
   set: (value: number) => void;
   /** Reads the live value without subscribing to it. */
   read: () => number;
@@ -108,6 +116,9 @@ export function GutterProvider({
   const commit = useCallback(
     (next: Mode) => {
       if (locked) return;
+      following.current = false;
+      cancelAnimationFrame(followFrame.current);
+      followFrame.current = 0;
       setMode(next);
       to(TARGET[next], next === "spread" ? 0.7 : 0.9);
       document.cookie = `${COOKIE}=${next};path=/;max-age=${COOKIE_MAX_AGE};samesite=lax`;
@@ -119,6 +130,9 @@ export function GutterProvider({
 
   const lockTo = useCallback(
     (next: Mode) => {
+      following.current = false;
+      cancelAnimationFrame(followFrame.current);
+      followFrame.current = 0;
       setLocked(true);
       setMode(next);
       to(TARGET[next], 0.9);
@@ -137,6 +151,51 @@ export function GutterProvider({
   );
 
   const read = useCallback(() => proxy.current.value, []);
+
+  /*
+    Pointer following.
+
+    Deliberately its own loop rather than a tween per pointermove: a tween
+    restarted on every event never gets past its own opening frames, which
+    reads as the seam stuttering rather than trailing. Here the pointer only
+    moves a target and one rAF loop closes the gap, so the seam has weight and
+    arrives late by design.
+  */
+  const followTarget = useRef(0.5);
+  const followFrame = useRef(0);
+  const following = useRef(false);
+
+  const followLoop = useCallback(() => {
+    const gap = followTarget.current - proxy.current.value;
+    write(proxy.current.value + gap * 0.12);
+
+    if (!following.current && Math.abs(gap) < 0.002) {
+      write(followTarget.current);
+      followFrame.current = 0;
+      return;
+    }
+    followFrame.current = requestAnimationFrame(followLoop);
+  }, [write]);
+
+  const follow = useCallback(
+    (value: number) => {
+      if (locked) return;
+      anim.current?.kill();
+      following.current = true;
+      followTarget.current = clamp(value);
+      setMode(value > 0.72 ? "verso" : value < 0.28 ? "recto" : "spread");
+      if (!followFrame.current) followFrame.current = requestAnimationFrame(followLoop);
+    },
+    [locked, followLoop],
+  );
+
+  const endFollow = useCallback(() => {
+    if (!following.current) return;
+    following.current = false;
+    followTarget.current = TARGET.spread;
+    setMode("spread");
+    if (!followFrame.current) followFrame.current = requestAnimationFrame(followLoop);
+  }, [followLoop]);
 
   /**
    * Release of a drag. This is the part the reference prototype promised and
@@ -170,11 +229,17 @@ export function GutterProvider({
     [write],
   );
 
-  useEffect(() => () => void anim.current?.kill(), []);
+  useEffect(
+    () => () => {
+      anim.current?.kill();
+      cancelAnimationFrame(followFrame.current);
+    },
+    [],
+  );
 
   const value = useMemo<GutterValue>(
-    () => ({ mode, locked, commit, release, lockTo, unlock, set, read, settle }),
-    [mode, locked, commit, release, lockTo, unlock, set, read, settle],
+    () => ({ mode, locked, commit, release, lockTo, unlock, follow, endFollow, set, read, settle }),
+    [mode, locked, commit, release, lockTo, unlock, follow, endFollow, set, read, settle],
   );
 
   return <GutterContext.Provider value={value}>{children}</GutterContext.Provider>;

@@ -16,9 +16,9 @@ export const projects: Project[] = [
   {
     slug: "the-daily-canon",
     title: "The Daily Canon",
-    line: "One carefully chosen work of literature for each day of the year.",
+    line: "One carefully chosen work of literature every day.",
     description:
-      "Novels, short stories, poems, essays, plays, philosophy: great writing in all its forms, delivered one day at a time. 366 works spanning three millennia, one assigned to every day of the year. Open the app, see today's work, and let the daily rhythm turn reading from aspiration into practice.",
+      "Novels, short stories, poems, essays, plays, philosophy: great writing in all its forms, delivered one day at a time. Drawn from a growing canon that reaches back roughly four millennia. Open the app, meet today's work, and let the daily rhythm turn reading from an aspiration into a practice.",
     primary: { url: "https://thedailycanon.org", text: "thedailycanon.org" },
     links: [
       { url: "https://thedailycanon.org", text: "thedailycanon.org" },
@@ -30,10 +30,8 @@ export const projects: Project[] = [
     ],
     stack: ["Next.js", "TypeScript", "Supabase", "Capacitor"],
     figures: [
-      // TODO(hal): confirm the live download figure. The design brief says 6,000+;
-      // the handoff's content.json claimed 10,000+ with no source. Using the brief.
-      { value: 6000, suffix: "+", label: "downloads" },
-      { value: 366, label: "works, one for every day" },
+      { value: 10000, suffix: "+", label: "downloads" },
+      { value: 4.8, suffix: "\u2605", label: "on the App Store" },
     ],
     featured: true,
   },

@@ -30,6 +30,50 @@ export default function WorkPage() {
           The ledger · every role, and the number it is remembered by
         </h2>
         <Ledger />
+        <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.5">
+          <Document size={15} /> Full CV (PDF) <ArrowUpRight size={13} />
+        </a>
+      </section>
+
+      <section className={shell.section} aria-labelledby="education">
+        <h2 id="education" className={shell.sectionHead}>
+          Education and certifications
+        </h2>
+        <div className={styles.education}>
+          {education.map((e) => (
+            <article key={e.slug} className={styles.eduItem}>
+              {e.logo && (
+                <Image
+                  className={styles.eduLogo}
+                  src={e.logo}
+                  alt=""
+                  aria-hidden="true"
+                  width={92}
+                  height={92}
+                />
+              )}
+              <div className={styles.eduHead}>
+                <h3 className={styles.eduInstitution}>{e.institution}</h3>
+                <p className={styles.eduDegree}>{e.degree}</p>
+                <p className={styles.eduDates}>{e.dateRange}</p>
+              </div>
+              <div className={styles.eduBody}>
+                {e.details && <p className={styles.eduDetails}>{e.details}</p>}
+                {e.highlights && (
+                  <ul className={styles.eduHighlights}>
+                    {e.highlights.map((h) => (
+                      <li key={h} className={styles.eduHighlight}>
+                        <span className={styles.eduBullet} aria-hidden="true" />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+
       </section>
 
       <section className={shell.section} aria-labelledby="studies">
@@ -75,49 +119,6 @@ export default function WorkPage() {
         ))}
       </section>
 
-      <section className={shell.section} aria-labelledby="education">
-        <h2 id="education" className={shell.sectionHead}>
-          Education
-        </h2>
-        <div className={styles.education}>
-          {education.map((e) => (
-            <article key={e.slug} className={styles.eduItem}>
-              {e.logo && (
-                <Image
-                  className={styles.eduLogo}
-                  src={e.logo}
-                  alt=""
-                  aria-hidden="true"
-                  width={92}
-                  height={92}
-                />
-              )}
-              <div className={styles.eduHead}>
-                <h3 className={styles.eduInstitution}>{e.institution}</h3>
-                <p className={styles.eduDegree}>{e.degree}</p>
-                <p className={styles.eduDates}>{e.dateRange}</p>
-              </div>
-              <div className={styles.eduBody}>
-                {e.details && <p className={styles.eduDetails}>{e.details}</p>}
-                {e.highlights && (
-                  <ul className={styles.eduHighlights}>
-                    {e.highlights.map((h) => (
-                      <li key={h} className={styles.eduHighlight}>
-                        <span className={styles.eduBullet} aria-hidden="true" />
-                        <span>{h}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.5">
-          <Document size={15} /> Full CV (PDF) <ArrowUpRight size={13} />
-        </a>
-      </section>
     </PageShell>
   );
 }

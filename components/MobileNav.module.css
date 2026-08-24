@@ -1,0 +1,133 @@
+.trigger {
+  display: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--verso-rule);
+  background: none;
+  color: var(--verso-ink);
+  cursor: pointer;
+}
+
+.wrap[data-mode="recto"] .trigger { color: var(--recto-ink); border-color: var(--recto-rule); }
+
+@media (max-width: 760px) {
+  .trigger { display: grid; }
+}
+
+/* --------------------------------------------------------------------------
+   The sheet
+   -------------------------------------------------------------------------- */
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  /* The split survives at full size: verso above the gutter, recto below. */
+  background:
+    linear-gradient(
+      to bottom,
+      var(--verso-ground) 0 var(--gutter-pct),
+      var(--recto-ground) var(--gutter-pct) 100%
+    );
+  /* Clipped open from the top, so it unfolds rather than sliding in. */
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 620ms var(--ease-in-out-quart);
+  overscroll-behavior: contain;
+}
+
+.sheet[data-open="true"] { clip-path: inset(0 0 0 0); }
+
+.sheetHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem var(--shell-x);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.14em;
+  font-size: var(--step-0);
+}
+
+.brandVerso { font-family: var(--font-mono); font-weight: 600; color: var(--verso-ink); }
+.brandRecto { font-family: var(--font-serif); font-style: italic; color: var(--verso-ink); }
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--verso-rule);
+  background: none;
+  color: var(--verso-ink);
+  cursor: pointer;
+}
+
+.links {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 0 var(--shell-x);
+}
+
+.link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.6rem 0;
+  font-size: clamp(2rem, 11vw, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  /* Staggered in behind the sheet, so the panel arrives before its contents. */
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 460ms var(--ease-out-expo),
+    transform 620ms var(--ease-out-expo);
+  transition-delay: calc(var(--i) * 65ms + 180ms);
+}
+
+.sheet[data-open="true"] .link { opacity: 1; transform: none; }
+
+.linkVerso { font-family: var(--font-mono); font-weight: 500; color: var(--verso-ink); }
+.linkRecto { font-family: var(--font-serif); font-style: italic; color: var(--recto-ink); }
+
+.index {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+}
+
+.linkVerso .index { color: var(--verso-accent); }
+.linkRecto .index { color: var(--recto-accent); }
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem var(--shell-x) calc(1.5rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--recto-rule);
+}
+
+.social {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--recto-ink-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet { transition: none; }
+  .link { transition: none; opacity: 1; transform: none; }
+}

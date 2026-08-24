@@ -219,3 +219,48 @@
 @media (prefers-reduced-motion: reduce) {
   .feature:hover { transform: none; }
 }
+
+/* ---- brand row --------------------------------------------------------- */
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.9rem, 2vw, 1.4rem);
+  margin-bottom: clamp(1.25rem, 3vh, 2rem);
+}
+
+.brandIcon {
+  flex: 0 0 auto;
+  width: clamp(48px, 6vw, 68px);
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px -18px rgb(0 0 0 / 0.5);
+}
+
+.brandTitle {
+  font-family: var(--font-serif);
+  font-size: var(--step-2);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.brandMeta {
+  margin-top: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.brandRating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
