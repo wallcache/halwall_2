@@ -7,6 +7,7 @@ import { canon, canonProject } from "@/content/canon";
 import { workForDate, formatDay } from "@/lib/today";
 import { Reviews, Rating } from "@/components/Reviews";
 import { AppStoreCta } from "@/components/AppStoreCta";
+import { TodayPhone } from "@/components/TodayPhone";
 import Image from "next/image";
 import styles from "./Canon.module.css";
 
@@ -55,49 +56,12 @@ export default function CanonPage() {
         <Reviews />
       </section>
 
-      {/* ----------------------------------------------------------------
-          Today. The page does the thing rather than describing it: this is
-          the actual work the app serves today, from the same 366-entry
-          dataset it ships. It is different tomorrow.
-         ---------------------------------------------------------------- */}
+      {/* ---------------- today, in the app ---------------- */}
       <section className={shell.section} aria-labelledby="today">
         <h2 id="today" className={shell.sectionHead}>
           Today, in the app
         </h2>
-
-        <article className={styles.today}>
-          <div>
-            <p className={styles.stamp}>
-              <span>{formatDay(now)}</span>
-              {work.day && <span className={styles.stampDay}>{work.day}</span>}
-            </p>
-
-            <h3 className={styles.workTitle}>
-              {work.title}
-              <span className={styles.workYear}>
-                {work.year < 0 ? `${Math.abs(work.year)} BC` : work.year}
-              </span>
-            </h3>
-            <p className={styles.workAuthor}>{work.author}</p>
-
-            <ul className={styles.meta}>
-              <li className={styles.chip}>{work.type}</li>
-              <li className={styles.chip}>{work.language}</li>
-            </ul>
-
-            {work.blurb && <p className={styles.blurb}>{work.blurb}</p>}
-
-            <p className={styles.liveNote}>
-              Pulled from the live canon. Come back tomorrow and this is a
-              different book.
-            </p>
-          </div>
-
-          {work.extract && (
-            <blockquote className={styles.extract}>&ldquo;{work.extract}&rdquo;</blockquote>
-          )}
-        </article>
-
+        <TodayPhone work={work} date={formatDay(now)} href={appStore} />
         <div className={styles.links}>
           {canonProject.links.map((l) => (
             <a key={l.url} className={styles.link} href={l.url} target="_blank" rel="noopener noreferrer" data-magnetic="0.225">

@@ -1,0 +1,270 @@
+/* --------------------------------------------------------------------------
+   Today, in the app
+
+   A phone, and inside it the actual work the app is serving today. The blurb
+   is deliberately absent: showing the whole editorial here would be giving
+   away the thing the app exists to hand you each morning. You get the work,
+   the date, and the reason that date was chosen; the writing lives in the app.
+   -------------------------------------------------------------------------- */
+
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+
+/* ---- the phone --------------------------------------------------------- */
+
+.phone {
+  position: relative;
+  width: clamp(240px, 30vw, 320px);
+  aspect-ratio: 1179 / 2556;
+  padding: 10px;
+  border-radius: 46px;
+  background: linear-gradient(160deg, #3a3a3c, #1c1c1e 40%, #2c2c2e);
+  box-shadow:
+    0 2px 0 rgb(255 255 255 / 0.14) inset,
+    0 40px 80px -40px rgb(0 0 0 / 0.55),
+    0 8px 24px -12px rgb(0 0 0 / 0.35);
+  justify-self: end;
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 38px;
+  overflow: hidden;
+  /* The app's own ground, not the site's. */
+  background: #16201a;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The Dynamic Island, because a phone without one reads as a 2018 render. */
+.island {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 22px;
+  border-radius: 999px;
+  background: #000;
+  z-index: 3;
+}
+
+/* ---- the loading state -------------------------------------------------- */
+
+.boot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.9rem;
+  background: #16201a;
+  transition: opacity 620ms var(--ease-out-expo);
+}
+
+.wrap[data-loaded="true"] .boot {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bootMark {
+  width: 42px;
+  height: auto;
+  opacity: 0.9;
+}
+
+.bootBar {
+  width: 92px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  overflow: hidden;
+}
+
+.bootFill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: #b8cca4;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1100ms var(--ease-out-expo);
+}
+
+.wrap[data-booting="true"] .bootFill { transform: scaleX(1); }
+
+/* ---- the day view ------------------------------------------------------- */
+
+.day {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 3.2rem 1.25rem 1.25rem;
+  height: 100%;
+}
+
+/* Everything inside staggers in once the boot screen clears. */
+.day > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 620ms var(--ease-out-expo),
+    transform 780ms var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 90ms + 500ms);
+}
+
+.wrap[data-loaded="true"] .day > * {
+  opacity: 1;
+  transform: none;
+}
+
+.date {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.45);
+}
+
+.occasion {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b8cca4;
+}
+
+.title {
+  margin-top: 0.5rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.32rem;
+  line-height: 1.12;
+  color: #f4f0e6;
+  text-wrap: balance;
+}
+
+.year {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.5em;
+  color: rgb(255 255 255 / 0.4);
+  margin-left: 0.35em;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  color: rgb(244 240 230 / 0.8);
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.35rem; }
+
+.chip {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.07);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  color: rgb(255 255 255 / 0.62);
+}
+
+.extract {
+  margin-top: 0.7rem;
+  padding-left: 0.7rem;
+  border-left: 1.5px solid rgb(184 204 164 / 0.5);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: rgb(244 240 230 / 0.72);
+}
+
+/* The blurb's place, kept and left empty on purpose. */
+.locked {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.lockedLine {
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.lockedLine:nth-child(2) { width: 88%; }
+.lockedLine:nth-child(3) { width: 64%; }
+
+.lockedNote {
+  margin-top: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b8cca4;
+}
+
+/* ---- the copy beside it ------------------------------------------------- */
+
+.aside { max-width: 46ch; }
+
+.heading {
+  margin-top: 0;
+  font-family: var(--font-serif);
+  font-size: var(--step-3);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.body {
+  margin-top: 1.1rem;
+  font-family: var(--font-serif);
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+
+.meta {
+  margin-top: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.metaItem { display: flex; flex-direction: column; gap: 0.15rem; }
+.metaLabel { font-family: var(--font-mono); font-size: 0.54rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); }
+.metaValue { font-family: var(--font-serif); font-size: var(--step-0); color: var(--ink); }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+  .phone { justify-self: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot, .day > *, .bootFill { transition: none; }
+  .day > * { opacity: 1; transform: none; }
+}

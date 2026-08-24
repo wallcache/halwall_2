@@ -52,8 +52,19 @@ export function Spread() {
         AWAY from a side was what opened it. Taking one minus the fraction
         makes the side you move toward the side that opens.
       */
+      /*
+        Remapped from a live band rather than the full width.
+
+        Straight edge-to-edge meant the last fifth of the screen was all
+        gutter 1, so the seam hit the edge well before the cursor did and then
+        sat there — which is what read as snapping. The outer margins are dead
+        travel now, and the range in between covers the whole sweep, so the
+        seam is still moving when the cursor reaches the edge.
+      */
       const fraction = (e.clientX - left) / width;
-      follow(Math.min(1, Math.max(0, 1 - fraction)));
+      const LIVE = 0.16; // dead margin at each end
+      const eased = (fraction - LIVE) / (1 - LIVE * 2);
+      follow(Math.min(1, Math.max(0, 1 - eased)));
       if (!touched) setTouched(true);
     },
     [narrow, follow, touched],

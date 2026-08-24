@@ -14,14 +14,14 @@
 
 :root {
   /* -- verso: the engineer -------------------------------------------- */
-  --verso-ground: #333333;
-  --verso-ground-raised: #3b3b3b;
-  --verso-ground-hover: #414141;
+  --verso-ground: #242424;
+  --verso-ground-raised: #2c2c2c;
+  --verso-ground-hover: #323232;
   --verso-ink: #e9edf1;
   --verso-ink-muted: #b4b4b4;
   --verso-ink-faint: #8e8e8e;
-  --verso-rule: #484848;
-  --verso-rule-strong: #5a5a5a;
+  --verso-rule: #3a3a3a;
+  --verso-rule-strong: #4c4c4c;
   --verso-accent: #f0562a;
   --verso-accent-hover: #ff6b3d;
   --verso-accent-wash: rgb(240 86 42 / 0.14);
@@ -95,7 +95,7 @@
   :root {
     --recto-ground: #f4f0e6;
     --recto-ground-raised: #ebe6d9;
-    --verso-ground: #2e2e2e;
+    --verso-ground: #1f1f1f;
   }
 }
 
@@ -313,10 +313,3 @@ a {
   [data-parallax="fade"] { opacity: 1; }
 }
 
-/* Registered so it can be transitioned. An unregistered custom property is a
-   plain token to the engine and jumps between values instead of easing. */
-@property --bar-split {
-  syntax: "<percentage>";
-  inherits: true;
-  initial-value: 50%;
-}

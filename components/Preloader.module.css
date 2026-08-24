@@ -17,11 +17,18 @@
 
 .root[data-done="true"] { display: none; }
 
+/*
+  Exactly half each. They used to be 50.5% so their edges would not leave a
+  sub-pixel gap, but that made them overlap from 49.5% to 50.5% and the seam
+  sat inside the overlap rather than on the join, which is why the line looked
+  off-centre. A half-pixel outset on each keeps the gap closed without moving
+  where they meet.
+*/
 .half {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 50.5%;
+  width: calc(50% + 0.5px);
   transition: transform 1000ms var(--ease-in-out-quart);
   will-change: transform;
 }
@@ -39,7 +46,10 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  margin-left: -0.5px;
+  /* Centred on the join by its own width, not by a guessed offset. */
+  transform-origin: center;
+  translate: -50% 0;
+  z-index: 1;
   background: var(--verso-accent);
   transform: scaleY(0);
   transform-origin: center;

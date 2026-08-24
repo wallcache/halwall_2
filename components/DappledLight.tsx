@@ -213,12 +213,28 @@ const SMOOTH_TAU = 0.11;
 const FROZEN_T = 9;
 
 export function DappledLight() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hostRef = useRef<HTMLDivElement>(null);
   const { read } = useGutter();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const host = hostRef.current;
+    if (!host) return;
+
+    /*
+      The canvas is created here rather than rendered by React, and that is
+      load-bearing.
+
+      Teardown calls WEBGL_lose_context, as the spec requires. React StrictMode
+      mounts effects twice in development, and getContext() on a canvas that
+      already has one returns THAT context — the one just killed. Every call
+      after it then fails, shaders included, with an empty info log. Owning the
+      element means each mount gets a new canvas and a new context, and the
+      discarded one is still released properly.
+    */
+    const canvas = document.createElement("canvas");
+    canvas.className = styles.canvas;
+    canvas.setAttribute("aria-hidden", "true");
+    host.appendChild(canvas);
 
     const gl = canvas.getContext("webgl2", {
       antialias: false, // no geometric edges to alias
@@ -230,13 +246,13 @@ export function DappledLight() {
     if (!gl) {
       console.warn("[DappledLight] WebGL2 unavailable; the hero keeps its CSS ground.");
       canvas.dataset.light = "unavailable";
-      return;
+      return () => canvas.remove();
     }
     canvas.dataset.light = "on";
 
     const vs = compile(gl, gl.VERTEX_SHADER, VERT);
     const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) return;
+    if (!vs || !fs) return () => canvas.remove();
 
     const prog = gl.createProgram()!;
     gl.attachShader(prog, vs);
@@ -244,7 +260,7 @@ export function DappledLight() {
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
       console.error("[DappledLight]", gl.getProgramInfoLog(prog));
-      return;
+      return () => canvas.remove();
     }
     gl.useProgram(prog);
     gl.clearColor(0, 0, 0, 0);
@@ -374,8 +390,9 @@ export function DappledLight() {
         oldest, which shows up as unrelated canvases elsewhere going blank.
       */
       gl.getExtension("WEBGL_lose_context")?.loseContext();
+      canvas.remove();
     };
   }, [read]);
 
-  return <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />;
+  return <div ref={hostRef} className={styles.host} aria-hidden="true" />;
 }
