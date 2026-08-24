@@ -51,7 +51,7 @@ export function TwoLives() {
           <div className={styles.inner}>
             <p className={styles.eyebrow}>{half.eyebrow}</p>
             <p className={styles.body}>{half.body}</p>
-            <Link href={half.href} className={styles.link}>
+            <Link href={half.href} className={styles.link} data-magnetic="0.5">
               {half.label} <span className={styles.arrow} aria-hidden="true">→</span>
             </Link>
           </div>

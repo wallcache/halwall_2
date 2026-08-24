@@ -106,6 +106,9 @@ export function Spread() {
 
       dragging.current = true;
       velocity.current = 0;
+      // The magnet must let go of the portrait while it is being dragged, or
+      // the two pull the image in different directions at once.
+      if (source === "portrait") (e.currentTarget as HTMLElement).dataset.magnetic = "0";
       grab.current = {
         x: e.clientX,
         gutter: read(),
@@ -136,9 +139,11 @@ export function Spread() {
     [set],
   );
 
-  const endDrag = useCallback(() => {
+  const endDrag = useCallback((e?: React.PointerEvent) => {
     if (!dragging.current) return;
     dragging.current = false;
+    const el = e?.currentTarget as HTMLElement | undefined;
+    if (el?.dataset.magnetic === "0") el.dataset.magnetic = "0.12";
     // Hold hover off while the seam settles, or the release is immediately
     // overridden by whichever pane the cursor happens to be resting on.
     suppressHoverUntil.current = performance.now() + HOVER_SUPPRESS_MS;
@@ -261,6 +266,7 @@ export function Spread() {
       <div
         className={styles.portraitAnchor}
         data-draggable={!narrow}
+        data-magnetic="0.12"
         role={narrow ? undefined : "slider"}
         tabIndex={narrow ? undefined : 0}
         aria-label="Move the seam: left gives the page to the founder, right to the engineer"

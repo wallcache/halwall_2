@@ -9,7 +9,7 @@ import styles from "./GatedGallery.module.css";
 function Submit() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className={styles.submit} disabled={pending}>
+    <button type="submit" className={styles.submit} data-magnetic="0.5" disabled={pending}>
       {pending ? "Checking…" : "Unlock"}
     </button>
   );

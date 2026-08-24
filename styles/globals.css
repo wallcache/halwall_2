@@ -263,3 +263,29 @@ a {
   white-space: nowrap;
   border: 0;
 }
+
+/* ==========================================================================
+   Magnetic hover
+
+   Applied via `translate` rather than `transform`, so it composes with the
+   transforms elements already carry (the gutter offset, the scroll parallax)
+   instead of overwriting them. See lib/magnetic.ts.
+   ========================================================================== */
+
+[data-magnetic] {
+  translate: var(--mag-x, 0px) var(--mag-y, 0px);
+  /* Springs back slowly on release; follows quickly while engaged. */
+  transition: translate 620ms var(--ease-out-expo);
+}
+
+[data-magnetic][data-mag-active="true"] {
+  transition: translate 120ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-magnetic],
+  [data-magnetic][data-mag-active="true"] {
+    translate: none;
+    transition: none;
+  }
+}

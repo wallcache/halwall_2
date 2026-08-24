@@ -21,7 +21,7 @@ export function Doors() {
         {doors.map((door, i) => (
           // Alternating drift so the four cards do not move as one slab.
           <Parallax key={door.href} speed={i % 2 === 0 ? 0.07 : 0.14} fade>
-          <Link href={door.href} className={styles.door} data-side={door.side}>
+          <Link href={door.href} className={styles.door} data-side={door.side} data-magnetic="0.14">
             {door.image && (
               <div className={styles.doorMedia} aria-hidden="true">
                 <Image

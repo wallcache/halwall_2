@@ -82,7 +82,7 @@ export default function WorkPage() {
           ))}
         </div>
 
-        <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer">
+        <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.5">
           Full CV (PDF) <span aria-hidden="true">↗</span>
         </a>
       </section>

@@ -23,7 +23,7 @@ export default function IdentityPage() {
       <section className={shell.section}>
         <div className={styles.tiles}>
           {identityProjects.map((project) => (
-            <Link key={project.slug} href={`/making/identity/${project.slug}`} className={styles.tile}>
+            <Link key={project.slug} href={`/making/identity/${project.slug}`} className={styles.tile} data-magnetic="0.16">
               <Image
                 src={project.src}
                 alt={`${project.name} identity`}

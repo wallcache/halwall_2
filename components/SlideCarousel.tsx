@@ -92,7 +92,7 @@ export function SlideCarousel() {
         aria-label="The Daily Canon on the App Store — screenshots"
       >
         {slides.map((slide, i) => (
-          <figure key={slide.src} className={styles.slide} data-slide>
+          <figure key={slide.src} className={styles.slide} data-slide data-magnetic="0.18">
             <Image
               src={slide.src}
               alt={slide.caption}
@@ -109,6 +109,7 @@ export function SlideCarousel() {
         <button
           type="button"
           className={styles.btn}
+          data-magnetic="0.55"
           onClick={() => step(-1)}
           disabled={atStart}
           aria-label="Previous screenshot"
@@ -118,6 +119,7 @@ export function SlideCarousel() {
         <button
           type="button"
           className={styles.btn}
+          data-magnetic="0.55"
           onClick={() => step(1)}
           disabled={atEnd}
           aria-label="Next screenshot"
