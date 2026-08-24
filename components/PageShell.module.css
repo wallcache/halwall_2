@@ -1,7 +1,36 @@
 .shell {
+  position: relative;
+  isolation: isolate;
   min-height: 100dvh;
   background: var(--ground);
   color: var(--ink);
+}
+
+.lightWell {
+  position: sticky;
+  top: 0;
+  height: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/*
+  Held well back. On the hero the canopy is the picture; here it is the paper
+  the page is printed on, and a page of body copy has to stay readable across
+  every bright patch that drifts under it.
+*/
+.light {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100dvh;
+  opacity: 0.4;
+}
+
+/* Everything else sits above it. */
+.header,
+.body {
+  position: relative;
+  z-index: 1;
 }
 
 .header {

@@ -33,6 +33,7 @@ export default async function WorkPage() {
       side="verso"
       eyebrow="Measured in runtime"
       index={INDEX}
+      light
       title="The engineering"
       standfirst="Four years of production pipelines across insurance and finance. The ledger first, then the three that are worth explaining properly rather than listing."
     >

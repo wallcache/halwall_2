@@ -212,7 +212,7 @@ const SMOOTH_TAU = 0.11;
 /** Spec: reduced motion freezes the clock here, but the cursor still responds. */
 const FROZEN_T = 9;
 
-export function DappledLight() {
+export function DappledLight({ className }: { className?: string } = {}) {
   const hostRef = useRef<HTMLDivElement>(null);
   const { read } = useGutter();
 
@@ -394,5 +394,5 @@ export function DappledLight() {
     };
   }, [read]);
 
-  return <div ref={hostRef} className={styles.host} aria-hidden="true" />;
+  return <div ref={hostRef} className={`${styles.host} ${className ?? ""}`} aria-hidden="true" />;
 }
