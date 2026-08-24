@@ -20,11 +20,27 @@
   border: 1px solid transparent;
   border-radius: var(--radius-lg);
 
+  /*
+    Split at --bar-split, NOT at --gutter-pct.
+
+    Following the live gutter meant the bar's own boundary swept across the
+    links as the cursor moved, so "work" ended up sitting on the recto ground
+    and the Canon links on the verso ground, each going invisible against it.
+    It read as the words fading out, and no amount of colour-swapping at the
+    extremes fixed the middle.
+
+    The bar holds a steady 50/50 instead, so the verso links are always on
+    verso ground and the recto links always on recto. It still commits fully
+    when a route pins the gutter, because that is a discrete change and it can
+    transition to it.
+  */
+  --bar-split: 50%;
+
   background:
     linear-gradient(
       to right,
-      color-mix(in srgb, var(--verso-ground) 92%, transparent) 0 var(--gutter-pct),
-      color-mix(in srgb, var(--recto-ground) 92%, transparent) var(--gutter-pct) 100%
+      color-mix(in srgb, var(--verso-ground) 92%, transparent) 0 var(--bar-split),
+      color-mix(in srgb, var(--recto-ground) 92%, transparent) var(--bar-split) 100%
     );
 
   backdrop-filter: blur(14px);
@@ -79,6 +95,7 @@
      a different one. The size and shape properties share one long duration so
      they arrive together; only colour is allowed to be quick. */
   transition:
+    --bar-split 900ms var(--ease-out-expo),
     padding 1100ms var(--ease-out-expo),
     max-width 1100ms var(--ease-out-expo),
     border-radius 1100ms var(--ease-out-expo),

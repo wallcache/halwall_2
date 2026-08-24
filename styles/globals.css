@@ -312,3 +312,11 @@ a {
   [data-parallax] { transform: none; }
   [data-parallax="fade"] { opacity: 1; }
 }
+
+/* Registered so it can be transitioned. An unregistered custom property is a
+   plain token to the engine and jumps between values instead of easing. */
+@property --bar-split {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}

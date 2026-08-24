@@ -13,11 +13,9 @@ import styles from "./Header.module.css";
 const COMPACT_AT = 90;
 /** Ignore jitter below this, or the bar flickers on trackpad noise. */
 const DIRECTION_THRESHOLD = 8;
-/** Grace period before the gutter falls back to the spread. */
-const RELEASE_DELAY = 90;
 
 export function Header() {
-  const { mode, commit, release } = useGutter();
+  const { mode } = useGutter();
   const pathname = usePathname();
   const barRef = useRef<HTMLElement>(null);
 
@@ -84,30 +82,6 @@ export function Header() {
    * group rather than each link, and the release is deferred just long enough
    * that crossing the gap between groups cancels it.
    */
-  const releaseTimer = useRef<number | null>(null);
-
-  const cancelRelease = useCallback(() => {
-    if (releaseTimer.current !== null) {
-      window.clearTimeout(releaseTimer.current);
-      releaseTimer.current = null;
-    }
-  }, []);
-
-  const enter = useCallback(
-    (side: Side) => {
-      cancelRelease();
-      commit(side);
-    },
-    [cancelRelease, commit],
-  );
-
-  const leave = useCallback(() => {
-    cancelRelease();
-    releaseTimer.current = window.setTimeout(release, RELEASE_DELAY);
-  }, [cancelRelease, release]);
-
-  useEffect(() => cancelRelease, [cancelRelease]);
-
   const renderLink = (item: NavItem) => (
     <Link
       key={item.href}
@@ -115,9 +89,6 @@ export function Header() {
       className={`${styles.link} ${item.side === "verso" ? styles.linkVerso : styles.linkRecto}`}
       data-current={pathname === item.href || pathname.startsWith(item.href + "/")}
       data-magnetic="0.203"
-      // Focus mirrors hover exactly, so a keyboard gets the real thing.
-      onFocus={() => enter(item.side)}
-      onBlur={leave}
     >
       {item.label}
     </Link>
@@ -126,24 +97,20 @@ export function Header() {
   return (
     <div className={styles.wrap} data-compact={compact} data-mode={mode}>
       <nav ref={barRef} className={styles.bar} aria-label="Primary" onPointerMove={onBarPointerMove}>
-        <div
-          className={styles.group}
-          onMouseEnter={() => enter("verso")}
-          onMouseLeave={leave}
-        >
-          {versoNav.map(renderLink)}
-        </div>
+        <div className={styles.group}>{versoNav.map(renderLink)}</div>
 
         <Link href="/" className={styles.wordmark} aria-label={`${identity.name} — home`}>
           <span className={styles.wordmarkVerso}>Hal</span>{" "}
           <span className={styles.wordmarkRecto}>Wall</span>
         </Link>
 
-        <div
-          className={`${styles.group} ${styles.groupRecto}`}
-          onMouseEnter={() => enter("recto")}
-          onMouseLeave={leave}
-        >
+        {/*
+          The header no longer commands the gutter. Hovering a link used to
+          commit the whole page to that side and leaving snapped it back to the
+          spread, which meant crossing the bar yanked the seam to halfway. The
+          seam now just keeps following the cursor, as it does everywhere else.
+        */}
+        <div className={`${styles.group} ${styles.groupRecto}`}>
           {rectoNav.map(renderLink)}
           <MobileNav />
         </div>

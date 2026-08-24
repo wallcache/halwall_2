@@ -40,7 +40,7 @@ export function Spread() {
    * toward the target rather than pinning to it, so the seam trails the hand.
    */
   const onHeroMove = useCallback(
-    (e: React.PointerEvent) => {
+    (e: PointerEvent) => {
       if (narrow || e.pointerType === "touch") return;
       const el = heroRef.current;
       if (!el) return;
@@ -58,6 +58,20 @@ export function Spread() {
     },
     [narrow, follow, touched],
   );
+
+  /*
+    Listened for on the window rather than the hero, so the seam keeps tracking
+    while the cursor is over the header or anything else layered on top. Scoped
+    to the hero it stalled the moment you touched the bar.
+  */
+  useEffect(() => {
+    window.addEventListener("pointermove", onHeroMove, { passive: true });
+    document.addEventListener("pointerleave", endFollow);
+    return () => {
+      window.removeEventListener("pointermove", onHeroMove);
+      document.removeEventListener("pointerleave", endFollow);
+    };
+  }, [onHeroMove, endFollow]);
 
   useEffect(() => {
     const mq = window.matchMedia(NARROW);
@@ -85,8 +99,6 @@ export function Spread() {
       ref={heroRef}
       className={styles.hero}
       data-touched={touched}
-      onPointerMove={onHeroMove}
-      onPointerLeave={endFollow}
     >
       <DappledLight />
 
