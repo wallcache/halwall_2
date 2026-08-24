@@ -1,0 +1,43 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import { PageShell, shellStyles } from "@/components/PageShell";
+import { identityProjects } from "@/content/identity-work";
+import styles from "../Making.module.css";
+
+export const metadata: Metadata = {
+  title: "Identity",
+  description:
+    "Twelve logo and brand identity projects from the WallCache years, for businesses from startups through to established brands.",
+};
+
+export default function IdentityPage() {
+  return (
+    <PageShell
+      side="verso"
+      eyebrow="Making · 02"
+      title="Identity"
+      standfirst="Logo and brand identity work, mostly between 2019 and 2021, for businesses from startups through to established brands."
+    >
+      <section className={shellStyles.section}>
+        <div className={styles.tiles}>
+          {identityProjects.map((project) => (
+            <Link key={project.slug} href={`/making/identity/${project.slug}`} className={styles.tile}>
+              <Image
+                src={project.src}
+                alt={`${project.name} identity`}
+                fill
+                sizes="(max-width: 760px) 50vw, 25vw"
+                style={{ objectFit: "contain" }}
+              />
+              <span className={styles.tileName}>
+                {project.name}
+                {project.description && <span className={styles.tileDesc}>{project.description}</span>}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </PageShell>
+  );
+}

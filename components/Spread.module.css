@@ -1,0 +1,423 @@
+.hero {
+  position: relative;
+  height: 100dvh;
+  min-height: 560px;
+  overflow: hidden;
+  /* Contains the difference-blend of the masthead so it cannot reach the nav. */
+  isolation: isolate;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   The two panes.
+
+   Both are full-bleed and stacked; `clip-path` decides how much of each you
+   can see. Clipping hides pixels rather than content, which is why the
+   collapsed side is also marked inert — see Spread.tsx.
+   -------------------------------------------------------------------------- */
+
+.pane {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: clamp(1.25rem, 4vw, 3.5rem) var(--shell-x);
+  padding-top: clamp(1.5rem, 5vw, 4rem);
+  will-change: clip-path;
+}
+
+.paneVerso {
+  background: var(--verso-ground);
+  color: var(--verso-ink);
+  clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
+}
+
+.paneRecto {
+  background: var(--recto-ground);
+  color: var(--recto-ink);
+  text-align: right;
+  clip-path: inset(0 0 0 var(--gutter-pct));
+}
+
+.eyebrow {
+  font-size: var(--step--1);
+  line-height: 1.8;
+  max-width: 22ch;
+}
+
+.paneRecto .eyebrow {
+  margin-left: auto;
+}
+
+.eyebrowVerso {
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--verso-ink-muted);
+}
+
+.eyebrowVerso strong {
+  display: block;
+  font-weight: 500;
+  color: var(--verso-accent);
+}
+
+.eyebrowRecto {
+  font-family: var(--font-serif);
+  font-size: var(--step-0);
+  letter-spacing: 0.01em;
+  color: var(--recto-ink-muted);
+}
+
+.eyebrowRecto strong {
+  display: block;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--recto-accent);
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 2vw, 1.4rem);
+  align-self: end;
+}
+
+.paneRecto .foot {
+  align-items: flex-end;
+}
+
+.claim {
+  max-width: 34ch;
+  font-size: var(--step-1);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.claimVerso {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--verso-ink);
+}
+
+.claimRecto {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--recto-ink);
+}
+
+/* Depth staging: committing to a side gives it more to say. The extra
+   paragraph is not merely faded, it is genuinely folded away, so the pane at
+   rest stays a masthead rather than a wall of text. */
+.deep {
+  max-width: var(--measure);
+  font-size: var(--step--1);
+  line-height: 1.75;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity var(--dur-mid) var(--ease-out-expo),
+    max-height var(--dur-slow) var(--ease-out-expo);
+}
+
+.pane[data-open="true"] .deep {
+  opacity: 1;
+  max-height: 14em;
+}
+
+.deepVerso {
+  font-family: var(--font-mono);
+  color: var(--verso-ink-muted);
+}
+
+.deepRecto {
+  font-family: var(--font-serif);
+  color: var(--recto-ink-muted);
+}
+
+.figures {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  flex-wrap: wrap;
+}
+
+.paneRecto .figures {
+  justify-content: flex-end;
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.figureValue {
+  font-size: var(--step-2);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.paneVerso .figureValue {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--verso-accent);
+}
+
+.paneRecto .figureValue {
+  font-family: var(--font-serif);
+  color: var(--recto-accent);
+}
+
+.figureLabel {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  max-width: 16ch;
+}
+
+.paneVerso .figureLabel { color: var(--verso-ink-faint); }
+.paneRecto .figureLabel { color: var(--recto-ink-faint); }
+
+/* --------------------------------------------------------------------------
+   The masthead
+
+   Set once, never duplicated: "Hal" in the machine's voice and "Wall" in the
+   book's, with the seam passing between the two words at rest. `difference`
+   inks it against whichever ground has claimed that pixel, so one <h1> stays
+   legible across both worlds as the seam travels.
+   -------------------------------------------------------------------------- */
+
+.nameLayer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  padding-bottom: clamp(6rem, 22vh, 14rem);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.22em;
+  font-size: var(--step-5);
+  line-height: 0.92;
+  color: #fff;
+  mix-blend-mode: difference;
+  white-space: nowrap;
+}
+
+.nameHal {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+}
+
+.nameWall {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.025em;
+}
+
+@supports not (mix-blend-mode: difference) {
+  .name { mix-blend-mode: normal; color: var(--verso-ink); }
+}
+
+/* --------------------------------------------------------------------------
+   Portrait
+
+   One image, two grades. Each copy is clipped to its own side by the same
+   number that drives the panes, so the face is cold and technical on the
+   verso and warm on the recto, with the change happening at the seam.
+   -------------------------------------------------------------------------- */
+
+.portraitLayer {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: clamp(190px, 23vw, 330px);
+  aspect-ratio: 4 / 5;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.portraitVerso {
+  clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
+  filter: grayscale(1) contrast(1.22) brightness(0.86);
+}
+
+.portraitRecto {
+  clip-path: inset(0 0 0 var(--gutter-pct));
+  filter: sepia(0.18) saturate(0.82) contrast(1.04) brightness(1.04);
+}
+
+.portraitCaption {
+  position: absolute;
+  left: 50%;
+  bottom: -1.6rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--verso-ink-faint);
+}
+
+/* --------------------------------------------------------------------------
+   The seam and its handle
+   -------------------------------------------------------------------------- */
+
+.seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--gutter-pct);
+  width: var(--gutter-rule-width);
+  background: var(--verso-accent);
+  opacity: 0.55;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.handle {
+  position: absolute;
+  left: var(--gutter-pct);
+  bottom: clamp(2.2rem, 7vh, 4rem);
+  transform: translateX(-50%);
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--verso-accent);
+  background: color-mix(in srgb, var(--verso-ground) 82%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--verso-accent);
+  cursor: ew-resize;
+  transition:
+    transform var(--dur-fast) var(--ease-out-expo),
+    background-color var(--dur-fast) var(--ease-out-expo);
+}
+
+.handle:hover,
+.handle:focus-visible {
+  transform: translateX(-50%) scale(1.14);
+  background: var(--verso-accent);
+  color: var(--verso-ground);
+}
+
+.handleGlyph {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: -0.08em;
+  pointer-events: none;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(0.75rem, 3vh, 1.5rem);
+  transform: translateX(-50%);
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--verso-ink-faint);
+  transition: opacity var(--dur-slow) var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.hero[data-touched="true"] .hint {
+  opacity: 0.35;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: the gutter turns horizontal
+
+   Designed, not squashed. The spread becomes two stacked bands with the seam
+   running across them, and the drag control is removed outright rather than
+   hidden with opacity — an invisible 46px button in the tab order is a bug.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .hero {
+    height: auto;
+    min-height: 100dvh;
+    touch-action: auto;
+  }
+
+  .paneVerso {
+    clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
+  }
+
+  .paneRecto {
+    clip-path: inset(var(--gutter-pct) 0 0 0);
+    text-align: left;
+  }
+
+  .paneRecto .eyebrow,
+  .paneRecto .foot,
+  .paneRecto .figures {
+    margin-left: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .name {
+    font-size: clamp(2.6rem, 15vw, 4.5rem);
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .nameLayer {
+    padding-bottom: 0;
+  }
+
+  .seam {
+    top: var(--gutter-pct);
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: var(--gutter-rule-width);
+  }
+
+  .handle,
+  .portraitCaption {
+    display: none;
+  }
+
+  .portraitLayer {
+    width: min(56vw, 260px);
+  }
+
+  .portraitVerso {
+    clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
+  }
+
+  .portraitRecto {
+    clip-path: inset(var(--gutter-pct) 0 0 0);
+  }
+}

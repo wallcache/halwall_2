@@ -1,0 +1,11 @@
+.backdrop { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: rgb(8 9 11 / 0.94); padding: clamp(1rem, 4vw, 3rem); }
+.figure { position: relative; display: flex; flex-direction: column; gap: 0.75rem; max-width: min(100%, 1400px); max-height: 100%; }
+.img { max-width: 100%; max-height: 78dvh; width: auto; height: auto; object-fit: contain; }
+.caption { font-family: var(--font-mono); font-size: var(--step--1); line-height: 1.5; color: #8a949e; text-align: center; max-width: 70ch; margin-inline: auto; }
+.count { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em; color: #5a626b; text-align: center; }
+.btn { position: fixed; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid #333a40; background: rgb(11 13 15 / 0.7); color: #e9edf1; font-family: var(--font-mono); cursor: pointer; transition: border-color var(--dur-fast), color var(--dur-fast); }
+.btn:hover, .btn:focus-visible { border-color: #f0562a; color: #f0562a; }
+.prev { left: clamp(0.5rem, 2vw, 1.5rem); }
+.next { right: clamp(0.5rem, 2vw, 1.5rem); }
+.close { position: fixed; top: clamp(0.75rem, 3vw, 1.5rem); right: clamp(0.75rem, 3vw, 1.5rem); transform: none; }
+@media (max-width: 760px) { .btn { top: auto; bottom: 1rem; transform: none; } .close { top: 1rem; bottom: auto; } }

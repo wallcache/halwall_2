@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+build
+.DS_Store
+*.pem
+.env*
+!.env.example
+next-env.d.ts
+tsconfig.tsbuildinfo
+.vercel
+
+# Photography and identity-work originals are archived outside git.
+# Only optimised derivatives under public/media are committed.
+/assets-originals

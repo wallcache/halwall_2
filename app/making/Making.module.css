@@ -1,0 +1,20 @@
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(1rem, 3vw, 2rem); }
+.card { position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 0.9rem; min-height: 260px; padding: clamp(1.25rem, 3vw, 2rem); overflow: hidden; border: 1px solid var(--rule); background: var(--ground-raised); transition: border-color var(--dur-mid) var(--ease-out-expo), transform var(--dur-mid) var(--ease-out-expo); }
+.card:hover, .card:focus-visible { border-color: var(--accent); transform: translateY(-4px); }
+.cardMedia { position: absolute; inset: 0; opacity: 0.2; transition: opacity var(--dur-slow) var(--ease-out-expo); }
+.card:hover .cardMedia { opacity: 0.32; }
+.card > *:not(.cardMedia) { position: relative; z-index: 1; }
+.cardLabel { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--accent); }
+.cardTitle { font-family: var(--font-voice); font-size: var(--step-2); line-height: 1.1; letter-spacing: -0.02em; align-self: end; }
+.cardLine { font-family: var(--font-voice); font-size: var(--step--1); line-height: 1.65; color: var(--ink-muted); }
+.groupHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin: clamp(2rem, 6vh, 3.5rem) 0 1.25rem; }
+.groupTitle { font-family: var(--font-voice); font-size: var(--step-2); letter-spacing: -0.02em; }
+.groupCount { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: clamp(0.75rem, 2vw, 1.25rem); }
+.tile { position: relative; display: block; aspect-ratio: 1; overflow: hidden; border: 1px solid var(--rule); background: var(--ground-raised); transition: border-color var(--dur-mid) var(--ease-out-expo); }
+.tile:hover, .tile:focus-visible { border-color: var(--accent); }
+.tile img { object-fit: contain; padding: 12%; transition: transform var(--dur-slow) var(--ease-out-expo); }
+.tile:hover img { transform: scale(1.05); }
+.tileName { position: absolute; left: 0; right: 0; bottom: 0; padding: 0.6rem 0.7rem; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--ink); background: linear-gradient(to top, var(--ground) 30%, transparent); }
+.tileDesc { display: block; margin-top: 0.15rem; color: var(--ink-faint); font-size: 0.56rem; }
+@media (prefers-reduced-motion: reduce) { .card:hover, .tile:hover img, .card:hover .cardMedia { transform: none; } }
