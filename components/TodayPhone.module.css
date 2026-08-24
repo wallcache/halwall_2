@@ -10,17 +10,19 @@
 .wrap {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(2rem, 6vw, 5rem);
+  gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
   /*
-    The phone is pinned to the end of its column, which put it hard against the
-    page's own gutter with nothing between a rendered device and the edge of the
-    screen. It reads as a screenshot that has been cropped rather than as an
-    object sitting on the page, and the App Store pill hanging off its corner
-    made that worse. Padding here rather than a margin on the phone, so the
-    badge that overhangs it is inset by the same amount.
+    Capped and centred rather than stretched across the page.
+
+    The text column was a greedy 1fr, so on a wide screen it took every pixel
+    the phone did not and shoved the two of them into opposite corners with a
+    field of paper between. Nothing in the pair is improved by being that far
+    apart: the phone is showing what the words are describing, and they should
+    be readable in one glance.
   */
-  padding-right: clamp(1.5rem, 9vw, 8rem);
+  max-width: 62rem;
+  margin-inline: auto;
   padding-bottom: clamp(1rem, 3vw, 2.5rem);
 }
 
