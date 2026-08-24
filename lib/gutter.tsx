@@ -183,7 +183,17 @@ export function GutterProvider({
       anim.current?.kill();
       following.current = true;
       followTarget.current = clamp(value);
-      setMode(value > 0.72 ? "verso" : value < 0.28 ? "recto" : "spread");
+      /*
+        Thresholds sit right out at the extremes on purpose.
+
+        `mode` is a discrete state: crossing it mutes one pane, blurs its
+        figures and collapses a column in the section below. At 0.28 and 0.72
+        that fired around 70% of the way across the screen, while the seam was
+        still travelling — a hard jump in the middle of a smooth sweep, which
+        is what read as the slider snapping. Out at 0.92 and 0.08 the state
+        only changes once the seam has effectively arrived.
+      */
+      setMode(value > 0.92 ? "verso" : value < 0.08 ? "recto" : "spread");
       if (!followFrame.current) followFrame.current = requestAnimationFrame(followLoop);
     },
     [locked, followLoop],
@@ -207,7 +217,7 @@ export function GutterProvider({
     (velocity: number) => {
       const projected = clamp(proxy.current.value + velocity * 0.18);
       const next: Mode =
-        projected > 0.72 ? "verso" : projected < 0.28 ? "recto" : "spread";
+        projected > 0.92 ? "verso" : projected < 0.08 ? "recto" : "spread";
 
       setMode(next);
       document.cookie = `${COOKIE}=${next};path=/;max-age=${COOKIE_MAX_AGE};samesite=lax`;
