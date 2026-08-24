@@ -41,11 +41,51 @@
   padding: clamp(2.5rem, 8vh, 5rem) var(--shell-x) clamp(4rem, 14vh, 9rem);
 }
 
+/*
+  Indexed pages read as a book page with a margin note: a pinned index in the
+  left margin, the text in a column beside it. The column is capped so the
+  measure stays readable on a wide screen, and the whole pair is centred rather
+  than pushed to one edge, which is what left the old layout with a hard column
+  of text and a field of nothing next to it.
+*/
+.bodyIndexed {
+  display: grid;
+  grid-template-columns: minmax(0, var(--rail-w)) minmax(0, 1fr);
+  gap: var(--rail-gap);
+  /*
+    The cap is on the content, not the padding box. Capping the border box
+    instead leaves the page's own horizontal padding sitting inside the limit,
+    so the text indents twice: once for the page gutter and once again for the
+    centring, and the body no longer lines up with the title above it.
+  */
+  max-width: calc(var(--shell-max) + var(--shell-x) * 2);
+  margin-inline: auto;
+}
+
+.column {
+  min-width: 0;
+}
+
+@media (max-width: 1080px) {
+  .bodyIndexed {
+    display: block;
+  }
+}
+
+/* The header sits over the same centred pair, so the title lines up with the
+   column beneath it rather than starting further out. */
+.headerIndexed > * {
+  max-width: var(--shell-max);
+  margin-inline: auto;
+}
+
 .section + .section {
   margin-top: clamp(3rem, 9vh, 6rem);
 }
 
 .sectionHead {
+  /* Anchor jumps from the page index land under a floating header otherwise. */
+  scroll-margin-top: clamp(6rem, 16vh, 9rem);
   display: flex;
   align-items: baseline;
   gap: 1rem;

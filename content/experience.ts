@@ -59,7 +59,7 @@ export const experience: Role[] = [
     description:
       "Built and runs a literary calendar on iOS and the web: one carefully chosen work of literature a day, drawn from a growing canon. Everything from the editorial curation to the Next.js and Supabase behind it, the Capacitor iOS build, and the subscriptions. Featured on the App Store.",
     skills: ["Next.js", "TypeScript", "Supabase", "Capacitor"],
-    figure: { value: 10000, suffix: "+", label: "downloads" },
+    figure: { value: 10000, live: "downloads", suffix: "+", label: "downloads" },
   },
   {
     slug: "axa",

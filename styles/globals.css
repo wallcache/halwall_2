@@ -83,6 +83,12 @@
 
   --gutter-rule-width: 1px;
   --shell-x: clamp(1.25rem, 4vw, 4rem);
+  /* The reading width of an interior page, measured across the content itself
+     rather than across the padding box. */
+  --shell-max: 76rem;
+  /* The margin an indexed page keeps for its index, and the air beside it. */
+  --rail-w: 11rem;
+  --rail-gap: clamp(2rem, 5vw, 4.5rem);
 
   /* -- motion ----------------------------------------------------------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

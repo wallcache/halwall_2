@@ -6,6 +6,7 @@ import { experience } from "@/content/experience";
 import { iconFor } from "@/content/tech-map";
 import { TechIcon } from "./TechIcon";
 import { CountUp } from "./CountUp";
+import { resolveFigure, type LiveCounts } from "@/lib/figures";
 import styles from "./Ledger.module.css";
 
 /**
@@ -13,7 +14,7 @@ import styles from "./Ledger.module.css";
  * reaches the reading line. The idea is the one worth keeping from the
  * reference set's Ledger direction, which its own critique said to graft here.
  */
-export function Ledger() {
+export function Ledger({ counts }: { counts: LiveCounts }) {
   const ref = useRef<HTMLUListElement>(null);
   const [live, setLive] = useState<Set<string>>(new Set());
 
@@ -77,7 +78,7 @@ export function Ledger() {
             {role.figure && (
               <>
                 <span className={styles.figureValue}>
-                  <CountUp figure={role.figure} run={live.has(role.slug)} />
+                  <CountUp figure={resolveFigure(role.figure, counts)} run={live.has(role.slug)} />
                 </span>
                 <span className={styles.figureLabel}>{role.figure.label}</span>
               </>

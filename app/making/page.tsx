@@ -7,6 +7,8 @@ import shell from "@/components/PageShell.module.css";
 import { allPhotos, photographyProjects } from "@/content/photography";
 import { identityProjects } from "@/content/identity-work";
 import { motionPieces } from "@/content/motion";
+import { ArrowUpRight } from "@/components/icons";
+import { AutoVideo } from "@/components/AutoVideo";
 import styles from "./Making.module.css";
 
 export const metadata: Metadata = {
@@ -25,7 +27,9 @@ export default function MakingPage() {
       title: "Photography",
       line: "Photography as an exercise in attention. Quiet scenes, unhurried light, ordinary beauty, plus commercial work for three clients.",
       meta: `${allPhotos.length} personal · ${commercialCount} commercial`,
-      image: "/media/photography/landscape/moorland-hikers-mist.webp",
+      image: "/media/photography/landscape/countryside-aerial-golden-hour.webp",
+      video: undefined,
+      posterTime: 0,
     },
     {
       href: "/making/identity",
@@ -33,15 +37,21 @@ export default function MakingPage() {
       title: "Identity",
       line: "Logo and brand identity work from the WallCache years, for businesses from startups through to established brands.",
       meta: `${identityProjects.length} projects`,
-      image: undefined,
+      image: "/media/identity/onlyone/hero.webp",
+      video: undefined,
+      posterTime: 0,
     },
     {
       href: "/making/motion",
       label: "03",
       title: "Motion",
+      // Motion has no still worth showing, so the card plays. The reel is the
+      // work; a frozen frame of a logo animation is just the logo.
       line: "Logo animation and motion graphics, built in After Effects.",
       meta: `${motionPieces.length} films`,
       image: undefined,
+      video: "/media/motion/wallcache-animations.mp4",
+      posterTime: 7,
     },
   ];
 
@@ -56,15 +66,34 @@ export default function MakingPage() {
         <div className={styles.cards}>
           {cards.map((c) => (
             <SweepLink key={c.href} href={c.href} className={styles.card}>
-              {c.image && (
-                <div className={styles.cardMedia} aria-hidden="true">
-                  <Image src={c.image} alt="" fill sizes="(max-width: 760px) 100vw, 33vw" style={{ objectFit: "cover" }} />
-                </div>
-              )}
-              <span className={styles.cardLabel}>{c.label}</span>
-              <h2 className={styles.cardTitle}>{c.title}</h2>
-              <p className={styles.cardLine}>{c.line}</p>
-              <span className={styles.groupCount}>{c.meta}</span>
+              <span className={styles.cardMedia} aria-hidden="true">
+                {c.video ? (
+                  <AutoVideo className={styles.cardVideo} src={c.video} posterTime={c.posterTime} />
+                ) : (
+                  c.image && (
+                    <Image
+                      src={c.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 760px) 100vw, 33vw"
+                      style={{ objectFit: "cover" }}
+                    />
+                  )
+                )}
+                <span className={styles.cardTint} />
+                <span className={styles.cardLabel}>{c.label}</span>
+              </span>
+
+              <span className={styles.cardRule} aria-hidden="true" />
+
+              <span className={styles.cardBody}>
+                <h2 className={styles.cardTitle}>
+                  {c.title}
+                  <ArrowUpRight className={styles.cardArrow} size={18} />
+                </h2>
+                <p className={styles.cardLine}>{c.line}</p>
+                <span className={styles.cardMeta}>{c.meta}</span>
+              </span>
             </SweepLink>
           ))}
         </div>

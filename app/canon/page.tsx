@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getCanonStats } from "@/lib/canon-stats";
 import { PageShell } from "@/components/PageShell";
 import shell from "@/components/PageShell.module.css";
 import { Parallax } from "@/components/Parallax";
@@ -14,13 +15,18 @@ import styles from "./Canon.module.css";
 export const metadata: Metadata = {
   title: "The Daily Canon",
   description:
-    "One work of literature a day, from four thousand years of it. 366 works across 34 languages and 46 nationalities, on iOS and the web. Featured on the App Store.",
+    // No hard count of the canon here. The app's own copy rules forbid framing
+    // it as a fixed 366 in user-facing text, and SEO description is exactly
+    // that: each year adds a year of daily works and the library grows under it.
+    "One work of literature a day, drawn from four thousand years of it. A growing canon, read in ten languages, on iOS and the web. Featured on the App Store.",
 };
 
 /** Today's work changes at midnight; there is no reason to hold it longer. */
 export const revalidate = 3600;
 
-export default function CanonPage() {
+export default async function CanonPage() {
+  const stats = await getCanonStats();
+
   const now = new Date();
   const work = workForDate(now);
 
@@ -48,7 +54,9 @@ export default function CanonPage() {
               <Rating value={4.8} size={14} />
               <span>4.8 on the App Store</span>
             </p>
-            <p className={styles.brandMeta}>10,000+ downloads · featured by Apple</p>
+            <p className={styles.brandMeta}>
+              {stats.downloads.toLocaleString("en-GB")}+ downloads · featured by Apple
+            </p>
           </div>
         </div>
         <Reviews />

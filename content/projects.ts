@@ -30,8 +30,8 @@ export const projects: Project[] = [
     ],
     stack: ["Next.js", "TypeScript", "Supabase", "Capacitor"],
     figures: [
-      { value: 10000, suffix: "+", label: "downloads" },
-      { value: 4.8, suffix: "\u2605", label: "on the App Store" },
+      { value: 10000, live: "downloads", suffix: "+", label: "downloads" },
+      { value: 4.8, count: false, suffix: "\u2605", label: "on the App Store" },
     ],
     featured: true,
   },

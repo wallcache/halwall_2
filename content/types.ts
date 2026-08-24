@@ -19,6 +19,17 @@ export interface Figure {
   unit?: string;
   /** What the number means, in as few words as possible. */
   label: string;
+  /**
+   * Names a figure whose value is counted at request time rather than written
+   * here. Content declares which number it is; `lib/figures` fills it in.
+   */
+  live?: "downloads" | "accounts";
+  /**
+   * Opts out of the count-up. A rating is not a quantity that accumulates, and
+   * animating 4.8 from zero spends most of a second displaying 3.1, then 4.4:
+   * numbers that are simply wrong, and legible enough to be read as the answer.
+   */
+  count?: false;
 }
 
 export interface Link {

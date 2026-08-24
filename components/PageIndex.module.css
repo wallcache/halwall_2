@@ -1,0 +1,97 @@
+.rail {
+  position: sticky;
+  /* Clears the floating header at its compact height, with air beneath. */
+  top: clamp(6rem, 15vh, 8.5rem);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  list-style: none;
+  /* The UA's inline padding survives list-style:none and would push the whole
+     rail out of line with the page title above it. */
+  padding: 0;
+  margin: 0;
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition: color var(--dur-mid) var(--ease-out-expo);
+}
+
+/* The rule is the position marker: short and grey until you are in that
+   section, then long and inked. Animating width would relayout the label on
+   every scroll frame, so it scales from the left instead. */
+.rule {
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left center;
+  scale: 0.55 1;
+  transition:
+    scale var(--dur-mid) var(--ease-out-expo),
+    background-color var(--dur-mid) var(--ease-out-expo);
+}
+
+.label {
+  transition: transform var(--dur-mid) var(--ease-out-expo);
+}
+
+.entry:hover,
+.entry:focus-visible {
+  color: var(--ink-muted);
+}
+
+.entry:hover .rule,
+.entry:focus-visible .rule {
+  scale: 0.8 1;
+}
+
+.entry[data-active="true"] {
+  color: var(--ink);
+}
+
+.entry[data-active="true"] .rule {
+  scale: 1 1;
+  background: var(--accent);
+}
+
+/* Overall depth through the page, so the rail answers "how much is left" as
+   well as "where am I". */
+.progress {
+  position: relative;
+  width: 1px;
+  height: clamp(3rem, 12vh, 6rem);
+  margin-left: 0.55rem;
+  background: var(--rule);
+}
+
+.progressFill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: top center;
+  scale: 1 0;
+}
+
+/* Below the two-column breakpoint the rail is redundant: the sections are a
+   short scroll apart and a sticky rail would eat a third of a phone screen. */
+@media (max-width: 1080px) {
+  .rail { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rule, .label, .progressFill { transition: none; }
+}

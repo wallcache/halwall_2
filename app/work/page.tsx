@@ -3,6 +3,7 @@ import Image from "next/image";
 import { PageShell } from "@/components/PageShell";
 import shell from "@/components/PageShell.module.css";
 import { Ledger } from "@/components/Ledger";
+import { getCanonStats } from "@/lib/canon-stats";
 import { caseStudies } from "@/content/case-studies";
 import { education } from "@/content/experience";
 import { cvPath } from "@/content/identity";
@@ -17,11 +18,21 @@ export const metadata: Metadata = {
     "Data engineering at Chubb: probabilistic entity resolution, a 30,000-line pipeline refactor, and a GDPR deletion framework tested against over-deletion.",
 };
 
-export default function WorkPage() {
+/** The live index in the left margin. Ids match the section headings below. */
+const INDEX = [
+  { id: "ledger", label: "The ledger" },
+  { id: "education", label: "Education" },
+  { id: "studies", label: "Case studies" },
+] as const;
+
+export default async function WorkPage() {
+  const stats = await getCanonStats();
+
   return (
     <PageShell
       side="verso"
       eyebrow="Measured in runtime"
+      index={INDEX}
       title="The engineering"
       standfirst="Four years of production pipelines across insurance and finance. The ledger first, then the three that are worth explaining properly rather than listing."
     >
@@ -29,7 +40,7 @@ export default function WorkPage() {
         <h2 id="ledger" className={shell.sectionHead}>
           The ledger · every role, and the number it is remembered by
         </h2>
-        <Ledger />
+        <Ledger counts={stats} />
         <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.225">
           <Document size={15} /> Full CV (PDF) <ArrowUpRight size={13} />
         </a>

@@ -1,12 +1,164 @@
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(1rem, 3vw, 2rem); }
-.card { border-radius: var(--radius-lg); position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 0.9rem; min-height: 260px; padding: clamp(1.25rem, 3vw, 2rem); overflow: hidden; border: 1px solid var(--rule); background: var(--ground-raised); transition: border-color var(--dur-mid) var(--ease-out-expo), transform var(--dur-mid) var(--ease-out-expo); }
-/* Lift and border now come from the sweep, in styles/sweep.css. */
-.cardMedia { position: absolute; inset: 0; opacity: 0.2; transition: opacity var(--dur-slow) var(--ease-out-expo); }
-.card:hover .cardMedia { opacity: 0.32; }
-.card > *:not(.cardMedia) { position: relative; z-index: 1; }
-.cardLabel { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--accent); }
-.cardTitle { font-family: var(--font-voice); font-size: var(--step-2); line-height: 1.1; letter-spacing: -0.02em; align-self: end; }
-.cardLine { font-family: var(--font-voice); font-size: var(--step--1); line-height: 1.65; color: var(--ink-muted); }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+/*
+  An editorial card: the work on top at full strength, the words below on solid
+  ground. The previous version laid the image behind the text at 20% opacity,
+  which is the worst of both -- the photograph is too faint to read as an image
+  and too present to leave the type clean.
+*/
+.card {
+  border-radius: var(--radius-lg);
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--ground-raised);
+  /* Lift and border colour come from the sweep, in styles/sweep.css. */
+}
+
+.cardMedia {
+  position: relative;
+  display: block;
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  background: var(--ground);
+}
+
+.cardMedia img,
+.cardVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  transition: transform 900ms var(--ease-out-expo), filter 620ms var(--ease-out-expo);
+  /* Held back a touch at rest so hovering has somewhere to go. */
+  filter: saturate(0.82);
+}
+
+.card:hover .cardMedia img,
+.card:focus-visible .cardMedia img,
+.card:hover .cardVideo,
+.card:focus-visible .cardVideo {
+  transform: scale(1.06);
+  filter: saturate(1.06);
+}
+
+/*
+  The green. A wash of the accent over the image, strongest at the bottom edge
+  where the type begins, so the photograph hands off to the card rather than
+  stopping at a hard line.
+*/
+.cardTint {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, var(--ground-raised) 0%, rgb(0 0 0 / 0) 42%),
+    linear-gradient(200deg, var(--accent-wash) 0%, rgb(0 0 0 / 0) 62%);
+  opacity: 0.85;
+  transition: opacity 620ms var(--ease-out-expo);
+}
+
+.card:hover .cardTint,
+.card:focus-visible .cardTint {
+  opacity: 1;
+}
+
+.cardLabel {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.9rem;
+  padding: 0.28rem 0.5rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--accent);
+  background: var(--ground-raised);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+
+/* An accent hairline that draws itself across as you arrive. */
+.cardRule {
+  display: block;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left center;
+  scale: 0 1;
+  transition: scale 720ms var(--ease-out-expo);
+}
+
+.card:hover .cardRule,
+.card:focus-visible .cardRule {
+  scale: 1 1;
+}
+
+.cardBody {
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-voice);
+  font-size: var(--step-2);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  transition: color var(--dur-mid) var(--ease-out-expo);
+}
+
+.card:hover .cardTitle,
+.card:focus-visible .cardTitle {
+  color: var(--accent);
+}
+
+.cardArrow {
+  color: var(--accent);
+  opacity: 0;
+  translate: -6px 4px;
+  transition: opacity var(--dur-mid) var(--ease-out-expo), translate var(--dur-mid) var(--ease-out-expo);
+}
+
+.card:hover .cardArrow,
+.card:focus-visible .cardArrow {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.cardLine {
+  font-family: var(--font-voice);
+  font-size: var(--step--1);
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.cardMeta::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
 .groupHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin: clamp(2rem, 6vh, 3.5rem) 0 1.25rem; }
 .groupTitle { font-family: var(--font-voice); font-size: var(--step-2); letter-spacing: -0.02em; }
 .groupCount { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
@@ -17,4 +169,11 @@
 .tile:hover img { transform: scale(1.05); }
 .tileName { position: absolute; left: 0; right: 0; bottom: 0; padding: 0.6rem 0.7rem; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--ink); background: linear-gradient(to top, var(--ground) 30%, transparent); }
 .tileDesc { display: block; margin-top: 0.15rem; color: var(--ink-faint); font-size: 0.56rem; }
-@media (prefers-reduced-motion: reduce) { .card:hover, .tile:hover img, .card:hover .cardMedia { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .card:hover,
+  .tile:hover img,
+  .card:hover .cardMedia img,
+  .card:hover .cardVideo { transform: none; }
+  .cardRule { scale: 1 1; }
+  .cardArrow { opacity: 1; translate: 0 0; }
+}

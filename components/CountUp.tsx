@@ -30,6 +30,16 @@ export function CountUp({ figure, run }: { figure: Figure; run: boolean }) {
     const el = ref.current;
     if (!el) return;
 
+    /*
+      Some figures are not quantities that accumulate. A star rating counting
+      up from zero displays a run of numbers that are each a plausible, wrong
+      answer before it lands on the right one.
+    */
+    if (figure.count === false) {
+      el.textContent = format(figure.value);
+      return;
+    }
+
     if (!run) {
       if (!played.current) el.textContent = format(figure.from ?? figure.value);
       return;
@@ -55,5 +65,5 @@ export function CountUp({ figure, run }: { figure: Figure; run: boolean }) {
     // `format` is derived entirely from `figure`, so `figure` is the real dep.
   }, [run, figure]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <span ref={ref}>{format(figure.from ?? figure.value)}</span>;
+  return <span ref={ref}>{format(figure.count === false ? figure.value : figure.from ?? figure.value)}</span>;
 }

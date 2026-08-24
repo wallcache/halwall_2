@@ -54,8 +54,8 @@ export const canon = {
   dates: {
     heading: "Why these dates",
     body: [
-      `Works arrive on days that carry meaning. Hamlet on Shakespeare's birthday. Ulysses on Bloomsday. Frankenstein at Halloween. Wuthering Heights on Valentine's Day, because love should always be a little unhinged. In Search of Lost Time on the 29th of February, because what better day for a book consumed with the moments that happen in between things. The calendar reaches well beyond the Western tradition, to Diwali, Nowruz, Vesak and the lunar new year.`,
-      `These alignments are not decorative. They root the reading in something larger than the text. Where no birthday or occasion fits, a work is placed in the season that suits it, so the rhythm of the year shapes the rhythm of the reading. Each reader walks their own sequence, so the same book finds one person in October and another in March. A handful of feasts are fixed and shared by everyone, and those are the days the whole readership turns the same page.`,
+      `Works arrive on days that carry meaning. Hamlet on Shakespeare's birthday. Ulysses on Bloomsday. Dracula at Halloween. Wuthering Heights on Valentine's Day, because love should always be a little unhinged. In Search of Lost Time on the 29th of February, because what better day for a book consumed with the moments that happen in between things. The calendar reaches well beyond the Western tradition, to Diwali, Nowruz, Vesak and the lunar new year.`,
+      `These alignments are not decorative. They root the reading in something larger than the text. Where no birthday or occasion fits, a work is placed in the season that suits it, so the rhythm of the year shapes the rhythm of the reading. Each reader walks their own sequence, so the same book finds one person in October and another in March. Seventeen feasts are fixed and shared by everyone, and those are the days the whole readership turns the same page.`,
     ],
   },
 
@@ -71,14 +71,14 @@ export const canon = {
       { work: "Huckleberry Finn", author: "Twain", detail: "A bird's-eye view of a small boat meandering down the Mississippi." },
       { work: "Siddhartha", author: "Hesse", detail: "A WebGL shader of dappled light on water, fish darting through it." },
     ],
-    note: "Around fifty of these now, and counting.",
+    note: "More than a hundred of these now, and counting.",
   },
 
   progress: {
     heading: "A map of where you have been",
     body: [
-      `The reading list was obvious: save what interests you, check off what you finish. The progress view is the part I am pleased with. It draws the whole canon as roughly a thousand thin vertical bars, ordered through the year, and the number of bars a work gets is proportional to its length. War and Peace takes a wide block. A Chekhov story takes a sliver. Mark something read and its bars fill in.`,
-      `Over time the grid becomes a map of where you have been, and a provocation about where you have not. Below it, a tier system counts what you have finished. Every work counts equally, whether it is a three-line poem or Proust's three thousand pages.`,
+      `The reading list was obvious: save what interests you, check off what you finish. The timeline is the part I am pleased with. It opens on today and scrolls downward through everything you have read, each book a vertical spine as long as the days you spent inside it. A fortnight with Dostoevsky is a tall column. A Chekhov story read on the bus is a notch.`,
+      `Time is the axis rather than page count, which means the shape of the thing is the shape of your attention, not of the books. Over a year it becomes a map of where you have been and a provocation about where you have not. Alongside it a tier system counts what you have finished, and every work counts equally, whether it is a three-line poem or Proust's three thousand pages.`,
     ],
   },
 
@@ -87,11 +87,12 @@ export const canon = {
     body: `The commit history tells the real story of how software gets made: not in clean arcs but in dozens of small corrections, reversals and obsessive refinements. About twelve months of them.`,
     log: [
       { what: "Mobile navigation", detail: "A full weekend getting it right, then scrapped and rebuilt." },
-      { what: "The progress bars", detail: "From blocky rectangles to a thousand thin vertical lines, proportionally sized by page count, with hover tooltips and bidirectional highlighting." },
-      { what: "The tiers", detail: "From a handful of levels to thirty-two, colours running from steel blue through to maroon." },
+      { what: "The reading timeline", detail: "From a flat checklist to a canvas of vertical strata on an inverted time axis, each book as tall as the days it took." },
+      { what: "The tiers", detail: "From a handful of levels to thirty-two, colours running sand through teal, blue and green to a deep maroon." },
       { what: "The reading list", detail: "Gained sort controls, time estimates, a reader-speed picker, persistent state, a footer that changed colour with your tier. Then half of it was removed, because it cluttered the thing." },
       { what: "The iOS app", detail: "A privacy policy, a support page, timezone-aware push, offline handling, portrait lock, and about fifteen separate attempts at the status bar colour in Safari's PWA mode." },
-      { what: "Everything else", detail: "Visit tracking on Redis, a sitemap for Google, country-level analytics with city breakdowns." },
+      { what: "Everything else", detail: "Visit tracking, a sitemap for Google, country-level analytics with city breakdowns. Redis came and went: the framework's own cache with tag invalidation turned out to do the job with one less service to run." },
+      { what: "Then the rewrite", detail: "A native SwiftUI app, started in 2026 and not yet released. Its own theme engine, and an ambience layer of thirteen stems and twenty-four presets so a book can be read in the weather it was written in." },
     ],
   },
 
@@ -107,10 +108,12 @@ export const canon = {
   features: {
     heading: "What it does",
     items: [
-      { name: "The library", detail: "A growing full-text library read in-app, chapter by chapter, with bookmarks and progress. Many works written in other languages carry a toggle to the original alongside the translation." },
-      { name: "Its own weather", detail: "Every book gets an ambience: rain, wind, fire, waves, a train. Use the suggested mix or build your own from The storm, By the fire, The riverbank, A window seat." },
+      { name: "The library", detail: "A growing full-text library read in-app, chapter by chapter, with bookmarks and progress. A couple of books are free to read in full; the rest come with Folio, the premium tier." },
+      { name: "Your own day", detail: "Every reader gets their own assignment, scored against a table of work-and-occasion pairings rather than handed the same page as everyone else. It is the part of the app I would show another engineer first." },
+      { name: "Ten languages", detail: "The reading experience and the app's own chrome in ten languages, translated offline and served as static files. No runtime translation API, no rate limit, and guests get it too." },
       { name: "Bloomy", detail: "A literary companion built on Claude, for talking through a work, chasing a theme, or asking what to read next. Bloomy is genderless, and labelled as AI wherever it appears." },
-      { name: "Immersions", detail: "One work, held for days, read together with a cohort. A Chekhov story each morning for ten mornings; a Dickinson poem a day for three weeks." },
+      { name: "Reading guides", detail: "Hand-written companions for the books that defeat people. How to read Finnegans Wake. Where to stand in the Critique of Pure Reason. What to skip in Clarissa and what you will regret skipping." },
+      { name: "Immersions", detail: "One work, held for days, read alone or with a cohort. A Chekhov story each morning for ten mornings; a Dickinson poem a day for three weeks. Dozens more behind Folio." },
       { name: "My Canon", detail: "Your own ranking of everything you have read, dragged into the order you actually believe." },
       { name: "Streaks and laurels", detail: "Consecutive days of reading, freezes for when life happens, and laurels for finishing a path. There is no leaderboard: rank against other readers is the one number the app refuses to show." },
     ],
@@ -121,12 +124,13 @@ export const canon = {
     items: [
       { layer: "Framework", tech: "Next.js 15, App Router, TypeScript" },
       { layer: "Database", tech: "Supabase Postgres with row-level security" },
-      { layer: "Cache", tech: "Upstash Redis" },
+      { layer: "Cache", tech: "Next.js Data Cache, tag-based invalidation" },
       { layer: "AI", tech: "Anthropic Claude, Bloomy and reading summaries" },
       { layer: "Payments", tech: "RevenueCat on iOS, Stripe on the web" },
       { layer: "Push", tech: "Apple Push Notification Service, hourly cron" },
-      { layer: "iOS", tech: "Capacitor wrapper, PWA service worker" },
-      { layer: "Type", tech: "Crimson Text, Spectral, Caveat" },
+      { layer: "iOS", tech: "Capacitor over the web bundle, with a native SwiftUI rewrite in the pipeline" },
+      { layer: "Web", tech: "PWA service worker, offline-capable" },
+      { layer: "Type", tech: "Crimson Text, Spectral, Hanken Grotesk" },
     ],
   },
 
