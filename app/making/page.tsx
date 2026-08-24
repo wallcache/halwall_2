@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { PageShell, shellStyles } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
+import shell from "@/components/PageShell.module.css";
 import { allPhotos, photographyProjects } from "@/content/photography";
 import { identityProjects } from "@/content/identity-work";
 import { motionPieces } from "@/content/motion";
@@ -45,12 +46,12 @@ export default function MakingPage() {
 
   return (
     <PageShell
-      side="verso"
+      side="recto"
       eyebrow="The archive"
       title="Making"
       standfirst="Before the pipelines there was a design consultancy called WallCache. Most of this is from then; the photography never stopped."
     >
-      <section className={shellStyles.section}>
+      <section className={shell.section}>
         <div className={styles.cards}>
           {cards.map((c) => (
             <Link key={c.href} href={c.href} className={styles.card}>

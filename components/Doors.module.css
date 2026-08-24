@@ -44,6 +44,7 @@
   padding: clamp(1.25rem, 3vw, 2rem);
   overflow: hidden;
   border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
   background: var(--ground-raised);
   color: var(--ink);
   transition:
@@ -136,4 +137,14 @@
   .door:hover .doorArrow {
     transform: none;
   }
+}
+
+/* Parallax wrappers sit between the grid and the cards, so they must stretch
+   or the drifting card detaches from its cell. */
+.grid > * {
+  display: flex;
+}
+
+.grid > * > .door {
+  flex: 1;
 }

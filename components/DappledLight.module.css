@@ -1,0 +1,20 @@
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  /* The LCP element is the masthead, never this. The canvas fades in over the
+     flat CSS ground once the first frame is up. */
+  animation: lightIn 1600ms var(--ease-out-expo) both;
+}
+
+@keyframes lightIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas { animation: none; }
+}

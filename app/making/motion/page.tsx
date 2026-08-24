@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { PageShell, shellStyles } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
+import shell from "@/components/PageShell.module.css";
 import { MotionGrid } from "@/components/MotionGrid";
 
 export const metadata: Metadata = {
@@ -10,12 +11,12 @@ export const metadata: Metadata = {
 export default function MotionPage() {
   return (
     <PageShell
-      side="verso"
+      side="recto"
       eyebrow="Making · 03"
       title="Motion"
       standfirst="Logo animation and motion graphics, built in After Effects. Hover to play; they are all short."
     >
-      <section className={shellStyles.section}>
+      <section className={shell.section}>
         <MotionGrid />
       </section>
     </PageShell>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { PageShell, shellStyles } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
+import shell from "@/components/PageShell.module.css";
 import { Ledger } from "@/components/Ledger";
 import { caseStudies } from "@/content/case-studies";
 import { education } from "@/content/experience";
@@ -20,8 +21,8 @@ export default function WorkPage() {
       title="The engineering"
       standfirst="Four years of production pipelines across insurance and finance. Three of them are worth explaining properly rather than listing."
     >
-      <section className={shellStyles.section} aria-labelledby="studies">
-        <h2 id="studies" className={shellStyles.sectionHead}>
+      <section className={shell.section} aria-labelledby="studies">
+        <h2 id="studies" className={shell.sectionHead}>
           Case studies
         </h2>
 
@@ -59,15 +60,15 @@ export default function WorkPage() {
         ))}
       </section>
 
-      <section className={shellStyles.section} aria-labelledby="ledger">
-        <h2 id="ledger" className={shellStyles.sectionHead}>
+      <section className={shell.section} aria-labelledby="ledger">
+        <h2 id="ledger" className={shell.sectionHead}>
           The ledger
         </h2>
         <Ledger />
       </section>
 
-      <section className={shellStyles.section} aria-labelledby="education">
-        <h2 id="education" className={shellStyles.sectionHead}>
+      <section className={shell.section} aria-labelledby="education">
+        <h2 id="education" className={shell.sectionHead}>
           Education
         </h2>
         <div className={styles.education}>

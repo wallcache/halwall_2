@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { PageShell, shellStyles } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
+import shell from "@/components/PageShell.module.css";
 import { identityProjects } from "@/content/identity-work";
 import styles from "../Making.module.css";
 
@@ -14,12 +15,12 @@ export const metadata: Metadata = {
 export default function IdentityPage() {
   return (
     <PageShell
-      side="verso"
+      side="recto"
       eyebrow="Making · 02"
       title="Identity"
       standfirst="Logo and brand identity work, mostly between 2019 and 2021, for businesses from startups through to established brands."
     >
-      <section className={shellStyles.section}>
+      <section className={shell.section}>
         <div className={styles.tiles}>
           {identityProjects.map((project) => (
             <Link key={project.slug} href={`/making/identity/${project.slug}`} className={styles.tile}>

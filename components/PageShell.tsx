@@ -1,6 +1,7 @@
 "use client";
 
 import { useSideRoute, type Side } from "@/lib/gutter";
+import { Parallax } from "./Parallax";
 import styles from "./PageShell.module.css";
 
 /**
@@ -26,13 +27,13 @@ export function PageShell({
   return (
     <main id="main" className={styles.shell} data-side={side}>
       <header className={styles.header}>
-        <p className={styles.eyebrow}>{eyebrow}</p>
-        <h1 className={styles.title}>{title}</h1>
-        {standfirst && <p className={styles.standfirst}>{standfirst}</p>}
+        <Parallax speed={0.06}>
+          <p className={styles.eyebrow}>{eyebrow}</p>
+          <h1 className={styles.title}>{title}</h1>
+          {standfirst && <p className={styles.standfirst}>{standfirst}</p>}
+        </Parallax>
       </header>
       <div className={styles.body}>{children}</div>
     </main>
   );
 }
-
-export { styles as shellStyles };

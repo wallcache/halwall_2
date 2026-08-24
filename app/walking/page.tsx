@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { PageShell, shellStyles } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
+import shell from "@/components/PageShell.module.css";
 import { walks, japhy } from "@/content/walking";
 import styles from "./Walking.module.css";
 
@@ -19,8 +20,8 @@ export default function WalkingPage() {
       title="Walking"
       standfirst="Long-distance hiking and wildcamping, mostly in Wales and Scotland, usually with a dog who is faster than me."
     >
-      <section className={shellStyles.section} aria-labelledby="journals">
-        <h2 id="journals" className={shellStyles.sectionHead}>
+      <section className={shell.section} aria-labelledby="journals">
+        <h2 id="journals" className={shell.sectionHead}>
           Journals
         </h2>
         <div className={styles.trips}>
@@ -43,8 +44,8 @@ export default function WalkingPage() {
         </div>
       </section>
 
-      <section className={shellStyles.section} aria-labelledby="japhy">
-        <h2 id="japhy" className={shellStyles.sectionHead}>
+      <section className={shell.section} aria-labelledby="japhy">
+        <h2 id="japhy" className={shell.sectionHead}>
           The dog
         </h2>
         <div className={styles.japhy}>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { PageShell, shellStyles } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
+import shell from "@/components/PageShell.module.css";
 import { UnlockForm } from "@/components/UnlockForm";
 import { privateVideos } from "@/content/private";
 import { COOKIE_NAME, verifyToken } from "@/lib/gated";
@@ -20,11 +21,11 @@ export default async function PrivatePage() {
       title="Private"
       standfirst={unlocked ? undefined : "Not for everyone. If you were meant to be here you know the word."}
     >
-      <section className={shellStyles.section}>
+      <section className={shell.section}>
         {unlocked ? (
           privateVideos.map((v) => (
             <figure key={v.driveId} style={{ marginBottom: "2rem" }}>
-              <figcaption className={shellStyles.sectionHead}>{v.year}</figcaption>
+              <figcaption className={shell.sectionHead}>{v.year}</figcaption>
               <iframe
                 src={`https://drive.google.com/file/d/${v.driveId}/preview`}
                 title={`${v.year} film`}

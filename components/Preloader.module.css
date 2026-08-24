@@ -1,0 +1,77 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.root[data-done="true"] { display: none; }
+
+/* Two halves that part at the centre — the site's own gesture, performed once
+   before you have seen it, so the spread reads as inevitable when it appears. */
+.curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  background: var(--verso-ground);
+  transition: transform 1100ms var(--ease-in-out-quart);
+  will-change: transform;
+}
+
+.left  { left: 0; }
+.right { right: 0; background: var(--recto-ground); }
+
+.root[data-open="true"] .left  { transform: translateX(-101%); }
+.root[data-open="true"] .right { transform: translateX(101%); }
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  transition: opacity 420ms var(--ease-out-expo);
+}
+
+.root[data-open="true"] .center { opacity: 0; }
+
+.pct {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  font-size: clamp(3rem, 9vw, 8rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--verso-ink);
+  mix-blend-mode: difference;
+}
+
+.rule {
+  position: relative;
+  width: min(58vw, 420px);
+  height: 1px;
+  background: var(--verso-rule-strong);
+  mix-blend-mode: difference;
+}
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--verso-accent);
+  transition: width 180ms linear;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--verso-ink-faint);
+  mix-blend-mode: difference;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain { transition-duration: 260ms; }
+}

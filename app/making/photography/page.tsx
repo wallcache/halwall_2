@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { PageShell, shellStyles } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
+import shell from "@/components/PageShell.module.css";
 import { Gallery } from "@/components/Gallery";
 import { GatedGallery } from "@/components/GatedGallery";
 import {
@@ -25,13 +26,13 @@ const groups = [
 export default function PhotographyPage() {
   return (
     <PageShell
-      side="verso"
+      side="recto"
       eyebrow="Making · 01"
       title="Photography"
       standfirst="Photography as an exercise in attention. Quiet scenes, unhurried light, ordinary beauty."
     >
       {groups.map((g) => (
-        <section key={g.id} id={g.id} className={shellStyles.section}>
+        <section key={g.id} id={g.id} className={shell.section}>
           <div className={styles.groupHead}>
             <h2 className={styles.groupTitle}>{g.name}</h2>
             <span className={styles.groupCount}>{g.photos.length} images</span>
@@ -40,8 +41,8 @@ export default function PhotographyPage() {
         </section>
       ))}
 
-      <section className={shellStyles.section} aria-labelledby="commercial">
-        <h2 id="commercial" className={shellStyles.sectionHead}>
+      <section className={shell.section} aria-labelledby="commercial">
+        <h2 id="commercial" className={shell.sectionHead}>
           Commercial
         </h2>
         {photographyProjects.map((project) => (
@@ -50,7 +51,7 @@ export default function PhotographyPage() {
               <h3 className={styles.groupTitle}>{project.name}</h3>
               <span className={styles.groupCount}>{project.images.length} images</span>
             </div>
-            <p className={shellStyles.prose} style={{ marginBottom: "1.25rem" }}>
+            <p className={shell.prose} style={{ marginBottom: "1.25rem" }}>
               {project.description}
             </p>
             {project.gated ? (

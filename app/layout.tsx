@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import { GutterProvider, type Mode } from "@/lib/gutter";
-import { Nav } from "@/components/Nav";
+import { Header } from "@/components/Header";
+import { Preloader } from "@/components/Preloader";
 import { Footer } from "@/components/Footer";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { identity, bio } from "@/content/identity";
@@ -77,11 +78,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body>
         <GutterProvider initial={initial}>
+          <Preloader />
           <SmoothScroll />
           <a className="skip-link" href="#main">
             Skip to content
           </a>
-          <Nav />
+          <Header />
           {children}
           <Footer />
         </GutterProvider>

@@ -15,6 +15,7 @@
 
 .row:hover {
   background: var(--ground-hover);
+  border-radius: var(--radius);
 }
 
 .dates {
@@ -63,6 +64,7 @@
 }
 
 .skill {
+  border-radius: var(--radius-full);
   font-family: var(--font-mono);
   font-size: 0.6rem;
   letter-spacing: 0.06em;

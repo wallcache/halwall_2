@@ -38,7 +38,7 @@ export const doors: Door[] = [
     title: "Making",
     line: "Photography as an exercise in attention, twelve brand identities, and eight years of motion work.",
     meta: "77 photographs · 12 identities · 10 films",
-    side: "verso",
+    side: "recto",
     image: "/media/photography/landscape/moorland-hikers-mist.webp",
   },
   {

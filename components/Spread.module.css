@@ -1,60 +1,66 @@
 .hero {
   position: relative;
-  height: 100dvh;
-  min-height: 560px;
+  min-height: 100dvh;
   overflow: hidden;
-  /* Contains the difference-blend of the masthead so it cannot reach the nav. */
   isolation: isolate;
   touch-action: pan-y;
   user-select: none;
+  /* How far the portrait travels from centre at the extremes. Content columns
+     are sized against this so nothing can ever sit underneath it. */
+  --portrait-travel: 34vw;
+  --portrait-w: clamp(180px, 21vw, 300px);
 }
 
 /* --------------------------------------------------------------------------
-   The two panes.
-
-   Both are full-bleed and stacked; `clip-path` decides how much of each you
-   can see. Clipping hides pixels rather than content, which is why the
-   collapsed side is also marked inert — see Spread.tsx.
+   Panes
    -------------------------------------------------------------------------- */
 
 .pane {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  padding: clamp(1.25rem, 4vw, 3.5rem) var(--shell-x);
-  padding-top: clamp(1.5rem, 5vw, 4rem);
+  padding: calc(clamp(3.5rem, 9vh, 6rem) + 1rem) var(--shell-x) clamp(4.5rem, 11vh, 7rem);
   will-change: clip-path;
 }
 
 .paneVerso {
-  background: var(--verso-ground);
   color: var(--verso-ink);
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
 }
 
 .paneRecto {
-  background: var(--recto-ground);
   color: var(--recto-ink);
   text-align: right;
   clip-path: inset(0 0 0 var(--gutter-pct));
 }
 
+/*
+  The column, not the pane, is what holds text. It is capped so that even with
+  the portrait at its furthest travel there is clear air between them — the
+  previous version let full-width right-aligned copy run straight under the
+  image.
+*/
+.col {
+  width: min(40ch, calc(50vw - var(--portrait-w) * 0.5 - var(--portrait-travel) * 0.5 - 2rem));
+  min-width: min(100%, 17rem);
+}
+
+.paneRecto .col {
+  margin-left: auto;
+}
+
 .eyebrow {
   font-size: var(--step--1);
   line-height: 1.8;
-  max-width: 22ch;
-}
-
-.paneRecto .eyebrow {
-  margin-left: auto;
 }
 
 .eyebrowVerso {
   font-family: var(--font-mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--verso-ink-muted);
+  color: var(--verso-ink);
 }
 
 .eyebrowVerso strong {
@@ -66,7 +72,6 @@
 .eyebrowRecto {
   font-family: var(--font-serif);
   font-size: var(--step-0);
-  letter-spacing: 0.01em;
   color: var(--recto-ink-muted);
 }
 
@@ -80,24 +85,18 @@
 .foot {
   display: flex;
   flex-direction: column;
-  gap: clamp(0.75rem, 2vw, 1.4rem);
+  gap: clamp(0.7rem, 1.8vw, 1.2rem);
   align-self: end;
 }
 
-.paneRecto .foot {
-  align-items: flex-end;
-}
-
 .claim {
-  max-width: 34ch;
   font-size: var(--step-1);
-  line-height: 1.35;
+  line-height: 1.3;
   text-wrap: balance;
 }
 
 .claimVerso {
   font-family: var(--font-mono);
-  font-weight: 400;
   letter-spacing: -0.02em;
   color: var(--verso-ink);
 }
@@ -108,51 +107,36 @@
   color: var(--recto-ink);
 }
 
-/* Depth staging: committing to a side gives it more to say. The extra
-   paragraph is not merely faded, it is genuinely folded away, so the pane at
-   rest stays a masthead rather than a wall of text. */
+/* Depth staging: committing to a side gives it more to say. */
 .deep {
-  max-width: var(--measure);
   font-size: var(--step--1);
-  line-height: 1.75;
+  line-height: 1.7;
   opacity: 0;
   max-height: 0;
   overflow: hidden;
   transition:
-    opacity var(--dur-mid) var(--ease-out-expo),
-    max-height var(--dur-slow) var(--ease-out-expo);
+    opacity 520ms var(--ease-out-expo),
+    max-height 880ms var(--ease-out-expo);
 }
 
 .pane[data-open="true"] .deep {
   opacity: 1;
-  max-height: 14em;
+  max-height: 18em;
 }
 
-.deepVerso {
-  font-family: var(--font-mono);
-  color: var(--verso-ink-muted);
-}
-
-.deepRecto {
-  font-family: var(--font-serif);
-  color: var(--recto-ink-muted);
-}
+.deepVerso { font-family: var(--font-mono); color: var(--verso-ink-muted); }
+.deepRecto { font-family: var(--font-serif); color: var(--recto-ink-muted); }
 
 .figures {
   display: flex;
-  gap: clamp(1rem, 3vw, 2.5rem);
+  gap: clamp(0.9rem, 2.4vw, 2rem);
   flex-wrap: wrap;
+  row-gap: 1rem;
 }
 
-.paneRecto .figures {
-  justify-content: flex-end;
-}
+.paneRecto .figures { justify-content: flex-end; }
 
-.figure {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
+.figure { display: flex; flex-direction: column; gap: 0.15rem; }
 
 .figureValue {
   font-size: var(--step-2);
@@ -161,35 +145,26 @@
   font-variant-numeric: tabular-nums;
 }
 
-.paneVerso .figureValue {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  color: var(--verso-accent);
-}
-
-.paneRecto .figureValue {
-  font-family: var(--font-serif);
-  color: var(--recto-accent);
-}
+.paneVerso .figureValue { font-family: var(--font-mono); font-weight: 600; color: var(--verso-accent); }
+.paneRecto .figureValue { font-family: var(--font-serif); color: var(--recto-accent); }
 
 .figureLabel {
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
   text-transform: uppercase;
   font-family: var(--font-mono);
-  max-width: 16ch;
+  /* Wide enough that these read as one or two lines, not a narrow tower. */
+  max-width: 22ch;
+  text-wrap: balance;
 }
 
 .paneVerso .figureLabel { color: var(--verso-ink-faint); }
 .paneRecto .figureLabel { color: var(--recto-ink-faint); }
 
 /* --------------------------------------------------------------------------
-   The masthead
-
-   Set once, never duplicated: "Hal" in the machine's voice and "Wall" in the
-   book's, with the seam passing between the two words at rest. `difference`
-   inks it against whichever ground has claimed that pixel, so one <h1> stays
-   legible across both worlds as the seam travels.
+   Masthead — locked. Plex Mono "Hal", Plex Serif italic "Wall", difference
+   blended so one <h1> stays legible across both grounds.
    -------------------------------------------------------------------------- */
 
 .nameLayer {
@@ -198,56 +173,103 @@
   display: grid;
   place-items: center;
   align-content: center;
-  padding-bottom: clamp(6rem, 22vh, 14rem);
+  padding-bottom: clamp(7rem, 26vh, 15rem);
   pointer-events: none;
   z-index: 3;
 }
 
+/* Both copies occupy the same grid cell, so they are exactly superimposed. */
+.nameStack {
+  display: grid;
+  place-items: center;
+}
+
+/*
+  The masthead is drawn twice, from identical markup, and each copy is clipped
+  to one side of the gutter and inked for that side. Identical markup means
+  identical metrics, so the two halves line up to the pixel at the seam and it
+  reads as one word changing colour as the seam crosses it.
+
+  This replaces a `mix-blend-mode: difference` version that looked right until
+  you noticed it wasn't blending at all: .nameLayer carries a z-index, which
+  makes a stacking context, which leaves `difference` with an empty backdrop.
+  It rendered white over cream — the one place contrast mattered most.
+*/
 .name {
   display: flex;
   align-items: baseline;
   gap: 0.22em;
   font-size: var(--step-5);
   line-height: 0.92;
-  color: #fff;
-  mix-blend-mode: difference;
   white-space: nowrap;
 }
 
-.nameHal {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: -0.055em;
+.nameCopy {
+  grid-area: 1 / 1;
 }
 
-.nameWall {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: -0.025em;
+.nameVerso {
+  color: var(--verso-ink);
+  clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
 }
 
-@supports not (mix-blend-mode: difference) {
-  .name { mix-blend-mode: normal; color: var(--verso-ink); }
+.nameRecto {
+  color: var(--recto-ink);
+  clip-path: inset(0 0 0 var(--gutter-pct));
 }
+
+.nameHal  { font-family: var(--font-mono);  font-weight: 600; letter-spacing: -0.055em; }
+.nameWall { font-family: var(--font-serif); font-weight: 400; font-style: italic; letter-spacing: -0.025em; }
 
 /* --------------------------------------------------------------------------
    Portrait
 
-   One image, two grades. Each copy is clipped to its own side by the same
-   number that drives the panes, so the face is cold and technical on the
-   verso and warm on the recto, with the change happening at the seam.
+   The anchor carries the horizontal travel (pure transform, driven by the
+   gutter) and the inner element carries the scroll parallax, so the two never
+   overwrite each other's transform.
    -------------------------------------------------------------------------- */
 
-.portraitLayer {
+.portraitAnchor {
   position: absolute;
   left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: clamp(190px, 23vw, 330px);
+  bottom: clamp(3rem, 9vh, 6rem);
+  width: var(--portrait-w);
   aspect-ratio: 4 / 5;
   z-index: 2;
   pointer-events: none;
+  transform: translateX(calc(-50% + (var(--gutter) - 0.5) * var(--portrait-travel)));
+}
+
+/* Grabbable on pointer devices. It is the primary way to move the seam. */
+.portraitAnchor[data-draggable="true"] {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+.portraitAnchor[data-draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.portraitAnchor:focus-visible {
+  outline: 2px solid var(--verso-accent);
+  outline-offset: 6px;
+  border-radius: var(--radius-lg);
+}
+
+.portraitInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  will-change: transform;
+  box-shadow: 0 30px 70px -40px rgb(0 0 0 / 0.6);
+  transition: box-shadow 520ms var(--ease-out-expo);
+}
+
+.portraitAnchor[data-draggable="true"]:hover .portraitInner {
+  box-shadow: 0 34px 80px -36px rgb(0 0 0 / 0.75);
 }
 
 .portrait {
@@ -256,34 +278,45 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 22%;
 }
 
 .portraitVerso {
   clip-path: inset(0 var(--gutter-inverse-pct) 0 0);
-  filter: grayscale(1) contrast(1.22) brightness(0.86);
+  filter: grayscale(1) contrast(1.24) brightness(0.82);
 }
 
 .portraitRecto {
   clip-path: inset(0 0 0 var(--gutter-pct));
-  filter: sepia(0.18) saturate(0.82) contrast(1.04) brightness(1.04);
+  filter: sepia(0.2) saturate(0.86) contrast(1.03) brightness(1.06);
 }
 
 .portraitCaption {
   position: absolute;
   left: 50%;
-  bottom: -1.6rem;
+  top: calc(100% + 0.6rem);
+  z-index: 1;
   transform: translateX(-50%);
   white-space: nowrap;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  /* Its own ground, so it stays legible wherever the seam leaves it. */
+  background: color-mix(in srgb, var(--verso-ground) 72%, transparent);
+  backdrop-filter: blur(6px);
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.55rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--verso-ink-faint);
+  color: var(--verso-ink-muted);
+  transition: opacity 420ms var(--ease-out-expo);
+}
+
+.portraitAnchor[data-draggable="true"]:hover .portraitCaption {
+  color: var(--verso-accent);
 }
 
 /* --------------------------------------------------------------------------
-   The seam and its handle
+   Seam
    -------------------------------------------------------------------------- */
 
 .seam {
@@ -291,133 +324,64 @@
   top: 0;
   bottom: 0;
   left: var(--gutter-pct);
-  width: var(--gutter-rule-width);
+  width: 1px;
   background: var(--verso-accent);
-  opacity: 0.55;
+  opacity: 0.5;
   z-index: 4;
   pointer-events: none;
 }
 
-.handle {
+/* A wide, invisible grab strip. Dragging engages only here, which is what
+   stops a stray pointer-down anywhere on the hero from yanking the seam. */
+.grab {
   position: absolute;
+  top: 0;
+  bottom: 0;
   left: var(--gutter-pct);
-  bottom: clamp(2.2rem, 7vh, 4rem);
+  width: 120px;
   transform: translateX(-50%);
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 1px solid var(--verso-accent);
-  background: color-mix(in srgb, var(--verso-ground) 82%, transparent);
-  backdrop-filter: blur(6px);
-  color: var(--verso-accent);
+  z-index: 4;
   cursor: ew-resize;
-  transition:
-    transform var(--dur-fast) var(--ease-out-expo),
-    background-color var(--dur-fast) var(--ease-out-expo);
-}
-
-.handle:hover,
-.handle:focus-visible {
-  transform: translateX(-50%) scale(1.14);
-  background: var(--verso-accent);
-  color: var(--verso-ground);
-}
-
-.handleGlyph {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: -0.08em;
-  pointer-events: none;
 }
 
 .hint {
   position: absolute;
-  left: 50%;
-  bottom: clamp(0.75rem, 3vh, 1.5rem);
-  transform: translateX(-50%);
+  left: var(--shell-x);
+  bottom: clamp(0.6rem, 2vh, 1rem);
   z-index: 5;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.56rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--verso-ink-faint);
-  transition: opacity var(--dur-slow) var(--ease-out-expo);
+  transition: opacity 900ms var(--ease-out-expo);
   pointer-events: none;
 }
 
-.hero[data-touched="true"] .hint {
-  opacity: 0.35;
-}
+.hero[data-touched="true"] .hint { opacity: 0.3; }
 
 /* --------------------------------------------------------------------------
    Mobile: the gutter turns horizontal
-
-   Designed, not squashed. The spread becomes two stacked bands with the seam
-   running across them, and the drag control is removed outright rather than
-   hidden with opacity — an invisible 46px button in the tab order is a bug.
    -------------------------------------------------------------------------- */
 
 @media (max-width: 760px) {
-  .hero {
-    height: auto;
-    min-height: 100dvh;
-    touch-action: auto;
-  }
+  .hero { --portrait-travel: 0vw; --portrait-w: min(52vw, 240px); }
 
-  .paneVerso {
-    clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
-  }
+  .paneVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
+  .paneRecto { clip-path: inset(var(--gutter-pct) 0 0 0); text-align: left; }
+  .paneRecto .col { margin-left: 0; }
+  .paneRecto .figures { justify-content: flex-start; }
 
-  .paneRecto {
-    clip-path: inset(var(--gutter-pct) 0 0 0);
-    text-align: left;
-  }
+  .col { width: 100%; }
 
-  .paneRecto .eyebrow,
-  .paneRecto .foot,
-  .paneRecto .figures {
-    margin-left: 0;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
+  .name { font-size: clamp(2.6rem, 15vw, 4.4rem); flex-direction: column; align-items: center; gap: 0; }
+  .nameLayer { padding-bottom: 0; }
 
-  .name {
-    font-size: clamp(2.6rem, 15vw, 4.5rem);
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
+  .seam { top: var(--gutter-pct); bottom: auto; left: 0; right: 0; width: auto; height: 1px; }
 
-  .nameLayer {
-    padding-bottom: 0;
-  }
+  .grab, .portraitCaption { display: none; }
 
-  .seam {
-    top: var(--gutter-pct);
-    bottom: auto;
-    left: 0;
-    right: 0;
-    width: auto;
-    height: var(--gutter-rule-width);
-  }
-
-  .handle,
-  .portraitCaption {
-    display: none;
-  }
-
-  .portraitLayer {
-    width: min(56vw, 260px);
-  }
-
-  .portraitVerso {
-    clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
-  }
-
-  .portraitRecto {
-    clip-path: inset(var(--gutter-pct) 0 0 0);
-  }
+  .portraitVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
+  .portraitRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
 }
+
