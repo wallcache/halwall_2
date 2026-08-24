@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SweepLink } from "@/components/SweepLink";
 import Image from "next/image";
 import { PageShell } from "@/components/PageShell";
 import shell from "@/components/PageShell.module.css";
@@ -65,8 +64,8 @@ export default function MakingPage() {
       <section className={shell.section}>
         <div className={styles.cards}>
           {cards.map((c) => (
-            <SweepLink key={c.href} href={c.href} className={styles.card}>
-              <span className={styles.cardMedia} aria-hidden="true">
+            <Link key={c.href} href={c.href} className={styles.card} data-card>
+              <span className={styles.cardMedia} data-card-media aria-hidden="true">
                 {c.video ? (
                   <AutoVideo className={styles.cardVideo} src={c.video} posterTime={c.posterTime} />
                 ) : (
@@ -84,17 +83,16 @@ export default function MakingPage() {
                 <span className={styles.cardLabel}>{c.label}</span>
               </span>
 
-              <span className={styles.cardRule} aria-hidden="true" />
 
               <span className={styles.cardBody}>
                 <h2 className={styles.cardTitle}>
                   {c.title}
-                  <ArrowUpRight className={styles.cardArrow} size={18} />
+                  <ArrowUpRight className={styles.cardArrow} data-card-arrow size={18} />
                 </h2>
                 <p className={styles.cardLine}>{c.line}</p>
                 <span className={styles.cardMeta}>{c.meta}</span>
               </span>
-            </SweepLink>
+            </Link>
           ))}
         </div>
       </section>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SweepLink } from "@/components/SweepLink";
 import Image from "next/image";
 import { PageShell } from "@/components/PageShell";
 import shell from "@/components/PageShell.module.css";
@@ -27,7 +26,7 @@ export default function WalkingPage() {
         </h2>
         <div className={styles.trips}>
           {walks.map((walk) => (
-            <SweepLink key={walk.slug} href={`/walking/${walk.slug}`} className={styles.trip}>
+            <Link key={walk.slug} href={`/walking/${walk.slug}`} className={styles.trip} data-card>
               <span className={styles.tripYear}>{walk.year}</span>
               <div>
                 <h3 className={styles.tripName}>{walk.name}</h3>
@@ -40,7 +39,7 @@ export default function WalkingPage() {
                 <span>{walk.duration}</span>
                 <span>{walk.route}</span>
               </span>
-            </SweepLink>
+            </Link>
           ))}
         </div>
       </section>

@@ -11,29 +11,17 @@ export const identity = {
   email: "henry.n.wall@gmail.com",
   tagline: "Somewhere between Databricks and Dickens.",
   /**
-   * The hero line. It states the thesis of the whole site in two clauses,
-   * one per side of the gutter.
+   * The hero line, one clause per side of the gutter.
+   *
+   * First person. The site talks about Hal in the third person everywhere it
+   * is describing him to someone else, but the hero is him introducing
+   * himself, and "one half of him" read like a caption in somebody else's
+   * profile of the man.
    */
   spreadLine: {
-    verso: "One half of him is measured in runtime.",
-    recto: "The other is measured in readers.",
+    verso: "I build the data systems an insurer runs on.",
+    recto: "I publish one work of literature a day.",
   },
-} as const;
-
-/**
- * The two headline pairs, one per side, deliberately symmetrical: two numbers
- * each, and only the ones worth reading. The pipeline internals (85% volume
- * reduction, 30,000 lines) live on /work where there is room to explain them.
- */
-export const heroFigures = {
-  verso: [
-    { value: 300, suffix: "\u00d7", label: "faster than the system it replaced" },
-    { from: 270, value: 45, unit: "min", label: "pipeline runtime, down from 270" },
-  ],
-  recto: [
-    { value: 10000, live: "downloads", suffix: "+", label: "downloads" },
-    { value: 4.8, count: false, suffix: "\u2605", label: "on the App Store" },
-  ],
 } as const;
 
 export const bio = {

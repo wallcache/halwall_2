@@ -23,14 +23,16 @@ export default function IdentityPage() {
       <section className={shell.section}>
         <div className={styles.tiles}>
           {identityProjects.map((project) => (
-            <Link key={project.slug} href={`/making/identity/${project.slug}`} className={styles.tile} data-magnetic="0.072">
-              <Image
-                src={project.src}
-                alt={`${project.name} identity`}
-                fill
-                sizes="(max-width: 760px) 50vw, 25vw"
-                style={{ objectFit: "contain" }}
-              />
+            <Link key={project.slug} href={`/making/identity/${project.slug}`} className={styles.tile} data-card data-magnetic="0.072">
+              <span className={styles.tileMark} data-card-media>
+                <Image
+                  src={project.src}
+                  alt={`${project.name} identity`}
+                  fill
+                  sizes="(max-width: 760px) 50vw, 25vw"
+                  style={{ objectFit: "contain" }}
+                />
+              </span>
               <span className={styles.tileName}>
                 {project.name}
                 {project.description && <span className={styles.tileDesc}>{project.description}</span>}

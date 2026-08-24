@@ -1,7 +1,8 @@
-import { SweepLink } from "./SweepLink";
+import Link from "next/link";
 import Image from "next/image";
 import { doors } from "@/content/doors";
 import { Parallax } from "./Parallax";
+import { ArrowUpRight } from "./icons";
 import styles from "./Doors.module.css";
 
 export function Doors() {
@@ -21,28 +22,45 @@ export function Doors() {
         {doors.map((door, i) => (
           // Alternating drift so the four cards do not move as one slab.
           <Parallax key={door.href} speed={i % 2 === 0 ? 0.07 : 0.14} fade>
-          <SweepLink href={door.href} className={styles.door} data-side={door.side}>
-            {door.image && (
-              <div className={styles.doorMedia} aria-hidden="true">
-                <Image
-                  src={door.image}
-                  alt=""
-                  fill
-                  sizes="(max-width: 760px) 100vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-            )}
-            <span className={styles.doorLabel}>{door.label}</span>
-            <h3 className={styles.doorTitle}>{door.title}</h3>
-            <p className={styles.doorLine}>{door.line}</p>
-            <span className={styles.doorFoot}>
-              {door.meta}
-              <span className={styles.doorArrow} aria-hidden="true">
-                →
+            {/*
+              A plain link. The hover used to need a client component to work
+              out which edge the cursor crossed; the shared card language in
+              styles/card.css is pure CSS, so the whole thing costs no JS.
+            */}
+            <Link href={door.href} className={styles.door} data-card data-side={door.side}>
+              {door.image && (
+                <span className={styles.doorMedia} data-card-media aria-hidden="true">
+                  <Image
+                    src={door.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 760px) 100vw, 50vw"
+                    style={{ objectFit: "cover" }}
+                  />
+                </span>
+              )}
+
+              {/* The scrim is drawn from the card's own ground, so it holds the
+                  type on a dark card and a paper one without a second rule. */}
+              <span className={styles.doorScrim} aria-hidden="true" />
+
+              {door.mark && (
+                <span className={styles.doorMark} aria-hidden="true">
+                  <Image src={door.mark} alt="" width={168} height={168} />
+                </span>
+              )}
+
+              <span className={styles.doorLabel}>{door.label}</span>
+
+              <span className={styles.doorBody}>
+                <h3 className={styles.doorTitle}>{door.title}</h3>
+                <p className={styles.doorLine}>{door.line}</p>
+                <span className={styles.doorFoot}>
+                  {door.meta}
+                  <ArrowUpRight className={styles.doorArrow} data-card-arrow size={16} />
+                </span>
               </span>
-            </span>
-          </SweepLink>
+            </Link>
           </Parallax>
         ))}
       </div>

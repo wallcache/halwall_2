@@ -4,10 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useGutter } from "@/lib/gutter";
 import { register } from "@/lib/parallax";
-import { identity, heroFigures } from "@/content/identity";
-import { resolveFigures, type LiveCounts } from "@/lib/figures";
+import { identity } from "@/content/identity";
 import { portraits } from "@/content/portraits";
-import { CountUp } from "./CountUp";
 import { DappledLight } from "./DappledLight";
 import styles from "./Spread.module.css";
 
@@ -25,7 +23,7 @@ const PORTRAIT_RECTO = portraits.camp;
 /** How long after a drag before hovering a pane may take the gutter back. */
 const HOVER_SUPPRESS_MS = 700;
 
-export function Spread({ counts }: { counts: LiveCounts }) {
+export function Spread() {
   const { mode, commit, follow, endFollow } = useGutter();
   const heroRef = useRef<HTMLElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
@@ -132,16 +130,6 @@ export function Spread({ counts }: { counts: LiveCounts }) {
         <div />
         <div className={`${styles.col} ${styles.foot}`}>
           <p className={`${styles.claim} ${styles.claimVerso}`}>{identity.spreadLine.verso}</p>
-          <ul className={styles.figures}>
-            {heroFigures.verso.map((f) => (
-              <li key={f.label} className={styles.figure}>
-                <span className={styles.figureValue}>
-                  <CountUp figure={f} run={mode === "verso"} />
-                </span>
-                <span className={styles.figureLabel}>{f.label}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
 
@@ -163,16 +151,6 @@ export function Spread({ counts }: { counts: LiveCounts }) {
         <div />
         <div className={`${styles.col} ${styles.foot}`}>
           <p className={`${styles.claim} ${styles.claimRecto}`}>{identity.spreadLine.recto}</p>
-          <ul className={styles.figures}>
-            {resolveFigures(heroFigures.recto, counts).map((f) => (
-              <li key={f.label} className={styles.figure}>
-                <span className={styles.figureValue}>
-                  <CountUp figure={f} run={mode === "recto"} />
-                </span>
-                <span className={styles.figureLabel}>{f.label}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
 

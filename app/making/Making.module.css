@@ -14,38 +14,24 @@
   border-radius: var(--radius-lg);
   position: relative;
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
   overflow: hidden;
   border: 1px solid var(--rule);
   background: var(--ground-raised);
-  /* Lift and border colour come from the sweep, in styles/sweep.css. */
+  /* Lift, border and rule come from the shared card language, styles/card.css.
+     The band is the subject here rather than a backdrop for type, so it runs
+     at full strength instead of the site default. */
+  --media-rest: 1;
+  --media-hover: 1;
 }
 
 .cardMedia {
   position: relative;
+  z-index: 0;
   display: block;
   aspect-ratio: 5 / 3;
   overflow: hidden;
   background: var(--ground);
-}
-
-.cardMedia img,
-.cardVideo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform-origin: center;
-  transition: transform 900ms var(--ease-out-expo), filter 620ms var(--ease-out-expo);
-  /* Held back a touch at rest so hovering has somewhere to go. */
-  filter: saturate(0.82);
-}
-
-.card:hover .cardMedia img,
-.card:focus-visible .cardMedia img,
-.card:hover .cardVideo,
-.card:focus-visible .cardVideo {
-  transform: scale(1.06);
-  filter: saturate(1.06);
 }
 
 /*
@@ -82,21 +68,6 @@
   color: var(--accent);
 }
 
-/* An accent hairline that draws itself across as you arrive. */
-.cardRule {
-  display: block;
-  height: 2px;
-  background: var(--accent);
-  transform-origin: left center;
-  scale: 0 1;
-  transition: scale 720ms var(--ease-out-expo);
-}
-
-.card:hover .cardRule,
-.card:focus-visible .cardRule {
-  scale: 1 1;
-}
-
 .cardBody {
   display: grid;
   align-content: start;
@@ -123,14 +94,12 @@
 .cardArrow {
   color: var(--accent);
   opacity: 0;
-  translate: -6px 4px;
-  transition: opacity var(--dur-mid) var(--ease-out-expo), translate var(--dur-mid) var(--ease-out-expo);
+  transition: opacity var(--dur-card) var(--ease-out-expo);
 }
 
 .card:hover .cardArrow,
 .card:focus-visible .cardArrow {
   opacity: 1;
-  translate: 0 0;
 }
 
 .cardLine {
@@ -163,17 +132,15 @@
 .groupTitle { font-family: var(--font-voice); font-size: var(--step-2); letter-spacing: -0.02em; }
 .groupCount { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: clamp(0.75rem, 2vw, 1.25rem); }
-.tile { border-radius: var(--radius); position: relative; display: block; aspect-ratio: 1; overflow: hidden; border: 1px solid var(--rule); background: var(--ground-raised); transition: border-color var(--dur-mid) var(--ease-out-expo); }
-.tile:hover, .tile:focus-visible { border-color: var(--accent); }
-.tile img { object-fit: contain; padding: 12%; transition: transform var(--dur-slow) var(--ease-out-expo); }
-.tile:hover img { transform: scale(1.05); }
+/* Lift, border and rule come from the shared card language. The mark itself
+   is what moves here rather than a photograph, so it is positioned in place
+   rather than laid out full-bleed. */
+.tile { border-radius: var(--radius); position: relative; display: block; aspect-ratio: 1; border: 1px solid var(--rule); background: var(--ground-raised); }
+.tileMark { position: absolute; inset: 0; --media-rest: 0.88; --media-hover: 1; }
+.tile img { object-fit: contain; padding: 12%; }
 .tileName { position: absolute; left: 0; right: 0; bottom: 0; padding: 0.6rem 0.7rem; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--ink); background: linear-gradient(to top, var(--ground) 30%, transparent); }
 .tileDesc { display: block; margin-top: 0.15rem; color: var(--ink-faint); font-size: 0.56rem; }
 @media (prefers-reduced-motion: reduce) {
-  .card:hover,
-  .tile:hover img,
-  .card:hover .cardMedia img,
-  .card:hover .cardVideo { transform: none; }
-  .cardRule { scale: 1 1; }
-  .cardArrow { opacity: 1; translate: 0 0; }
+  .tile:hover img { transform: none; }
+  .cardArrow { opacity: 1; }
 }

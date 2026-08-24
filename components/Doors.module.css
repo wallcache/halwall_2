@@ -31,7 +31,7 @@
 
 /*
   Two by two, not four across. There are exactly four doors, and auto-fit put
-  them in a single row of narrow columns on a wide screen — four tall slivers,
+  them in a single row of narrow columns on a wide screen -- four tall slivers,
   each too cramped for its own copy. A fixed pair reads as a set.
 */
 .grid {
@@ -44,69 +44,117 @@
   .grid { grid-template-columns: minmax(0, 1fr); }
 }
 
+/*
+  The card is now the picture, with the type laid over the foot of it rather
+  than beside a wash of it. Bottom-aligned on a fixed ratio, so all four read
+  as one set however long their copy runs.
+*/
 .door {
   position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 1rem;
-  min-height: clamp(240px, 28vh, 320px);
-  padding: clamp(1.25rem, 3vw, 2rem);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  aspect-ratio: 5 / 4;
+  min-height: clamp(280px, 34vh, 420px);
+  padding: clamp(1.25rem, 3vw, 2.25rem);
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
   background: var(--ground-raised);
   color: var(--ink);
-  transition:
-    transform var(--dur-mid) var(--ease-out-expo),
-    border-color var(--dur-mid) var(--ease-out-expo);
+  /* The scrim below holds the type, not a low opacity, so the picture runs
+     nearer full strength than the site default. */
+  --media-rest: 0.62;
+  --media-hover: 0.86;
 }
 
-/* Lift and border now come from the sweep, in styles/sweep.css. */
+/* The one door that is a product shows its icon, not a photograph of
+   something else. It sits on a wash of the Canon's own green. */
+.door:has(.doorMark) {
+  background:
+    radial-gradient(95% 70% at 78% 16%, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 68%),
+    var(--ground-raised);
+}
 
 .doorMedia {
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.22;
-  transition: opacity var(--dur-slow) var(--ease-out-expo), transform var(--dur-slow) var(--ease-out-expo);
+  border-radius: inherit;
 }
 
-.doorMedia img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.door:hover .doorMedia,
-.door:focus-visible .doorMedia {
-  opacity: 0.34;
-  transform: scale(1.04);
-}
-
-.door > *:not(.doorMedia) {
-  position: relative;
+.doorScrim {
+  position: absolute;
+  inset: 0;
   z-index: 1;
+  border-radius: inherit;
+  background: linear-gradient(
+    to top,
+    var(--ground-raised) 2%,
+    color-mix(in srgb, var(--ground-raised) 88%, transparent) 34%,
+    color-mix(in srgb, var(--ground-raised) 40%, transparent) 58%,
+    transparent 84%
+  );
+}
+
+.doorMark {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.25rem);
+  right: clamp(1.25rem, 3vw, 2.25rem);
+  z-index: 2;
+  display: block;
+  overflow: hidden;
+  border-radius: 23%;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--dur-card) var(--ease-out-expo);
+}
+
+.doorMark img {
+  display: block;
+  width: clamp(88px, 13vw, 168px);
+  height: auto;
+}
+
+.door:hover .doorMark,
+.door:focus-visible .doorMark {
+  transform: scale(1.05) rotate(-2deg);
 }
 
 .doorLabel {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.25rem);
+  left: clamp(1.25rem, 3vw, 2.25rem);
+  z-index: 3;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-full);
+  background: var(--ground-raised);
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
   color: var(--accent);
+}
+
+.doorBody {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 0.75rem;
 }
 
 .doorTitle {
   font-family: var(--font-voice);
-  font-size: var(--step-2);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  align-self: end;
+  /* Two steps up. These are the four largest words below the hero and they
+     were set at the same size as a section heading. */
+  font-size: var(--step-3);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 .doorLine {
   font-family: var(--font-voice);
   font-size: var(--step--1);
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--ink-muted);
   max-width: 42ch;
 }
@@ -116,7 +164,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-top: 0.75rem;
+  margin-top: 0.35rem;
+  padding-top: 0.85rem;
   border-top: 1px solid var(--rule);
   font-family: var(--font-mono);
   font-size: 0.62rem;
@@ -126,22 +175,19 @@
 }
 
 .doorArrow {
-  color: var(--accent);
-  transition: transform var(--dur-mid) var(--ease-out-expo);
+  flex: none;
 }
 
-.door:hover .doorArrow,
-.door:focus-visible .doorArrow {
-  transform: translateX(4px);
+@media (max-width: 760px) {
+  .door {
+    aspect-ratio: auto;
+    min-height: 320px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .door:hover,
-  .door:focus-visible,
-  .door:hover .doorMedia,
-  .door:hover .doorArrow {
-    transform: none;
-  }
+  .door:hover .doorMark,
+  .door:focus-visible .doorMark { transform: none; }
 }
 
 /* Parallax wrappers sit between the grid and the cards, so they must stretch

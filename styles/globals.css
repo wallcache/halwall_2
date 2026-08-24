@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./sweep.css";
+@import "./card.css";
 
 /* ==========================================================================
    Recto / Verso — token table
@@ -100,6 +100,9 @@
   --dur-fast: 180ms;
   --dur-mid: 420ms;
   --dur-slow: 900ms;
+  /* The one duration every card hover runs at, site-wide. */
+  --dur-card: 620ms;
+  --card-shadow: 0 20px 44px -30px rgb(0 0 0 / 0.7);
 }
 
 /* The site is light and dark at once, so there is no theme to switch. What the

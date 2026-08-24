@@ -1,6 +1,6 @@
 .trips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(1rem, 3vw, 2rem); }
-.trip { border-radius: var(--radius-lg); display: grid; grid-template-rows: auto 1fr auto; gap: 0.9rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--rule); background: var(--ground-raised); transition: border-color var(--dur-mid) var(--ease-out-expo), transform var(--dur-mid) var(--ease-out-expo); }
-/* Lift and border now come from the sweep, in styles/sweep.css. */
+.trip { border-radius: var(--radius-lg); display: grid; grid-template-rows: auto 1fr auto; gap: 0.9rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--rule); background: var(--ground-raised); }
+/* Lift, border and rule all come from the shared card language, styles/card.css. */
 .tripYear { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--accent); }
 .tripName { font-family: var(--font-voice); font-size: var(--step-2); line-height: 1.1; letter-spacing: -0.02em; }
 .tripSummary { font-family: var(--font-voice); font-size: var(--step--1); line-height: 1.65; color: var(--ink-muted); }
