@@ -38,9 +38,15 @@ export default async function IdentityProjectPage({
       title={project.name}
       standfirst={project.description}
     >
+      {/*
+        Every image, no "show all". An identity project only makes sense read
+        as a whole — the marks, the applications, the variations — so paging it
+        behind a button hides the argument the case study is making. They are
+        still lazy-loaded below the fold, so the page weight is unchanged.
+      */}
       <Gallery
         items={images.map((src, i) => ({ src, alt: `${project.name}, image ${i + 1}` }))}
-        initial={9}
+        initial={images.length}
         sizes="(max-width: 760px) 100vw, 50vw"
       />
     </PageShell>
