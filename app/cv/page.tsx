@@ -3,6 +3,9 @@ import { cv, bullets } from "@/content/cv";
 import { experience, education } from "@/content/experience";
 import { projects } from "@/content/projects";
 import { identity } from "@/content/identity";
+import Image from "next/image";
+import { TechIcon } from "@/components/TechIcon";
+import { iconFor } from "@/content/tech-map";
 import styles from "./Cv.module.css";
 
 export const metadata: Metadata = {
@@ -51,7 +54,14 @@ export default function CvPage() {
     <main className={styles.sheet}>
       <aside className={styles.rail}>
         <header>
-          <h1 className={styles.name}>{identity.name}.</h1>
+          {/* The site's wordmark, not a name in a heading: mono "Hal", serif
+              italic "Wall", the second half in the accent. It is the one thing
+              a reader will have seen before if they came from halwall.me. */}
+          <h1 className={styles.name}>
+            <span className={styles.nameHal}>Hal</span>
+            <span className={styles.nameWall}>Wall</span>
+            <span aria-hidden="true">.</span>
+          </h1>
           <p className={styles.prompt}>
             <span className={styles.promptUser}>{cv.prompt.user}</span>{" "}
             <span className={styles.promptPath}>{cv.prompt.path}</span>{" "}
@@ -75,11 +85,18 @@ export default function CvPage() {
             <div key={g.group} className={styles.group}>
               <p className={styles.groupName}>{g.group}</p>
               <ul className={styles.pills}>
-                {g.items.map((i) => (
-                  <li key={i} className={styles.pill}>
-                    {i}
-                  </li>
-                ))}
+                {g.items.map((i) => {
+                  const icon = iconFor(i);
+                  return (
+                    <li key={i} className={styles.pill}>
+                      {/* Inked with currentColor rather than the brand's own:
+                          half these marks are near-black and would vanish into
+                          the panel they are sitting on. */}
+                      {icon && <TechIcon slug={icon} size={9} className={styles.pillIcon} />}
+                      {i}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
@@ -89,10 +106,15 @@ export default function CvPage() {
           <Head>Education</Head>
           {degrees.map((e) => (
             <div key={e.slug} className={styles.entry}>
-              <p className={styles.entryTitle}>{e.degree}</p>
-              <p className={styles.entryMeta}>
-                {e.institution} · {e.dateRange}
-              </p>
+              {e.logo && (
+                <Image className={styles.entryMark} src={e.logo} alt="" aria-hidden="true" width={48} height={48} />
+              )}
+              <div>
+                <p className={styles.entryTitle}>{e.degree}</p>
+                <p className={styles.entryMeta}>
+                  {e.institution} · {e.dateRange}
+                </p>
+              </div>
             </div>
           ))}
         </section>
@@ -101,10 +123,15 @@ export default function CvPage() {
           <Head>Certifications</Head>
           {certs.map((e) => (
             <div key={e.slug} className={styles.entry}>
-              <p className={styles.entryTitle}>{e.degree}</p>
-              <p className={styles.entryMeta}>
-                {e.institution} · {e.dateRange}
-              </p>
+              {e.logo && (
+                <Image className={styles.entryMark} src={e.logo} alt="" aria-hidden="true" width={48} height={48} />
+              )}
+              <div>
+                <p className={styles.entryTitle}>{e.degree}</p>
+                <p className={styles.entryMeta}>
+                  {e.institution} · {e.dateRange}
+                </p>
+              </div>
             </div>
           ))}
         </section>
@@ -113,9 +140,14 @@ export default function CvPage() {
           <Head>Projects</Head>
           {side.map((p) => (
             <div key={p.slug} className={styles.entry}>
-              <p className={styles.entryTitle}>{p.title}</p>
-              <p className={styles.entryMeta}>{p.line}</p>
-              <p className={styles.entryLink}>{p.primary.text}</p>
+              {/* Wrapped, because .entry is a flex row that carries a mark
+                  beside its text. Unwrapped, these three lines became three
+                  columns. */}
+              <div>
+                <p className={styles.entryTitle}>{p.title}</p>
+                <p className={styles.entryMeta}>{p.line}</p>
+                <p className={styles.entryLink}>{p.primary.text}</p>
+              </div>
             </div>
           ))}
         </section>
@@ -145,6 +177,9 @@ export default function CvPage() {
                 <p className={styles.roleDates}>{r.dateRange}</p>
               </div>
               <p className={styles.roleCompany}>
+                {r.logo && (
+                  <Image className={styles.roleMark} src={r.logo} alt="" aria-hidden="true" width={40} height={40} />
+                )}
                 {r.company}
                 {r.via && ` · via ${r.via}`}
               </p>
@@ -162,6 +197,9 @@ export default function CvPage() {
                 <p key={r.slug} className={styles.earlierRole}>
                   <span className={styles.earlierTitle}>{r.title}</span>
                   <span className={styles.earlierCompany}>
+                    {r.logo && (
+                      <Image className={styles.earlierMark} src={r.logo} alt="" aria-hidden="true" width={32} height={32} />
+                    )}
                     {r.company}
                     {r.via && ` · via ${r.via}`}
                   </span>

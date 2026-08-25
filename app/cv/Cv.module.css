@@ -12,45 +12,65 @@
    ========================================================================== */
 
 .sheet {
-  /* A4 at 96dpi, with the margins the print rules also use. */
+  /* A4 at 96dpi. No padding of its own: each column pads itself, so the dark
+     rail can run to the edge of the paper rather than floating on it. */
   width: 210mm;
   min-height: 297mm;
   margin: 0 auto;
-  /* 9mm, and the margin is genuinely that tight: at 10mm the sheet came to
-     298mm against A4's 297 and spilled four interest pills onto a second page,
-     where a fragmenting two-column grid then drew itself on top of itself. */
-  padding: 9mm 11mm;
   display: grid;
-  grid-template-columns: 58mm minmax(0, 1fr);
-  gap: 9mm;
+  grid-template-columns: 66mm minmax(0, 1fr);
   background: var(--recto-ground);
   color: var(--recto-ink);
   font-size: 8.4pt;
   line-height: 1.45;
+  /* Chrome drops background colours from print by default, which would send
+     the whole left panel to the printer as white paper with white text on it. */
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }
 
+/*
+  The engineer's side, as a panel. Dark ground, mono, spring green -- the
+  verso's palette rather than the page's, because a CV is the engineering half
+  of this site on a sheet of paper, and the tokens should say so.
+*/
 .rail {
   display: grid;
   align-content: start;
-  gap: 4.2mm;
-  padding-right: 5mm;
-  border-right: 1px solid var(--recto-rule);
+  gap: 3.1mm;
+  padding: 9mm 5.5mm 9mm 8mm;
+  background: var(--verso-ground);
+  color: var(--verso-ink);
 }
 
 .body {
   display: grid;
   align-content: start;
   gap: 4mm;
+  padding: 9mm 9mm 9mm 8mm;
 }
 
 /* ---- masthead ----------------------------------------------------------- */
 
 .name {
-  font-family: var(--font-serif);
-  font-size: 21pt;
+  display: flex;
+  align-items: baseline;
+  gap: 0.16em;
+  font-size: 19pt;
   line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--recto-ink);
+  letter-spacing: -0.02em;
+}
+
+.nameHal {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--verso-ink);
+}
+
+.nameWall {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--verso-accent);
 }
 
 .prompt {
@@ -61,14 +81,14 @@
   color: var(--recto-ink-faint);
 }
 
-.promptUser { color: var(--recto-accent); }
-.promptPath { color: var(--recto-ink-muted); }
-.promptMark { color: var(--recto-ink-faint); }
+.promptUser { color: var(--verso-accent); }
+.promptPath { color: var(--verso-ink-muted); }
+.promptMark { color: var(--verso-ink-faint); }
 
 .promptRole {
   display: block;
   margin-top: 0.6mm;
-  color: var(--recto-ink-muted);
+  color: var(--verso-ink-muted);
 }
 
 /* ---- section heads ------------------------------------------------------ */
@@ -80,8 +100,8 @@
   display: flex;
   align-items: baseline;
   gap: 0.35em;
-  margin-bottom: 2mm;
-  padding-bottom: 1mm;
+  margin-bottom: 1.5mm;
+  padding-bottom: 0.8mm;
   border-bottom: 1px solid var(--recto-rule);
   font-family: var(--font-mono);
   font-size: 7pt;
@@ -98,10 +118,10 @@
   gap: 1mm;
   font-family: var(--font-mono);
   font-size: 7.4pt;
-  color: var(--recto-ink-muted);
+  color: var(--verso-ink-muted);
 }
 
-.group + .group { margin-top: 2.2mm; }
+.group + .group { margin-top: 1.8mm; }
 
 .groupName {
   margin-bottom: 1.4mm;
@@ -119,7 +139,7 @@
 }
 
 .pill {
-  padding: 0.7mm 1.8mm;
+  padding: 0.5mm 1.6mm;
   border: 1px solid var(--recto-rule-strong);
   border-radius: 999px;
   font-family: var(--font-mono);
@@ -127,7 +147,7 @@
   color: var(--recto-ink-muted);
 }
 
-.entry + .entry { margin-top: 2mm; }
+.entry + .entry { margin-top: 1.5mm; }
 
 .entryTitle {
   font-family: var(--font-serif);
@@ -309,4 +329,92 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--recto-ink-faint);
+}
+
+/* ---- the rail's own ink -------------------------------------------------- */
+
+/* The section heads live in both columns and have to work on both grounds. */
+.rail .sectionHead {
+  border-bottom-color: var(--verso-rule);
+  color: var(--verso-accent);
+}
+
+.rail .groupName,
+.rail .entryMeta {
+  color: var(--verso-ink-faint);
+}
+
+.rail .entryTitle {
+  color: var(--verso-ink);
+}
+
+.rail .entryLink {
+  color: var(--verso-accent);
+}
+
+.rail .pill {
+  border-color: var(--verso-rule-strong);
+  color: var(--verso-ink-muted);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 1mm;
+}
+
+.pillIcon {
+  flex: none;
+  opacity: 0.8;
+}
+
+/* ---- marks --------------------------------------------------------------- */
+
+.entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 2mm;
+}
+
+/* On white, because most of these marks are drawn for a light ground and half
+   of them are near-black line art that would disappear on the panel. */
+.entryMark {
+  flex: none;
+  width: 4.6mm;
+  height: 4.6mm;
+  margin-top: 0.6mm;
+  border-radius: 1mm;
+  object-fit: contain;
+  background: #fff;
+  padding: 0.5mm;
+}
+
+.roleCompany {
+  display: flex;
+  align-items: center;
+  gap: 1.6mm;
+}
+
+.roleMark {
+  flex: none;
+  width: 4.4mm;
+  height: 4.4mm;
+  border-radius: 0.8mm;
+  object-fit: contain;
+  background: var(--recto-ground-raised);
+}
+
+.earlierCompany {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4mm;
+}
+
+.earlierMark {
+  flex: none;
+  width: 3.4mm;
+  height: 3.4mm;
+  border-radius: 0.6mm;
+  object-fit: contain;
+  background: var(--recto-ground-raised);
 }
