@@ -13,6 +13,18 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: clamp(0.75rem, 2vw, 1.5rem);
+
+  /*
+    Each tile is as tall as its own film, not as tall as the tallest one beside
+    it. A grid stretches its items to the row height by default, so the square
+    piece was setting the height for the whole row and the 16:9 ones were
+    getting a band of the tile's black backing below their caption.
+
+    The alternative -- one ratio for every tile with object-fit: cover -- gives
+    a tidier grid and crops the films, which for a logo animation means cropping
+    the logo. A ragged bottom edge is the cheaper price.
+  */
+  align-items: start;
 }
 
 /* The lift is a scale, not a translate, so it reads as growth. */
