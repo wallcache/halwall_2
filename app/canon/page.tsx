@@ -49,7 +49,14 @@ export default async function CanonPage() {
     canonProject.links.find((l) => l.text === "App Store")?.url ?? canonProject.primary.url;
 
   return (
-    <PageShell side="recto" eyebrow="Measured in readers" title={canon.title} standfirst={canon.standfirst}>
+    <PageShell
+      side="recto"
+      eyebrow="Measured in readers"
+      title={canon.title}
+      mark={canon.icon}
+      compactTitle
+      standfirst={canon.standfirst}
+    >
       {/* ---------------- the app, counted ---------------- */}
       <section className={shell.section} aria-labelledby="numbers">
         <h2 id="numbers" className={shell.sectionHead}>
@@ -203,20 +210,45 @@ export default async function CanonPage() {
         </div>
       </section>
 
-      {/* ---------------- building it ---------------- */}
-      <section className={shell.section} aria-labelledby="building">
-        <h2 id="building" className={shell.sectionHead}>
-          {canon.building.heading}
+      {/* ---------------- the native app ---------------- */}
+      <section className={shell.section} aria-labelledby="native">
+        <h2 id="native" className={shell.sectionHead}>
+          {canon.native.heading}
         </h2>
-        <p className={styles.prose}>{canon.building.body}</p>
-        <div className={styles.build}>
-          {canon.building.log.map((l) => (
-            <div key={l.what} className={styles.buildRow}>
-              <span className={styles.buildLayer}>{l.what}</span>
-              <span className={styles.buildTech}>{l.detail}</span>
-            </div>
+        {canon.native.intro.map((p) => (
+          <p key={p.slice(0, 24)} className={styles.prose}>
+            {p}
+          </p>
+        ))}
+
+        <div className={styles.features} style={{ marginTop: "clamp(1.5rem, 4vh, 2.5rem)" }}>
+          {canon.native.shipped.map((f) => (
+            <article key={f.name} className={styles.feature}>
+              <h3 className={styles.featureName}>
+                <UiIcon name={f.icon} className={styles.featureIcon} size={19} />
+                {f.name}
+              </h3>
+              <p className={styles.featureDetail}>{f.detail}</p>
+            </article>
           ))}
         </div>
+
+        <h3 className={styles.soonHead}>{canon.native.soon.heading}</h3>
+        <p className={styles.prose}>{canon.native.soon.standfirst}</p>
+
+        <div className={styles.features} style={{ marginTop: "clamp(1rem, 3vh, 1.75rem)" }}>
+          {canon.native.soon.items.map((f) => (
+            <article key={f.name} className={`${styles.feature} ${styles.featureSoon}`}>
+              <h3 className={styles.featureName}>
+                <UiIcon name={f.icon} className={styles.featureIcon} size={19} />
+                {f.name}
+              </h3>
+              <p className={styles.featureDetail}>{f.detail}</p>
+            </article>
+          ))}
+        </div>
+
+        <p className={styles.themeNote}>{canon.native.closing}</p>
       </section>
 
       {/* ---------------- how it is built ---------------- */}

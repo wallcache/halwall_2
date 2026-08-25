@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import { GutterProvider, type Mode } from "@/lib/gutter";
 import { Header } from "@/components/Header";
 import { Preloader } from "@/components/Preloader";
+import { Chrome } from "@/components/Chrome";
 import { MagneticProvider } from "@/components/MagneticProvider";
 import { Footer } from "@/components/Footer";
 import { SmoothScroll } from "@/components/SmoothScroll";
@@ -79,15 +80,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body>
         <GutterProvider initial={initial}>
-          <MagneticProvider />
-          <Preloader />
-          <SmoothScroll />
-          <a className="skip-link" href="#main">
-            Skip to content
-          </a>
-          <Header />
+          <Chrome>
+            <MagneticProvider />
+            <Preloader />
+            <SmoothScroll />
+            <a className="skip-link" href="#main">
+              Skip to content
+            </a>
+            <Header />
+          </Chrome>
           {children}
-          <Footer />
+          <Chrome>
+            <Footer />
+          </Chrome>
         </GutterProvider>
       </body>
     </html>

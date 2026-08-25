@@ -4,13 +4,25 @@
   overflow: hidden;
 }
 
-/* Holds the box open at the size of the final date and is the only copy in the
-   accessibility tree. Invisible, not display:none, or it would not size. */
+/*
+  Holds the box open at the size of the final date, and is the copy that gets
+  read and copied. Transparent rather than visibility:hidden, because hidden
+  text cannot be selected -- and with the reel unselectable below, that left
+  nothing on the element that could be copied at all.
+*/
 .measure {
-  visibility: hidden;
+  opacity: 0;
 }
 
+/*
+  Unselectable. Only one of these rows is ever visible, but all seven are in
+  the DOM, so selecting the page or copying the section handed you the whole
+  week: "19 August 2026 20 August 2026 21 August..." aria-hidden keeps them out
+  of the accessibility tree but has no effect at all on what copies.
+*/
 .reel {
+  user-select: none;
+  -webkit-user-select: none;
   position: absolute;
   inset: 0;
   display: flex;

@@ -290,3 +290,19 @@
   text-transform: uppercase;
   color: var(--ink-faint);
 }
+
+/* ---- the native app ------------------------------------------------------ */
+
+.soonHead {
+  margin: clamp(2rem, 6vh, 3.5rem) 0 0.75rem;
+  font-family: var(--font-serif);
+  font-size: var(--step-2);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* Not here yet, and said so by being quieter rather than by a badge. */
+.featureSoon {
+  border-style: dashed;
+  background: var(--accent-wash);
+}

@@ -1,0 +1,88 @@
+/*
+  The engineer's twin of the Canon page's App Store button: same geometry, same
+  behaviour, the other side's palette. Verso tokens rather than `--ground` and
+  friends, because /work is pinned to that side and the button should not
+  change colour if the gutter ever moves under it.
+*/
+.cta {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: calc(clamp(1rem, 3vw, 2rem) + env(safe-area-inset-bottom));
+  z-index: 45;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--verso-rule-strong);
+
+  background: color-mix(in srgb, var(--verso-ground-raised) 86%, transparent);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: 0 18px 46px -26px rgb(0 0 0 / 0.7);
+
+  color: var(--verso-ink);
+  text-decoration: none;
+
+  opacity: 0;
+  translate: 0 12px;
+  pointer-events: none;
+  transition:
+    opacity 520ms var(--ease-out-expo),
+    translate 620ms var(--ease-out-expo),
+    border-color 320ms var(--ease-out-expo);
+}
+
+.cta[data-shown="true"] {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  border-color: var(--verso-accent);
+}
+
+.mark {
+  flex: none;
+  color: var(--verso-accent);
+}
+
+.label {
+  display: grid;
+  line-height: 1.15;
+}
+
+.small {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--verso-ink-faint);
+}
+
+.big {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: -0.01em;
+  color: var(--verso-ink);
+}
+
+.arrow {
+  flex: none;
+  color: var(--verso-ink-faint);
+  transition: translate 320ms var(--ease-out-expo), color 320ms var(--ease-out-expo);
+}
+
+.cta:hover .arrow,
+.cta:focus-visible .arrow {
+  translate: 2px -2px;
+  color: var(--verso-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta { transition: opacity 200ms linear; translate: none; }
+  .cta:hover .arrow { translate: none; }
+}

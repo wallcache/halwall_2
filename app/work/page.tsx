@@ -3,6 +3,7 @@ import Image from "next/image";
 import { PageShell } from "@/components/PageShell";
 import shell from "@/components/PageShell.module.css";
 import { Ledger } from "@/components/Ledger";
+import { CvCta } from "@/components/CvCta";
 import { getCanonStats } from "@/lib/canon-stats";
 import { caseStudies } from "@/content/case-studies";
 import { education } from "@/content/experience";
@@ -137,6 +138,7 @@ export default async function WorkPage() {
         ))}
       </section>
 
+      <CvCta href={cvPath} />
     </PageShell>
   );
 }

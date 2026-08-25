@@ -19,7 +19,10 @@
 .slide {
   position: relative;
   flex: 0 0 auto;
-  width: clamp(180px, 22vw, 268px);
+  /* Smaller rather than cropped. These are app-store slides -- a headline at
+     the top and a phone under it -- and trimming the frame to make them less
+     tall would cut one or the other off. */
+  width: clamp(132px, 15vw, 186px);
   aspect-ratio: 1000 / 2162;
   border-radius: var(--radius-lg);
   overflow: hidden;

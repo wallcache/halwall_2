@@ -1,0 +1,312 @@
+/* ==========================================================================
+   The CV.
+
+   A page first and a PDF second: scripts/build-cv.mjs prints this route to
+   public/media/cv. So the document cannot drift from the site -- it is drawn
+   with the same tokens, set in the same two typefaces, and reads the same
+   content modules /work does. The PDF it replaces still claimed six thousand
+   downloads and a Capacitor iOS app.
+
+   Paper, not the engineer's dark ground. A CV gets printed, and a dark one
+   either eats a cartridge or comes out inverted.
+   ========================================================================== */
+
+.sheet {
+  /* A4 at 96dpi, with the margins the print rules also use. */
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  /* 9mm, and the margin is genuinely that tight: at 10mm the sheet came to
+     298mm against A4's 297 and spilled four interest pills onto a second page,
+     where a fragmenting two-column grid then drew itself on top of itself. */
+  padding: 9mm 11mm;
+  display: grid;
+  grid-template-columns: 58mm minmax(0, 1fr);
+  gap: 9mm;
+  background: var(--recto-ground);
+  color: var(--recto-ink);
+  font-size: 8.4pt;
+  line-height: 1.45;
+}
+
+.rail {
+  display: grid;
+  align-content: start;
+  gap: 4.2mm;
+  padding-right: 5mm;
+  border-right: 1px solid var(--recto-rule);
+}
+
+.body {
+  display: grid;
+  align-content: start;
+  gap: 4mm;
+}
+
+/* ---- masthead ----------------------------------------------------------- */
+
+.name {
+  font-family: var(--font-serif);
+  font-size: 21pt;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--recto-ink);
+}
+
+.prompt {
+  margin-top: 1.5mm;
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  letter-spacing: 0.02em;
+  color: var(--recto-ink-faint);
+}
+
+.promptUser { color: var(--recto-accent); }
+.promptPath { color: var(--recto-ink-muted); }
+.promptMark { color: var(--recto-ink-faint); }
+
+.promptRole {
+  display: block;
+  margin-top: 0.6mm;
+  color: var(--recto-ink-muted);
+}
+
+/* ---- section heads ------------------------------------------------------ */
+
+/* The one flourish worth keeping from the old document. The brackets are
+   decorative, so they are hidden from the reading order rather than being
+   read out as punctuation around every heading. */
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+  margin-bottom: 2mm;
+  padding-bottom: 1mm;
+  border-bottom: 1px solid var(--recto-rule);
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--recto-accent);
+}
+
+/* ---- rail ---------------------------------------------------------------- */
+
+.contact {
+  display: grid;
+  gap: 1mm;
+  font-family: var(--font-mono);
+  font-size: 7.4pt;
+  color: var(--recto-ink-muted);
+}
+
+.group + .group { margin-top: 2.2mm; }
+
+.groupName {
+  margin-bottom: 1.4mm;
+  font-family: var(--font-mono);
+  font-size: 6.6pt;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--recto-ink-faint);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2mm;
+}
+
+.pill {
+  padding: 0.7mm 1.8mm;
+  border: 1px solid var(--recto-rule-strong);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 6.8pt;
+  color: var(--recto-ink-muted);
+}
+
+.entry + .entry { margin-top: 2mm; }
+
+.entryTitle {
+  font-family: var(--font-serif);
+  font-size: 8.6pt;
+  line-height: 1.25;
+  color: var(--recto-ink);
+}
+
+.entryMeta {
+  font-family: var(--font-mono);
+  font-size: 6.8pt;
+  line-height: 1.4;
+  color: var(--recto-ink-faint);
+}
+
+.entryLink {
+  font-family: var(--font-mono);
+  font-size: 6.8pt;
+  color: var(--recto-accent);
+}
+
+/* ---- body ---------------------------------------------------------------- */
+
+.tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 12pt;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--recto-accent);
+}
+
+.summary {
+  margin-bottom: 2mm;
+  font-family: var(--font-serif);
+  font-size: 8.6pt;
+  line-height: 1.5;
+  color: var(--recto-ink-muted);
+}
+
+.role {
+  /* A role split across a page break is the one layout failure a CV cannot
+     afford, and print is the only medium where you can say so. */
+  break-inside: avoid;
+}
+
+/*
+  A heading that lands at the foot of a page, with its section over the leaf,
+  is worse than a slightly shorter page -- and in Chrome's print engine the
+  pair were drawing over each other outright. Keeping the head with what
+  follows it fixes both.
+*/
+.sectionHead {
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+.body > section {
+  break-inside: auto;
+}
+
+.role + .role { margin-top: 3.4mm; }
+
+.roleHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4mm;
+}
+
+.roleTitle {
+  font-family: var(--font-serif);
+  font-size: 10pt;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--recto-ink);
+}
+
+.roleDates {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 6.8pt;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--recto-ink-faint);
+}
+
+.roleCompany {
+  margin-top: 0.4mm;
+  font-family: var(--font-mono);
+  font-size: 7.4pt;
+  color: var(--recto-accent);
+}
+
+.bullets {
+  margin-top: 1.6mm;
+  display: grid;
+  gap: 1.1mm;
+  padding-left: 3.4mm;
+  font-family: var(--font-serif);
+  font-size: 8.4pt;
+  line-height: 1.45;
+  color: var(--recto-ink-muted);
+}
+
+.bullets li {
+  list-style: none;
+  position: relative;
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: -3.4mm;
+  top: 0.52em;
+  width: 1.4mm;
+  height: 1.4mm;
+  border-radius: 50%;
+  background: var(--recto-accent);
+  opacity: 0.55;
+}
+
+/* ---- print --------------------------------------------------------------- */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  .sheet {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+  }
+}
+
+/* ---- earlier roles ------------------------------------------------------- */
+
+.earlier {
+  margin-top: 3.4mm;
+  padding-top: 2.4mm;
+  border-top: 1px solid var(--recto-rule);
+}
+
+.earlierLabel {
+  margin-bottom: 1.4mm;
+  font-family: var(--font-mono);
+  font-size: 6.6pt;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--recto-ink-faint);
+}
+
+.earlierRole {
+  display: flex;
+  align-items: baseline;
+  gap: 2mm;
+  line-height: 1.6;
+}
+
+.earlierTitle {
+  font-family: var(--font-serif);
+  font-size: 8.4pt;
+  color: var(--recto-ink);
+}
+
+.earlierCompany {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 6.9pt;
+  color: var(--recto-ink-muted);
+}
+
+.earlierDates {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 6.6pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--recto-ink-faint);
+}

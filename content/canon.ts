@@ -78,18 +78,39 @@ export const canon = {
     ],
   },
 
-  building: {
-    heading: "Building it",
-    body: `The commit history tells the real story of how software gets made: not in clean arcs but in dozens of small corrections, reversals and obsessive refinements. About twelve months of them.`,
-    log: [
-      { what: "Mobile navigation", detail: "A full weekend getting it right, then scrapped and rebuilt." },
-      { what: "The reading timeline", detail: "From a flat checklist to a canvas of vertical strata on an inverted time axis, each book as tall as the days it took." },
-      { what: "The tiers", detail: "From a handful of levels to thirty-two, colours running sand through teal, blue and green to a deep maroon." },
-      { what: "The reading list", detail: "Gained sort controls, time estimates, a reader-speed picker, persistent state, a footer that changed colour with your tier. Then half of it was removed, because it cluttered the thing." },
-      { what: "The iOS app", detail: "A privacy policy, a support page, timezone-aware push, offline handling, portrait lock, and about fifteen separate attempts at the status bar colour in Safari's PWA mode." },
-      { what: "Everything else", detail: "Visit tracking, a sitemap for Google, country-level analytics with city breakdowns. Redis came and went: the framework's own cache with tag invalidation turned out to do the job with one less service to run." },
-      { what: "Then the rewrite", detail: "A native SwiftUI app, started in 2026 and not yet released. Its own theme engine, and an ambience layer of thirteen stems and twenty-four presets so a book can be read in the weather it was written in." },
+  /**
+   * The native app.
+   *
+   * Hal's own copy, kept in his voice. It replaces a "building it" changelog
+   * that was a list of things nobody outside the project could see -- and that
+   * described the Swift app as unreleased, which it no longer is: it shipped as
+   * a 2.0 update to the same App Store record the old one held.
+   */
+  native: {
+    heading: "The Daily Canon is now a real app",
+    intro: [
+      `Apple made it App of the Day in July, which was a lovely thing to wake up to, and it happened because of what the rest of this section is about.`,
+      `Until recently the app was a website in a jacket. It looked the part and it worked, but it was always asking permission from a browser it could not see, and it showed: a beat of delay opening a page, a scroll that never quite gripped, nothing at all without a signal.`,
+      `It has been rebuilt from nothing in Swift, the language iPhones actually speak. Everything below follows from that. The app is faster because it is no longer pretending, and for the first time it works when your phone does not.`,
     ],
+    shipped: [
+      { icon: "globe", name: "It works with no signal", detail: "Download a book and it is yours on the plane, in the tunnel, up the mountain. Your reading, your highlights and your place in the text all live on the phone now and catch up with the server later." },
+      { icon: "calendar", name: "Midnight turns over offline", detail: "Tomorrow is worked out in advance and kept on the device, so the new day arrives at midnight whether or not there is any signal to fetch it with." },
+      { icon: "layers", name: "Every work has a painted background", detail: "Four hundred and thirty six hand made backdrops, one per work, drawn to the book rather than picked from a set. The whale, the moor, the river, the tower." },
+      { icon: "bell", name: "Widgets and a reading timer", detail: "Today's work on your home screen and lock screen, and a live timer on the Dynamic Island while you read." },
+      { icon: "compass", name: "Reading days in your calendar", detail: "Join an immersion and its days can go straight into your own calendar, so a twelve day read shows up beside everything else you have promised to do." },
+      { icon: "letterform", name: "Ten languages, properly", detail: "Not just the works. The whole app now speaks all ten, down to the buttons." },
+      { icon: "book", name: "New books arrive on their own", detail: "Newly added works and writing now reach the app the day they are finished, with no update to install." },
+    ],
+    soon: {
+      heading: "Coming soon",
+      standfirst: "Two of these are nearly here. Both are Folio, and both have been the thing I most wanted the app to do since long before it could.",
+      items: [
+        { icon: "flame", name: "The Doorman", detail: "Name the apps that eat your evening and The Daily Canon will stand at the door of each one. Open it and today's work is offered first, with an honest way past if you really do need to be in there. Doom scrolling out, close reading in." },
+        { icon: "sparkle", name: "Ambience", detail: "The weather a book was written in, to read it under. A storm for Lear and The Tempest, the open sea for Moby-Dick, snow going past the window for Anna Karenina, a hearth for A Christmas Carol. It knows which book you are holding, and it keeps playing when you put the phone down." },
+      ],
+    },
+    closing: "And a great many small repairs, most of which you will never notice, which is rather the point of them.",
   },
 
   purpose: {
@@ -130,7 +151,7 @@ export const canon = {
       { mark: "anthropic", layer: "AI", tech: "Anthropic Claude, Bloomy and reading summaries" },
       { mark: "stripe", layer: "Payments", tech: "RevenueCat on iOS, Stripe on the web" },
       { mark: "apple", layer: "Push", tech: "Apple Push Notification Service, hourly cron" },
-      { mark: "capacitor", layer: "iOS", tech: "Capacitor over the web bundle, with a native SwiftUI rewrite in the pipeline" },
+      { mark: "swift", layer: "iOS", tech: "Native SwiftUI, Swift 6, iOS 26. Offline-first on GRDB and SQLite, syncing through a queue" },
       { icon: "globe", layer: "Web", tech: "PWA service worker, offline-capable" },
       { icon: "letterform", layer: "Type", tech: "Crimson Text, Spectral, Hanken Grotesk" },
     ],

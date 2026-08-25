@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { CanonStats } from "@/lib/canon-stats";
-import { CountUp } from "./CountUp";
+import { COUNT_IN_FROM } from "@/lib/figures";
 import styles from "./CanonNumbers.module.css";
 
 /**
@@ -17,9 +17,96 @@ import styles from "./CanonNumbers.module.css";
  * The quote is the most recent card a reader made. It is the one number on the
  * page you can see the inside of.
  */
+type Counts = Pick<CanonStats, "downloads" | "finished" | "blurbs" | "saves" | "shares">;
+
+/** How often to ask the route for a fresh set. */
+const POLL_MS = 45_000;
+
 export function CanonNumbers({ stats }: { stats: CanonStats }) {
   const ref = useRef<HTMLDivElement>(null);
   const [run, setRun] = useState(false);
+
+  const seed: Counts = {
+    downloads: stats.downloads,
+    finished: stats.finished,
+    blurbs: stats.blurbs,
+    saves: stats.saves,
+    shares: stats.shares,
+  };
+
+  /*
+    `at` is what the numbers are; `from` is where each counter should start its
+    next run. On arrival that is a tenth below, so the count-in shows movement
+    rather than a figure that was simply always there. After a poll it is
+    whatever the number was a moment ago, so the counter ticks the difference
+    rather than replaying the whole reveal.
+  */
+  const [{ at }, setCounts] = useState<{ at: Counts }>(() => ({ at: seed }));
+
+  /*
+    What is on screen, which starts a little under the truth and walks up to
+    it a digit at a time. The band is a set of numbers that are genuinely
+    moving, and a figure that is simply present when you arrive says nothing
+    about that; one you can watch tick says it without a word of copy.
+  */
+  const [shown, setShown] = useState<Counts>(() =>
+    Object.fromEntries(
+      Object.entries(seed).map(([k, v]) => [k, Math.round(v * COUNT_IN_FROM)]),
+    ) as Counts,
+  );
+
+  useEffect(() => {
+    if (!run) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(at);
+      return;
+    }
+
+    // One per second per figure, and never past the real number: this walks up
+    // to the truth, it does not invent anything above it.
+    const id = window.setInterval(() => {
+      setShown((prev) => {
+        const next = { ...prev };
+        let moved = false;
+        for (const k of Object.keys(next) as (keyof Counts)[]) {
+          if (next[k] < at[k]) {
+            next[k] = next[k] + 1;
+            moved = true;
+          } else if (next[k] > at[k]) {
+            next[k] = at[k];
+            moved = true;
+          }
+        }
+        return moved ? next : prev;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(id);
+  }, [run, at]);
+
+  const poll = useCallback(async () => {
+    try {
+      const res = await fetch("/api/canon-stats");
+      if (!res.ok) return;
+      const next = (await res.json()) as Counts;
+      setCounts((prev) => {
+        // Nothing moved; leave the counters alone rather than re-running them.
+        const changed = (Object.keys(prev.at) as (keyof Counts)[]).some(
+          (k) => Number.isFinite(next[k]) && next[k] !== prev.at[k],
+        );
+        return changed ? { at: { ...prev.at, ...next } } : prev;
+      });
+    } catch {
+      // A poll that fails leaves the last good figures on the page.
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!run) return;
+    const id = window.setInterval(poll, POLL_MS);
+    return () => window.clearInterval(id);
+  }, [run, poll]);
 
   useEffect(() => {
     const el = ref.current;
@@ -41,11 +128,11 @@ export function CanonNumbers({ stats }: { stats: CanonStats }) {
   }, []);
 
   const figures = [
-    { value: stats.downloads, label: "downloads", note: "estimated from accounts" },
-    { value: stats.finished, label: "works finished", note: "logged by readers" },
-    { value: stats.blurbs, label: "blurbs read", note: "the writing behind the work" },
-    { value: stats.saves, label: "saved to a list", note: "kept for later" },
-    { value: stats.shares, label: "quotes shared", note: "cards made in the app" },
+    { key: "downloads" as const, label: "downloads", note: "iOS and the web" },
+    { key: "finished" as const, label: "works finished", note: "logged by readers" },
+    { key: "blurbs" as const, label: "blurbs read", note: "the writing behind the work" },
+    { key: "saves" as const, label: "saved to a list", note: "kept for later" },
+    { key: "shares" as const, label: "quotes shared", note: "cards made in the app" },
   ];
 
   return (
@@ -53,9 +140,7 @@ export function CanonNumbers({ stats }: { stats: CanonStats }) {
       <ul className={styles.grid}>
         {figures.map((f) => (
           <li key={f.label} className={styles.stat}>
-            <span className={styles.value}>
-              <CountUp figure={{ value: f.value, label: f.label }} run={run} />
-            </span>
+            <span className={styles.value}>{shown[f.key].toLocaleString("en-GB")}</span>
             <span className={styles.label}>{f.label}</span>
             <span className={styles.note}>{f.note}</span>
           </li>
@@ -83,6 +168,7 @@ export function CanonNumbers({ stats }: { stats: CanonStats }) {
                 height={1350}
                 unoptimized
               />
+              <span className={styles.cardMask} aria-hidden="true" />
             </span>
           )}
 

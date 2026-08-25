@@ -20,6 +20,8 @@ export const techMap: Record<string, string> = {
   "Tailwind CSS": "tailwindcss",
   Supabase: "supabase",
   Capacitor: "capacitor",
+  Swift: "swift",
+  SwiftUI: "swift",
   React: "react",
   "HTML/CSS": "html5",
   Git: "git",

@@ -47,13 +47,35 @@
   color: var(--accent);
 }
 
-.title {
+/* The mark sits with the title rather than above it, so the pair reads as one
+   piece of branding instead of a logo with a headline under it. */
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.85rem, 2.5vw, 1.5rem);
   margin-top: 0.75rem;
+}
+
+.mark {
+  flex: none;
+  width: clamp(52px, 7vw, 84px);
+  height: auto;
+  border-radius: 22%;
+}
+
+.title {
   font-family: var(--font-voice);
   font-size: var(--step-4);
   line-height: 0.98;
   letter-spacing: -0.035em;
   text-wrap: balance;
+}
+
+/* Two steps down. A mark and a full-size masthead beside each other are two
+   things competing to be the first thing you read. */
+.titleCompact {
+  font-size: var(--step-2);
+  letter-spacing: -0.025em;
 }
 
 .standfirst {

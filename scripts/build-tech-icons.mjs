@@ -9,6 +9,7 @@ import { writeFile } from "node:fs/promises";
 import * as si from "simple-icons";
 
 const WANT = [
+  "swift",
   // The Daily Canon's stack
   "nextdotjs", "typescript", "tailwindcss", "supabase", "vercel",
   "apple", "anthropic", "stripe", "redis", "capacitor", "react",

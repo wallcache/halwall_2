@@ -4,6 +4,7 @@ import { useSideRoute, type Side } from "@/lib/gutter";
 import { Parallax } from "./Parallax";
 import { PageIndex, type IndexEntry } from "./PageIndex";
 import { DappledLight } from "./DappledLight";
+import Image from "next/image";
 import styles from "./PageShell.module.css";
 
 /**
@@ -18,6 +19,8 @@ export function PageShell({
   standfirst,
   index,
   light = false,
+  mark,
+  compactTitle = false,
   children,
 }: {
   side: Side;
@@ -28,6 +31,10 @@ export function PageShell({
   index?: readonly IndexEntry[];
   /** Run the canopy behind the page, as the hero does. */
   light?: boolean;
+  /** A product's own mark, for a page that is about one. */
+  mark?: string;
+  /** For a title that has a mark beside it and does not need to shout. */
+  compactTitle?: boolean;
   children: React.ReactNode;
 }) {
   useSideRoute(side);
@@ -49,7 +56,21 @@ export function PageShell({
       <header className={`${styles.header} ${index ? styles.headerIndexed : ""}`}>
         <Parallax speed={0.06}>
           <p className={styles.eyebrow}>{eyebrow}</p>
-          <h1 className={styles.title}>{title}</h1>
+          <div className={styles.titleRow}>
+            {mark && (
+              <Image
+                className={styles.mark}
+                src={mark}
+                alt=""
+                aria-hidden="true"
+                width={192}
+                height={192}
+              />
+            )}
+            <h1 className={`${styles.title} ${compactTitle ? styles.titleCompact : ""}`}>
+              {title}
+            </h1>
+          </div>
           {standfirst && <p className={styles.standfirst}>{standfirst}</p>}
         </Parallax>
       </header>

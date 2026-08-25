@@ -62,22 +62,37 @@
 }
 
 /*
-  The frame exists to cut the bottom off. The app stamps "shared by <full name>"
-  along the foot of every card it renders, and the strip sits at about 91% of
-  the way down, so the frame shows the top 86% and clips the rest.
-
-  The ratio is the card's real one. The first attempt guessed 420x746 from the
-  upload code and the cards are 1080x1350 -- which made the frame TALLER than
-  the image rather than shorter, so it clipped nothing at all and published the
-  name the caption beside it redacts.
+  The card at its own proportions, 1080x1350. It was cropped to hide the
+  "shared by <full name>" the app stamps along its foot, but cropping to clear
+  that strip takes the card to very nearly a square and it stops looking like
+  the thing a reader actually sent. The name is covered instead of the shape
+  being changed: a blur over the corner it sits in, which needs no knowledge of
+  what colour the card happens to be.
 */
 .cardFrame {
+  position: relative;
   display: block;
   width: clamp(130px, 18vw, 190px);
-  aspect-ratio: 1080 / 1161;
+  aspect-ratio: 1080 / 1350;
   overflow: hidden;
   border-radius: var(--radius);
   border: 1px solid var(--rule);
+}
+
+/* Over the right half of the footer strip only, so the app's own mark beside
+   it stays legible. */
+.cardMask {
+  position: absolute;
+  inset: 88% 2% 2% 46%;
+  border-radius: 3px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Where backdrop-filter is unavailable the strip is covered rather than
+   blurred, because a mask that does nothing is worse than an opaque one. */
+@supports not (backdrop-filter: blur(1px)) {
+  .cardMask { background: rgb(0 0 0 / 0.55); }
 }
 
 /* Unoptimised deliberately: it is already a webp at the right size, and putting
