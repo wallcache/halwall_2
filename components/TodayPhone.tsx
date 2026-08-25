@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { CanonWork } from "@/lib/today";
 import { tdcIcon } from "@/content/media";
+import { DateRoll } from "./DateRoll";
+import { Scramble } from "./Scramble";
 import styles from "./TodayPhone.module.css";
 
 /**
@@ -22,10 +24,13 @@ import styles from "./TodayPhone.module.css";
 export function TodayPhone({
   work,
   date,
+  days,
   href,
 }: {
   work: CanonWork;
   date: string;
+  /** Today and the days before it, formatted on the server. See DateRoll. */
+  days: readonly string[];
   href: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -47,13 +52,19 @@ export function TodayPhone({
     /*
       A backstop, for the same reason the preloader has one: this content
       starts at opacity 0 and is revealed by an observer, so anything that
-      stops the observer firing leaves the phone permanently blank. Whatever
-      happens, it is showing within three seconds.
+      stops the observer firing leaves the phone permanently blank.
+
+      Twelve seconds, not three. At three it fired while the section was still
+      a thousand pixels below the fold on almost every visit, so the phone had
+      already slid up and the date had already flicked through by the time
+      anyone scrolled to it -- the animation played to an empty room. This is
+      long enough to stay out of the way of a normal read and short enough that
+      a broken observer is still only a pause.
     */
     const backstop = window.setTimeout(() => {
       setBooting(true);
       setLoaded(true);
-    }, 3000);
+    }, 12000);
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -90,12 +101,16 @@ export function TodayPhone({
         <div className={styles.meta}>
           <div className={styles.metaItem}>
             <span className={styles.metaLabel}>Date</span>
-            <span className={styles.metaValue}>{date}</span>
+            <span className={styles.metaValue}>
+              <DateRoll days={days} run={booting} />
+            </span>
           </div>
           {work.day && (
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Chosen because</span>
-              <span className={styles.metaValue}>{work.day}</span>
+              <span className={styles.metaValue}>
+                <Scramble text={work.day} run={booting} duration={1600} />
+              </span>
             </div>
           )}
         </div>

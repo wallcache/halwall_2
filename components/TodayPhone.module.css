@@ -36,8 +36,19 @@
 /* Sized by HEIGHT, not width: driving a 1179:2556 aspect from width ran the
    phone taller than the section and it bled past both edges. Bounded generously
    though — too small and the day view inside has to fight for every line. */
+/*
+  Arrives from below as the section is reached. The whole point of the piece is
+  that it is showing you what the app is serving right now, and a thing that
+  slides into place is read as arriving rather than as having always been a
+  picture on the page.
+*/
 .phone {
   position: relative;
+  translate: 0 46px;
+  opacity: 0;
+  transition:
+    translate 1100ms var(--ease-out-expo),
+    opacity 900ms var(--ease-out-expo);
   height: clamp(520px, 74vh, 720px);
   width: auto;
   aspect-ratio: 1179 / 2556;
@@ -318,4 +329,13 @@
 @media (prefers-reduced-motion: reduce) {
   .boot, .day > *, .bootFill { transition: none; }
   .day > * { opacity: 1; transform: none; }
+}
+
+.wrap[data-booting="true"] .phone {
+  translate: 0 0;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone { translate: none; transition: opacity 240ms linear; }
 }

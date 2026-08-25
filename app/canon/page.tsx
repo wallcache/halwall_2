@@ -32,6 +32,18 @@ export default async function CanonPage() {
   const now = new Date();
   const work = workForDate(now);
 
+  /*
+    Today and the six days before it, formatted here rather than in the
+    browser. Date formatting answers to the machine's timezone, so deriving
+    these client-side would render one set of days on the server and another on
+    the reader's machine.
+  */
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (6 - i));
+    return formatDay(d);
+  });
+
   const appStore =
     canonProject.links.find((l) => l.text === "App Store")?.url ?? canonProject.primary.url;
 
@@ -69,7 +81,7 @@ export default async function CanonPage() {
         <h2 id="today" className={shell.sectionHead}>
           Today, in the app
         </h2>
-        <TodayPhone work={work} date={formatDay(now)} href={appStore} />
+        <TodayPhone work={work} date={formatDay(now)} days={days} href={appStore} />
         <div className={styles.links}>
           {canonProject.links.map((l) => (
             <a key={l.url} className={styles.link} href={l.url} target="_blank" rel="noopener noreferrer">
