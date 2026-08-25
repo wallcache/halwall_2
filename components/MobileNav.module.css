@@ -1,5 +1,7 @@
-/* Sits inside the bar, so it takes the bar's adopted palette. */
+/* The trigger is the one part that sits in the bar, so it takes the bar's
+   adopted palette. The sheet itself is portalled to body. */
 .trigger {
+  position: relative;
   display: none;
   place-items: center;
   width: 38px;
@@ -36,7 +38,9 @@
   /* Clipped open from the top, so it unfolds rather than sliding in. */
   clip-path: inset(0 0 100% 0);
   transition: clip-path 620ms var(--ease-in-out-quart);
-  overscroll-behavior: contain;
+  /* A pan that starts on the head, the foot or bare ground goes nowhere. The
+     list below is the only thing that scrolls, and it says so itself. */
+  touch-action: none;
 }
 
 .sheet[data-open="true"] { clip-path: inset(0 0 0 0); }
@@ -59,6 +63,7 @@
 .brandRecto { font-family: var(--font-serif); font-style: italic; color: var(--verso-ink); }
 
 .close {
+  position: relative;
   display: grid;
   place-items: center;
   width: 38px;
@@ -70,14 +75,34 @@
   cursor: pointer;
 }
 
+/* A 44px target on a 38px control. The ring is drawn by the button itself, so
+   the extra 3px each side is invisible. */
+.trigger::before,
+.close::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+}
+
 .links {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 0.15rem;
   padding: 0 var(--shell-x);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
+
+/* Centred by auto margins rather than justify-content, because auto margins
+   give way when the list overflows -- on a phone held sideways the four links
+   are taller than the room between head and foot, and justify-content would
+   have parked the first one above the scroll origin where nothing reaches. */
+.link:first-child { margin-top: auto; }
+.link:last-child { margin-bottom: auto; }
 
 .link {
   display: flex;
@@ -132,4 +157,10 @@
 @media (prefers-reduced-motion: reduce) {
   .sheet { transition: none; }
   .link { transition: none; opacity: 1; transform: none; }
+}
+
+/* Nothing for a desk to composite: the sheet lives on body now, so above the
+   phone breakpoint it is gone rather than merely clipped shut. */
+@media (min-width: 761px) {
+  .sheet { display: none; }
 }

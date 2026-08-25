@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useGutter } from "@/lib/gutter";
+import { useGutter, type Side } from "@/lib/gutter";
 import { register } from "@/lib/parallax";
 import { identity } from "@/content/identity";
 import { portraits } from "@/content/portraits";
@@ -22,12 +22,17 @@ const PORTRAIT_VERSO = portraits.city;
 const PORTRAIT_RECTO = portraits.camp;
 /** How long after a drag before hovering a pane may take the gutter back. */
 const HOVER_SUPPRESS_MS = 700;
+/** Where the seam rests on a phone, per side. */
+const REST: Record<Side, number> = { verso: 1, recto: 0 };
 
 export function Spread() {
-  const { mode, commit, follow, endFollow } = useGutter();
+  const { mode, commit, follow, endFollow, drag, read } = useGutter();
   const heroRef = useRef<HTMLElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  /** The side the phone's swipe last came to rest on. */
+  const resting = useRef<Side>("verso");
   const [touched, setTouched] = useState(false);
   const [narrow, setNarrow] = useState(false);
   /**
@@ -37,6 +42,9 @@ export function Spread() {
    * the seam, which is the shortest possible distance between "there is a
    * split here" and understanding what it does. The gutter provider eases
    * toward the target rather than pinning to it, so the seam trails the hand.
+   *
+   * On a phone there is no pointer to follow, so the seam is a swipe instead;
+   * that lives further down.
    */
   const onHeroMove = useCallback(
     (e: PointerEvent) => {
@@ -103,6 +111,113 @@ export function Spread() {
     return () => stop.forEach((f) => f());
   }, []);
 
+  /*
+    On a phone the seam is a swipe.
+
+    There is no pointer to follow, so the hero lays a transparent snap
+    scroller over itself -- two empty pages, verso then recto -- and reads the
+    seam straight off the scroll position. Nothing underneath moves sideways;
+    only the clips do, so mid-swipe the grounds, the name, both photographs
+    and the copy all wipe together, exactly as they do under a cursor.
+
+    Two rests and no middle. At this width each side's copy has the whole
+    screen, and a seam parked halfway across it would cut every line in two.
+  */
+  useEffect(() => {
+    if (!narrow) return;
+    const track = trackRef.current;
+    if (!track) return;
+    // A stored spread starts on the engineer. Placed directly rather than
+    // tweened, so the first frame is already the right side.
+    const side: Side = read() < 0.5 ? "recto" : "verso";
+    track.scrollLeft = side === "verso" ? 0 : track.clientWidth;
+    drag(REST[side]);
+    resting.current = side;
+  }, [narrow, read, drag]);
+
+  useEffect(() => {
+    if (!narrow) return;
+    const track = trackRef.current;
+    if (!track) return;
+    const hasScrollEnd = "onscrollend" in window;
+    let frame = 0;
+    let idle = 0;
+    let pressed = false;
+
+    /*
+      Only a change of side is a commit. The mount sync and the snap's own
+      last pixels both arrive here, and neither should re-tween the seam or
+      re-write the cookie.
+    */
+    const settle = () => {
+      idle = 0;
+      if (pressed) return;
+      const side: Side = read() >= 0.5 ? "verso" : "recto";
+      if (side === resting.current) return;
+      resting.current = side;
+      commit(side);
+    };
+
+    /*
+      Safari has no scrollend. An idle timer stands in for it, re-armed on
+      every scroll and again when the finger lifts, because a lift that lands
+      exactly on a snap point emits no further scroll events at all.
+    */
+    const arm = () => {
+      if (hasScrollEnd) return;
+      window.clearTimeout(idle);
+      idle = window.setTimeout(settle, 150);
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const value = 1 - track.scrollLeft / (track.clientWidth || 1);
+        drag(value);
+        if (Math.abs(value - REST[resting.current]) > 0.02) setTouched(true);
+        arm();
+      });
+    };
+    const onDown = () => {
+      pressed = true;
+    };
+    const onUp = () => {
+      pressed = false;
+      arm();
+    };
+
+    track.addEventListener("scroll", onScroll, { passive: true });
+    if (hasScrollEnd) track.addEventListener("scrollend", settle);
+    track.addEventListener("touchstart", onDown, { passive: true });
+    track.addEventListener("touchend", onUp, { passive: true });
+    track.addEventListener("touchcancel", onUp, { passive: true });
+    return () => {
+      track.removeEventListener("scroll", onScroll);
+      if (hasScrollEnd) track.removeEventListener("scrollend", settle);
+      track.removeEventListener("touchstart", onDown);
+      track.removeEventListener("touchend", onUp);
+      track.removeEventListener("touchcancel", onUp);
+      cancelAnimationFrame(frame);
+      window.clearTimeout(idle);
+    };
+  }, [narrow, drag, commit, read]);
+
+  /*
+    The dots go through the scroller too, so the seam has one code path on a
+    phone. `behavior` is named because the reduced-motion rule in globals only
+    overrides "auto".
+  */
+  const go = useCallback((side: Side) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    track.scrollTo({
+      left: side === "verso" ? 0 : track.clientWidth,
+      behavior: reduced ? "auto" : "smooth",
+    });
+  }, []);
+
   /** Hover only takes the gutter when a drag is not in charge of it. */
   return (
     <section
@@ -119,7 +234,6 @@ export function Spread() {
         data-open={mode === "verso"}
         data-state={mode === "verso" ? "lead" : mode === "recto" ? "mute" : "idle"}
         inert={mode === "recto"}
-        onClick={narrow ? () => commit("verso") : undefined}
       >
         <div className={styles.col}>
           <p className={`${styles.eyebrow} ${styles.eyebrowVerso}`}>
@@ -140,7 +254,6 @@ export function Spread() {
         data-open={mode === "recto"}
         data-state={mode === "recto" ? "lead" : mode === "verso" ? "mute" : "idle"}
         inert={mode === "verso"}
-        onClick={narrow ? () => commit("recto") : undefined}
       >
         <div className={styles.col}>
           <p className={`${styles.eyebrow} ${styles.eyebrowRecto}`}>
@@ -195,7 +308,7 @@ export function Spread() {
             alt={`${identity.name} in the City of London.`}
             fill
             priority
-            sizes="(max-width: 760px) 52vw, 300px"
+            sizes="(max-width: 760px) 62vw, 300px"
           />
           <Image
             className={`${styles.portrait} ${styles.portraitRecto}`}
@@ -203,7 +316,7 @@ export function Spread() {
             alt={`${identity.name} at a wildcamp.`}
             fill
             priority
-            sizes="(max-width: 760px) 52vw, 300px"
+            sizes="(max-width: 760px) 62vw, 300px"
           />
           {/* Colour layers, clipped to match their photographs exactly. */}
           <span className={`${styles.tint} ${styles.tintVerso}`} aria-hidden="true" />
@@ -213,6 +326,46 @@ export function Spread() {
 
       <div className={styles.seam} aria-hidden="true" />
 
+      {narrow && (
+        <>
+          {/*
+            The swipe. Empty on purpose: it is a scroll position and nothing
+            else, so it is hidden from assistive tech and kept out of the tab
+            order (Chrome would otherwise focus an empty scroller). The dots
+            below are the control that can be named.
+          */}
+          <div ref={trackRef} className={styles.track} aria-hidden="true" tabIndex={-1}>
+            <div className={styles.page} />
+            <div className={styles.page} />
+          </div>
+
+          {/* data-side lends the foot a palette; the hero itself sits in none. */}
+          <div className={styles.pager} data-side={mode === "recto" ? "recto" : "verso"}>
+            <div className={styles.dots}>
+              <button
+                type="button"
+                className={styles.dot}
+                aria-label="The engineer"
+                aria-current={mode === "verso" ? "true" : undefined}
+                onClick={() => go("verso")}
+              />
+              <button
+                type="button"
+                className={styles.dot}
+                aria-label="The founder"
+                aria-current={mode === "recto" ? "true" : undefined}
+                onClick={() => go("recto")}
+              />
+            </div>
+            {/* Points the way the finger goes: on the verso a swipe left
+                brings the recto in from the right. */}
+            <p className={styles.hint} aria-hidden="true">
+              <span>swipe</span>
+              <span className={styles.hintArrow}>{mode === "recto" ? "\u2192" : "\u2190"}</span>
+            </p>
+          </div>
+        </>
+      )}
     </section>
   );
 }

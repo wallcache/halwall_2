@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useGutter, type Side } from "@/lib/gutter";
@@ -17,7 +17,6 @@ const DIRECTION_THRESHOLD = 8;
 export function Header() {
   const { mode } = useGutter();
   const pathname = usePathname();
-  const barRef = useRef<HTMLElement>(null);
 
   const [compact, setCompact] = useState(false);
 
@@ -61,21 +60,6 @@ export function Header() {
   }, [pathname]);
 
   /**
-   * The specular highlight follows the pointer across the glass. Coordinates
-   * go straight onto the element as custom properties inside a rAF; putting
-   * them in state would re-render the header on every mouse move.
-   */
-  const onBarPointerMove = useCallback((e: React.PointerEvent) => {
-    const el = barRef.current;
-    if (!el) return;
-    const { left, top, width, height } = el.getBoundingClientRect();
-    requestAnimationFrame(() => {
-      el.style.setProperty("--sheen-x", `${((e.clientX - left) / width) * 100}%`);
-      el.style.setProperty("--sheen-y", `${((e.clientY - top) / height) * 100}%`);
-    });
-  }, []);
-
-  /**
    * Moving the cursor from "work" to "making" used to fire a leave and then an
    * enter, so the gutter snapped back to the spread and lurched out again
    * between two links in the same group. Two fixes: the handlers live on the
@@ -104,7 +88,7 @@ export function Header() {
       data-mode={mode}
       data-side={mode === "recto" ? "recto" : "verso"}
     >
-      <nav ref={barRef} className={styles.bar} aria-label="Primary" onPointerMove={onBarPointerMove}>
+      <nav className={styles.bar} aria-label="Primary">
         <div className={styles.group}>{versoNav.map(renderLink)}</div>
 
         <Link href="/" className={styles.wordmark} aria-label={`${identity.name}, home`}>

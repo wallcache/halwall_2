@@ -357,161 +357,192 @@
 }
 
 /* --------------------------------------------------------------------------
-   Mobile: the gutter turns horizontal
+   Mobile: the same spread, one page at a time
+
+   The seam stays vertical, so every clip, gradient and double-drawn layer
+   above is reused unchanged. What changes is the drive: a horizontal swipe on
+   a transparent snap scroller (.track) laid over the stage, with two rests --
+   verso and recto -- and no middle. It used to turn the seam horizontal and
+   measure the copy from it, which held together at exactly one seam position
+   and one screen height.
+
+   The vertical layout is a set of named zones, published as variables so the
+   two panes and the shared layers agree on where everything is whichever
+   side's copy is taller:
+     --stage-head    clearance for the fixed pill header
+     --name-reserve  the wordmark band
+     --copy-reserve  eyebrow and claim, at the foot of each pane
+     --stage-foot    the dots and the swipe hint
+   The portrait takes whatever is left between the name and the copy.
    -------------------------------------------------------------------------- */
 
 @media (max-width: 760px) {
-  /*
-    A different composition, not the desktop one squeezed.
-
-    The gutter runs horizontally here: verso occupies the top band, recto the
-    bottom. That means each pane's content has to live inside its own band, and
-    it did not — the grid put the verso's figures at the bottom of the pane and
-    the recto's eyebrow at the top, so both landed in the half that gets
-    clipped away. Hence the missing text.
-
-    The masthead also moves off the portrait. Centred, it sat directly on the
-    photograph in dark ink over a bright frame, which was unreadable.
-  */
   .hero {
+    /* svh, not dvh: the iOS URL bar collapsing must not reflow the hero. */
+    height: 100svh;
+    min-height: 100svh;
+    /* The base is pan-y, which would hand a horizontal swipe to nobody. */
+    touch-action: pan-x pan-y;
     --portrait-travel: 0vw;
-    --portrait-w: min(36vw, 148px);
-    /*
-      The portrait's real height, published as a variable so the two bands can
-      reserve room for it instead of hoping. This is the whole fix: the copy
-      used to be positioned from the top of its band while the portrait was
-      positioned from the middle of the screen, so whether they collided
-      depended entirely on how tall the phone was. It cleared at 844 and ran
-      straight through the claim at 765.
-    */
+
+    /* The pill under 760px: 0.6rem of wrap, 0.5rem of bar each side, the
+       38px trigger and two hairlines, near enough 66px. */
+    --stage-head: 4.75rem;
+    --name-size: clamp(2.1rem, 12vw, 3.2rem);
+    --name-reserve: calc(var(--name-size) * 1.05);
+    --zone-gap: 0.75rem;
+
+    --claim-size: clamp(1.2rem, 5.4vw, var(--step-2));
+    --copy-gap: 0.8rem;
+    /* Three lines of the recto eyebrow (serif, step 0, wraps to three at
+       390px) and two of the claim. Both panes reserve this whatever they
+       actually use, so the portrait above sits in the same place on each. */
+    --copy-reserve: calc(
+      3 * var(--step-0) * 1.8 + var(--copy-gap) + 2 * var(--claim-size) * 1.25
+    );
+    --stage-foot: 4.5rem;
+
+    --zone-top: calc(var(--stage-head) + var(--name-reserve) + var(--zone-gap));
+    --zone-bottom: calc(var(--stage-foot) + var(--copy-reserve) + var(--zone-gap));
+    --zone-h: calc(100svh - var(--zone-top) - var(--zone-bottom));
+    /* Fills the zone at 3:4, capped so a tall phone does not get a poster. */
+    --portrait-w: min(62vw, 240px, var(--zone-h) * 3 / 4);
     --portrait-h: calc(var(--portrait-w) * 4 / 3);
-    --portrait-clear: calc(var(--portrait-h) / 2 + 1.1rem);
-    /* Where the seam actually is, in pixels. In viewport units rather than a
-       percentage, because a percentage padding resolves against the element's
-       WIDTH, and the thing being cleared here is vertical. */
-    --seam-y: calc(var(--gutter) * 100dvh);
-    min-height: 100dvh;
-    background:
-      linear-gradient(
-        to bottom,
-        var(--verso-ground) 0 var(--gutter-pct),
-        var(--recto-ground) var(--gutter-pct) 100%
-      );
   }
 
-  /* Flex, not the desktop grid. The three-row grid put a spacer between the
-     eyebrow and the foot, which on a half-height band pushed the figures out
-     of the visible area entirely. */
+  /* ---- panes: copy grouped at the foot, each side aligned to its edge ---- */
   .pane {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
-    padding: 0 var(--shell-x);
+    justify-content: flex-end;
+    gap: var(--copy-gap);
+    padding: 0 var(--shell-x) var(--stage-foot);
   }
-
-  /* The empty middle cell the desktop grid needs has no job here. */
   .pane > div:empty { display: none; }
 
-  /*
-    Each band's copy hugs the seam from its own side, held off it by exactly
-    half the portrait. Measured from the seam rather than from the outer edge,
-    which is the only arrangement that cannot collide: whatever the screen
-    height, the copy stops where the photograph starts.
-  */
-  .paneVerso {
-    justify-content: flex-end;
-    /*
-      The pane is the full height of the hero with only its top band showing
-      through a clip, so flex-end alone parks the copy at the bottom of the
-      screen, inside the half that is clipped away. It has to be pushed up past
-      everything below the seam as well as past half the photograph.
-    */
-    padding-bottom: calc(100dvh - var(--seam-y) + var(--portrait-clear));
-  }
-
-  .paneRecto {
-    justify-content: flex-start;
-    padding-top: calc(var(--seam-y) + var(--portrait-clear));
-    text-align: left;
-  }
-
-  .paneVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
-  .paneRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
-
-  .col {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-  }
-
+  .col { width: 100%; min-width: 0; }
   .paneRecto .col { margin-left: 0; }
-  .paneRecto .foot { align-items: flex-start; }
+  .foot { gap: 0; }
+  .paneRecto .foot { align-items: flex-end; }
 
-  .claim { font-size: var(--step-0); }
+  .claim { font-size: var(--claim-size); max-width: none; }
 
-  /* The name sits in the top band, above everything else. */
-  /* Tucked up under the header, because the band below it now has to hold the
-     eyebrow, the claim and half a photograph. */
+  /* ---- wordmark: under the header, still drawn twice and clipped ---- */
   .nameLayer {
     align-content: start;
-    padding: clamp(3.75rem, 10vh, 5.25rem) 0 0;
+    padding: var(--stage-head) 0 0;
   }
-
-  .name {
-    font-size: clamp(2.1rem, 12vw, 3.2rem);
-    flex-direction: row;
-    align-items: baseline;
-    gap: 0.22em;
-  }
-
+  .name { font-size: var(--name-size); }
   .nameDrift { transform: none; }
 
-  /*
-    One copy only, in verso ink.
-
-    The masthead is drawn twice and clipped left/right, which is right on the
-    desktop where the seam is vertical. Here the seam is horizontal and the
-    whole name sits in the dark band, so the recto copy rendered "Wall" in dark
-    ink on a dark ground while its clip left it visible. The verso copy alone,
-    unclipped, is the correct picture.
-  */
-  .nameVerso { clip-path: none; }
-  .nameRecto { display: none; }
-
-  /* Centred on the seam, so it reads as the join between the two bands. */
+  /* ---- portrait: centred in whatever the name and the copy leave ---- */
   .portraitAnchor {
-    top: var(--gutter-pct);
+    top: calc(var(--zone-top) + (var(--zone-h) - var(--portrait-h)) / 2);
     bottom: auto;
-    transform: translate(-50%, -50%);
   }
 
-  .seam { top: var(--gutter-pct); bottom: auto; left: 0; right: 0; width: auto; height: 1px; }
+  /* ---- a seam you only see mid-wipe ----
+     Positioned here, for phones only: the base rule above is swallowed by a
+     stray selector and a desk has never shown a hairline. At rest the seam
+     would sit on a screen edge, so it fades once a side is leading. */
+  .seam {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--gutter-pct);
+    width: 1px;
+    z-index: 4;
+    background: var(--verso-accent);
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 320ms var(--ease-out-expo);
+  }
+  .pane[data-state="lead"] ~ .seam { opacity: 0; }
 
-  .portraitVerso { clip-path: inset(0 0 var(--gutter-inverse-pct) 0); }
-  .portraitRecto { clip-path: inset(var(--gutter-pct) 0 0 0); }
+  /* ---- the swipe ---- */
+  .track {
+    position: absolute;
+    inset: 0;
+    z-index: 5; /* over the name (3) and the seam (4), under the pager */
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    /* Both axes: pan-x alone would stop a vertical drag that starts on the
+       hero from scrolling the page. */
+    touch-action: pan-x pan-y;
+    scrollbar-width: none;
+  }
+  .track::-webkit-scrollbar { display: none; }
 
-  .tintVerso {
-    clip-path: inset(0 0 var(--gutter-inverse-pct) 0);
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--verso-accent) 52%, transparent) 0%,
-      color-mix(in srgb, var(--verso-accent) 30%, transparent) 12%,
-      color-mix(in srgb, var(--verso-accent) 11%, transparent) 26%,
-      transparent 42%
-    );
+  .page {
+    flex: 0 0 100%;
+    height: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
-  .tintRecto {
-    clip-path: inset(var(--gutter-pct) 0 0 0);
-    background: linear-gradient(
-      to top,
-      color-mix(in srgb, var(--recto-accent) 52%, transparent) 0%,
-      color-mix(in srgb, var(--recto-accent) 30%, transparent) 12%,
-      color-mix(in srgb, var(--recto-accent) 11%, transparent) 26%,
-      transparent 42%
-    );
+  /* ---- the foot: two dots and a hint that goes once it has been taken ---- */
+  .pager {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--stage-foot);
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    pointer-events: none;
   }
+  .dots { display: flex; pointer-events: auto; }
+  .dot {
+    display: grid;
+    place-items: center;
+    width: 44px; /* the touch target; the dot itself is the pseudo */
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink-faint);
+    cursor: pointer;
+  }
+  .dot::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full);
+    background: currentColor;
+    transition: transform 320ms var(--ease-out-expo);
+  }
+  .dot[aria-current="true"] { color: var(--accent); }
+  .dot[aria-current="true"]::before { transform: scale(1.35); }
+
+  .hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    transition: opacity 520ms var(--ease-out-expo);
+  }
+  .hintArrow { animation: nudge 1600ms var(--ease-in-out-quart) infinite; }
+  .hero[data-touched="true"] .hint { opacity: 0; }
+}
+
+@keyframes nudge {
+  0%, 100% { transform: none; }
+  50% { transform: translateX(-0.35em); }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .hintArrow { animation: none; }
 }
 
 /* --------------------------------------------------------------------------
@@ -562,15 +593,6 @@
   opacity: 0;
   transform: translateX(2.5rem);
   filter: blur(3px);
-}
-
-@media (max-width: 760px) {
-  /* The gutter is horizontal here, so muted content leaves vertically. */
-  .paneVerso[data-state="mute"] .eyebrow,
-  .paneVerso[data-state="mute"] .claim { transform: translateY(-1.5rem); }
-
-  .paneRecto[data-state="mute"] .eyebrow,
-  .paneRecto[data-state="mute"] .claim { transform: translateY(1.5rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { sideForPath } from "@/lib/gutter";
+import { sideForPath, useGutter, type Mode } from "@/lib/gutter";
 import styles from "./Preloader.module.css";
 
 /** The name sets, in the engineer's voice, on a dark page. */
@@ -51,18 +51,38 @@ export function Preloader() {
     first load the loader got there first and handed /work the paper ground.
   */
   const side = sideForPath(usePathname());
+  const { read } = useGutter();
   const [drawn, setDrawn] = useState(false);
   const [split, setSplit] = useState(false);
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
+  /*
+    Where the seam is handed to. Usually the page's own side, but on a phone
+    the homepage is never the spread: the hero there rests on one side or the
+    other (see Spread), so a plate still split down the middle would fade a
+    half-screen of the wrong ground over it. Resolved when the hand-off
+    happens, by which time the hero has taken its side.
+  */
+  const [hand, setHand] = useState<Mode>(side);
   const finished = useRef(false);
+  /* The loader belongs to the page it opened on; a later navigation must not
+     restart it, so the side is read once. */
+  const sideRef = useRef(side);
 
   useEffect(() => {
+    const settled = (): Mode =>
+      sideRef.current === "spread" && window.matchMedia("(max-width: 760px)").matches
+        ? read() >= 0.5
+          ? "verso"
+          : "recto"
+        : sideRef.current;
+
     const finish = () => {
       if (finished.current) return;
       finished.current = true;
       setDrawn(true);
       setSplit(true);
+      setHand(settled());
       setOpen(true);
       setDone(true);
       document.documentElement.dataset.revealed = "true";
@@ -85,6 +105,7 @@ export function Preloader() {
       window.setTimeout(() => setDrawn(true), DRAW_AT),
       window.setTimeout(() => setSplit(true), SPLIT_AT),
       window.setTimeout(() => {
+        setHand(settled());
         setOpen(true);
         document.documentElement.dataset.revealed = "true";
       }, OPEN_AT),
@@ -101,7 +122,7 @@ export function Preloader() {
       timers.forEach(window.clearTimeout);
       document.removeEventListener("visibilitychange", onHide);
     };
-  }, []);
+  }, [read]);
 
   return (
     <div
@@ -109,7 +130,7 @@ export function Preloader() {
       data-drawn={drawn}
       data-split={split}
       data-open={open}
-      data-hand={open ? side : undefined}
+      data-hand={open ? hand : undefined}
       data-done={done}
       aria-hidden="true"
     >

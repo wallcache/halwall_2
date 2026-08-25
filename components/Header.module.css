@@ -60,18 +60,26 @@
   margin-inline: auto;
 }
 
-.wrap[data-compact="true"]:not(:hover):not(:focus-within) .bar {
-  padding: clamp(0.3rem, 0.6vw, 0.5rem) clamp(0.85rem, 1.8vw, 1.35rem);
-  max-width: 44rem;
-  border-radius: var(--radius-full);
-  box-shadow: 0 14px 44px -26px rgb(0 0 0 / 0.75);
-}
+/*
+  Pointer devices re-open a folded bar on hover or focus. Scoped above the
+  phone breakpoint: :hover sticks after a tap on iOS, and focus-within flips
+  the moment the menu trigger is tapped, so under 760px the fold answers to
+  scrolling alone (the block at the end of the file).
+*/
+@media (min-width: 761px) {
+  .wrap[data-compact="true"]:not(:hover):not(:focus-within) .bar {
+    padding: clamp(0.3rem, 0.6vw, 0.5rem) clamp(0.85rem, 1.8vw, 1.35rem);
+    max-width: 44rem;
+    border-radius: var(--radius-full);
+    box-shadow: 0 14px 44px -26px rgb(0 0 0 / 0.75);
+  }
 
-/* Size comes from a transform, which composites, rather than from font-size,
-   which relayouts. */
-.wrap[data-compact="true"]:not(:hover):not(:focus-within) .group,
-.wrap[data-compact="true"]:not(:hover):not(:focus-within) .wordmark {
-  transform: scale(0.92);
+  /* Size comes from a transform, which composites, rather than from font-size,
+     which relayouts. */
+  .wrap[data-compact="true"]:not(:hover):not(:focus-within) .group,
+  .wrap[data-compact="true"]:not(:hover):not(:focus-within) .wordmark {
+    transform: scale(0.92);
+  }
 }
 
 /* Declared once, on the base rules, so every property eases in BOTH
@@ -183,9 +191,14 @@
 }
 
 /* The two halves drift apart on hover, opening the gutter in miniature. */
-.wordmark:hover,
 .wordmark:focus-visible {
   gap: 0.42em;
+}
+
+@media (hover: hover) {
+  .wordmark:hover {
+    gap: 0.42em;
+  }
 }
 
 .wordmarkVerso {
@@ -205,8 +218,10 @@
   transition: transform 520ms var(--ease-out-expo), color 320ms var(--ease-out-expo);
 }
 
-.wordmark:hover .wordmarkVerso { transform: translateY(-1px); }
-.wordmark:hover .wordmarkRecto { transform: translateY(1px); }
+@media (hover: hover) {
+  .wordmark:hover .wordmarkVerso { transform: translateY(-1px); }
+  .wordmark:hover .wordmarkRecto { transform: translateY(1px); }
+}
 
 /*
   No ink swapping needed. The bar adopts one side's tokens, so both halves of
@@ -214,17 +229,6 @@
   they sit on.
 */
 
-
-@media (max-width: 760px) {
-  .bar {
-    grid-template-columns: 1fr auto 1fr;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: color-mix(in srgb, var(--ground) 94%, transparent);
-  }
-    .group { gap: 0.75rem; }
-  .linkVerso, .linkRecto { font-size: 0.7rem; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .bar,
@@ -244,8 +248,30 @@
   }
 }
 
-/* Under 760px the inline links give way to the three-dot sheet. */
+/* --------------------------------------------------------------------------
+   Under 760px: the phone bar
+
+   The inline links give way to the three-dot sheet; the wordmark stays centred
+   in the 1fr auto 1fr grid, as on a desk. The fold still happens -- scrolling
+   down past COMPACT_AT folds it, scrolling up opens it -- but nothing about
+   hover or focus can open it, because hover is sticky after a tap on iOS and
+   focus lands in the bar every time the trigger is pressed.
+   -------------------------------------------------------------------------- */
 @media (max-width: 760px) {
+  .bar {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: color-mix(in srgb, var(--ground) 94%, transparent);
+  }
+
   .group .link { display: none; }
-  .groupRecto { justify-content: flex-end; }
+
+  /* Only the vertical padding and the corner change, so the wordmark and the
+     trigger never slide sideways as the bar folds. No scale: the wordmark is
+     already at its smallest step and the trigger has to keep its hit area. */
+  .wrap[data-compact="true"] .bar {
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+    box-shadow: 0 14px 44px -26px rgb(0 0 0 / 0.75);
+  }
 }

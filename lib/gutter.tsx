@@ -56,6 +56,13 @@ interface GutterValue {
   endFollow: () => void;
   /** Direct write. Bypasses easing entirely. */
   set: (value: number) => void;
+  /**
+   * Scrubbed by a gesture that owns the value outright -- the phone's swipe.
+   * A direct write like `set`, but it also keeps `mode` honest with the same
+   * coarse thresholds `follow` uses, so the pane coming in stops being inert
+   * the moment the seam leaves an edge.
+   */
+  drag: (value: number) => void;
   /** Reads the live value without subscribing to it. */
   read: () => number;
   settle: (velocity: number) => void;
@@ -207,6 +214,20 @@ export function GutterProvider({
     if (!followFrame.current) followFrame.current = requestAnimationFrame(followLoop);
   }, [followLoop]);
 
+  const drag = useCallback(
+    (value: number) => {
+      if (locked) return;
+      anim.current?.kill();
+      following.current = false;
+      cancelAnimationFrame(followFrame.current);
+      followFrame.current = 0;
+      const v = clamp(value);
+      write(v);
+      setMode(v > 0.92 ? "verso" : v < 0.08 ? "recto" : "spread");
+    },
+    [locked, write],
+  );
+
   /**
    * Release of a drag. This is the part the reference prototype promised and
    * never built: the seam carries its velocity past the fingertip, then snaps
@@ -248,8 +269,8 @@ export function GutterProvider({
   );
 
   const value = useMemo<GutterValue>(
-    () => ({ mode, locked, commit, release, lockTo, unlock, follow, endFollow, set, read, settle }),
-    [mode, locked, commit, release, lockTo, unlock, follow, endFollow, set, read, settle],
+    () => ({ mode, locked, commit, release, lockTo, unlock, follow, endFollow, set, drag, read, settle }),
+    [mode, locked, commit, release, lockTo, unlock, follow, endFollow, set, drag, read, settle],
   );
 
   return <GutterContext.Provider value={value}>{children}</GutterContext.Provider>;
