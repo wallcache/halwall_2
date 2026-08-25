@@ -6,7 +6,14 @@ export const identity = {
   professionalName: "Henry Wall",
   role: "AI Engineer, Global Analytics",
   company: "Chubb Insurance",
-  founderLine: "Founder of The Daily Canon",
+  /**
+   * The recto's eyebrow, in two parts to mirror the verso's role-then-employer.
+   * "Founder of The Daily Canon" alone described one of the four things this
+   * side of the site is actually about.
+   */
+  otherRoles: "Photographer, designer, walker,",
+  founderLine: "founder of",
+  founderOrg: "The Daily Canon",
   location: "Barnes, London",
   email: "henry.n.wall@gmail.com",
   tagline: "Somewhere between Databricks and Dickens.",

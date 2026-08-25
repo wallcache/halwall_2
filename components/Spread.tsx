@@ -144,8 +144,8 @@ export function Spread() {
       >
         <div className={styles.col}>
           <p className={`${styles.eyebrow} ${styles.eyebrowRecto}`}>
-            Founder of
-            <strong>The Daily Canon</strong>
+            {identity.otherRoles} {identity.founderLine}
+            <strong>{identity.founderOrg}</strong>
           </p>
         </div>
         <div />

@@ -10,6 +10,7 @@ import { Reviews, Rating } from "@/components/Reviews";
 import { AppStoreCta } from "@/components/AppStoreCta";
 import { TodayPhone } from "@/components/TodayPhone";
 import { UiIcon } from "@/components/UiIcon";
+import { CanonNumbers } from "@/components/CanonNumbers";
 import { TechIcon } from "@/components/TechIcon";
 import Image from "next/image";
 import styles from "./Canon.module.css";
@@ -49,6 +50,14 @@ export default async function CanonPage() {
 
   return (
     <PageShell side="recto" eyebrow="Measured in readers" title={canon.title} standfirst={canon.standfirst}>
+      {/* ---------------- the app, counted ---------------- */}
+      <section className={shell.section} aria-labelledby="numbers">
+        <h2 id="numbers" className={shell.sectionHead}>
+          The app, counted {stats.live && <span>· live from the database</span>}
+        </h2>
+        <CanonNumbers stats={stats} />
+      </section>
+
       {/* ---------------- what readers say ---------------- */}
       <section className={shell.section} aria-labelledby="reviews">
         <div className={styles.brandRow}>
@@ -68,9 +77,7 @@ export default async function CanonPage() {
               <Rating value={4.8} size={14} />
               <span>4.8 on the App Store</span>
             </p>
-            <p className={styles.brandMeta}>
-              {stats.downloads.toLocaleString("en-GB")}+ downloads · featured by Apple
-            </p>
+            <p className={styles.brandMeta}>Featured by Apple</p>
           </div>
         </div>
         <Reviews />
