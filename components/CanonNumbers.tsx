@@ -22,6 +22,19 @@ type Counts = Pick<CanonStats, "downloads" | "finished" | "blurbs" | "saves" | "
 /** How often to ask the route for a fresh set. */
 const POLL_MS = 45_000;
 
+/**
+ * How long a count-in takes, whatever the size of the figure.
+ *
+ * Every counter divides its own distance by this, so downloads -- with the best
+ * part of a thousand to cover -- ticks about twice a second, while quotes
+ * shared, with a dozen, ticks once a minute or so. The five start together and
+ * arrive together, and in between almost none of them move on the same beat.
+ */
+const COUNT_IN_MS = 600_000;
+
+/** How often the counters are looked at. Fine enough for the fastest of them. */
+const TICK_MS = 80;
+
 export function CanonNumbers({ stats }: { stats: CanonStats }) {
   const ref = useRef<HTMLDivElement>(null);
   const [run, setRun] = useState(false);
@@ -35,10 +48,10 @@ export function CanonNumbers({ stats }: { stats: CanonStats }) {
   };
 
   /*
-    `at` is what the numbers are; `from` is where each counter should start its
-    next run. On arrival that is a tenth below, so the count-in shows movement
-    rather than a figure that was simply always there. After a poll it is
-    whatever the number was a moment ago, so the counter ticks the difference
+    `at` is what the numbers are. Each counter walks to it from wherever it
+    happens to be standing: five percent below on arrival, so the count-in shows
+    movement rather than a figure that was simply always there, and after that
+    from whatever it was reading a moment ago, so a poll ticks the difference
     rather than replaying the whole reveal.
   */
   const [{ at }, setCounts] = useState<{ at: Counts }>(() => ({ at: seed }));
@@ -55,6 +68,22 @@ export function CanonNumbers({ stats }: { stats: CanonStats }) {
     ) as Counts,
   );
 
+  /*
+    A mirror of `shown`, so a walk can read where the numbers are without
+    listing them as a dependency and restarting itself on every tick it makes.
+  */
+  const shownRef = useRef(shown);
+  useEffect(() => {
+    shownRef.current = shown;
+  }, [shown]);
+
+  /**
+   * When the count-in is due to land. Fixed on the first walk, so a poll that
+   * arrives while the numbers are still climbing re-aims them without moving
+   * the finish: the reveal takes its ten minutes whatever happens during them.
+   */
+  const lands = useRef<number | null>(null);
+
   useEffect(() => {
     if (!run) return;
 
@@ -63,24 +92,41 @@ export function CanonNumbers({ stats }: { stats: CanonStats }) {
       return;
     }
 
-    // One per second per figure, and never past the real number: this walks up
-    // to the truth, it does not invent anything above it.
+    const from = shownRef.current;
+    const start = performance.now();
+
+    /*
+      Whatever is left of the reveal, and once that has passed, the poll's own
+      window -- so a figure that moves while the page is open spends its handful
+      of ticks before the next set of numbers arrives and starts the walk over.
+    */
+    lands.current ??= start + COUNT_IN_MS;
+    const span = Math.max(lands.current - start, POLL_MS);
+
     const id = window.setInterval(() => {
+      const t = Math.min(1, (performance.now() - start) / span);
+
       setShown((prev) => {
         const next = { ...prev };
         let moved = false;
         for (const k of Object.keys(next) as (keyof Counts)[]) {
-          if (next[k] < at[k]) {
-            next[k] = next[k] + 1;
-            moved = true;
-          } else if (next[k] > at[k]) {
-            next[k] = at[k];
+          /*
+            Position, not accumulation: each counter is put where the clock says
+            it should be. Truncating keeps it short of the real number the whole
+            way up -- it walks to the truth, it never invents anything above it
+            -- and at t = 1 the arithmetic lands on the figure exactly.
+          */
+          const v = from[k] + Math.trunc((at[k] - from[k]) * t);
+          if (v !== prev[k]) {
+            next[k] = v;
             moved = true;
           }
         }
         return moved ? next : prev;
       });
-    }, 1000);
+
+      if (t === 1) window.clearInterval(id);
+    }, TICK_MS);
 
     return () => window.clearInterval(id);
   }, [run, at]);

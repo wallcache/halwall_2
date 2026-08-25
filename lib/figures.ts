@@ -3,11 +3,14 @@ import type { Figure } from "@/content/types";
 /**
  * How far below the true figure a live counter starts.
  *
- * The counter then walks up at one a second. Which is worth being clear about:
- * at five percent short, the download figure is about a thousand below the
- * real one and takes a quarter of an hour of walking to arrive, so most
- * visitors see a number that is low. The alternative -- ticking past the true
- * count to keep the movement going -- would be inventing readers, so this
+ * Each counter then covers its own distance over the same ten minutes, so the
+ * five of them arrive together however far apart they set off, and a figure
+ * with a thousand to make up moves visibly faster than one with a dozen. Which
+ * is worth being blunt about: ten minutes is longer than anyone reads a page
+ * for, so in practice the figures on screen are low ones -- downloads by about
+ * a thousand at the start -- and the true count is a thing the band is walking
+ * towards rather than a thing it shows you. The alternative -- ticking past the
+ * true count to keep the movement going -- would be inventing readers, so this
  * errs downward on purpose.
  *
  * Lives here rather than beside the fetching, because the component that needs
