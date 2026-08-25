@@ -136,14 +136,24 @@
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: var(--step--1);
-  overflow: hidden;
   transition: color 320ms var(--ease-out-expo);
 }
 
+/*
+  Inset by -1px, with its own radius, rather than inset:0 under overflow:hidden.
+
+  An absolutely positioned child is laid out against its parent's PADDING box,
+  so inset:0 stopped the fill one pixel short of the border on every side. The
+  border is the same green, which hid it on the straight edges -- but at the
+  curve the clip and the border ring disagree by a fraction of a pixel and you
+  get a pale hairline along the bottom of the pill. Covering the border box and
+  rounding the fill itself means there is no seam for the two to disagree on.
+*/
 .link::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
+  border-radius: var(--radius-full);
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: right;

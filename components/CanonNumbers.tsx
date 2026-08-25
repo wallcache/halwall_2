@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import type { CanonStats } from "@/lib/canon-stats";
 import { CountUp } from "./CountUp";
 import styles from "./CanonNumbers.module.css";
@@ -63,18 +64,69 @@ export function CanonNumbers({ stats }: { stats: CanonStats }) {
 
       {stats.latestQuote && (
         <figure className={styles.card}>
-          <figcaption className={styles.cardHead}>
-            The most recent quote card a reader made
-          </figcaption>
-          <blockquote className={styles.quote}>
-            &ldquo;{stats.latestQuote.quote}&rdquo;
-          </blockquote>
-          <p className={styles.attrib}>
-            <cite className={styles.work}>{stats.latestQuote.workTitle}</cite>
-            {stats.latestQuote.workAuthor && (
-              <span className={styles.author}>{stats.latestQuote.workAuthor}</span>
+          {stats.latestQuote.cardUrl && (
+            /*
+              The card is cropped, and not for composition.
+
+              The app prints "shared by <full name>" along the foot of every
+              card it renders. Showing the image whole would have published the
+              name that the caption below it goes to the trouble of redacting,
+              which is worse than not redacting it at all. The frame clips the
+              footer off.
+            */
+            <span className={styles.cardFrame}>
+              <Image
+                className={styles.cardImage}
+                src={stats.latestQuote.cardUrl}
+                alt={`A shared card of a line from ${stats.latestQuote.workTitle}`}
+                width={1080}
+                height={1350}
+                unoptimized
+              />
+            </span>
+          )}
+
+          <div className={styles.cardBody}>
+            <figcaption className={styles.cardHead}>
+              The most recent quote card a reader made
+            </figcaption>
+            <blockquote className={styles.quote}>
+              &ldquo;{stats.latestQuote.quote}&rdquo;
+            </blockquote>
+            <p className={styles.attrib}>
+              <cite className={styles.work}>{stats.latestQuote.workTitle}</cite>
+              {stats.latestQuote.workAuthor && (
+                <span className={styles.author}>{stats.latestQuote.workAuthor}</span>
+              )}
+            </p>
+
+            {stats.latestQuote.initial && (
+              <p className={styles.reader}>
+                {stats.latestQuote.avatarUrl && (
+                  <Image
+                    className={styles.avatar}
+                    src={stats.latestQuote.avatarUrl}
+                    alt=""
+                    aria-hidden="true"
+                    width={64}
+                    height={64}
+                    unoptimized
+                  />
+                )}
+                <span className={styles.who}>
+                  <span aria-hidden="true">{stats.latestQuote.initial}</span>
+                  {/*
+                    Placeholder glyphs, not the name. The server sends the
+                    initial and a length; the rest of it is never in the page.
+                  */}
+                  <span className={styles.redacted} aria-hidden="true">
+                    {"\u2022".repeat(stats.latestQuote.hidden)}
+                  </span>
+                  <span className="sr-only">A reader</span>
+                </span>
+              </p>
             )}
-          </p>
+          </div>
         </figure>
       )}
     </div>

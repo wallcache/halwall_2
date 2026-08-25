@@ -37,10 +37,16 @@ export default async function WorkPage() {
       title="The engineering"
       standfirst="Four years of production pipelines across insurance and finance. The ledger first, then the two that are worth explaining properly rather than listing."
     >
-      <section className={shell.section} aria-labelledby="ledger">
-        <h2 id="ledger" className={shell.sectionHead}>
-          The ledger · every role, and the number it is remembered by
-        </h2>
+      {/*
+        No visible heading. The index in the margin already says "The ledger",
+        and the rows below announce themselves: a date, a job title and a
+        company need no line of prose explaining that is what they are.
+
+        The id moves to the section so the index still has something to scroll
+        to, and the name the heading was providing is kept as an aria-label
+        rather than as a hidden element.
+      */}
+      <section id="ledger" className={shell.section} aria-label="The ledger">
         <Ledger counts={stats} />
         <a className={styles.cvLink} href={cvPath} target="_blank" rel="noopener noreferrer" data-magnetic="0.225">
           <Document size={15} /> Full CV (PDF) <ArrowUpRight size={13} />

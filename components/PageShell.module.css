@@ -108,6 +108,13 @@
   margin-inline: auto;
 }
 
+.section {
+  /* Anchor jumps from the page index land under the floating header otherwise.
+     On the heading as well as here, because most sections are still scrolled
+     to by their heading's id. */
+  scroll-margin-top: clamp(6rem, 16vh, 9rem);
+}
+
 .section + .section {
   margin-top: clamp(3rem, 9vh, 6rem);
 }

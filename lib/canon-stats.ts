@@ -45,6 +45,21 @@ export interface SharedQuote {
   workTitle: string;
   workAuthor: string;
   sharedAt: string;
+  /** The card the app rendered, from the public quote-cards bucket. */
+  cardUrl: string | null;
+  /** The reader's chosen avatar. One of a fixed set of author portraits. */
+  avatarUrl: string | null;
+  /**
+   * The first letter of their display name, and how many letters follow.
+   *
+   * Only these two things. The name itself never leaves the server, because a
+   * blur is a picture of privacy rather than privacy: anyone who opens the
+   * inspector can read a name that has merely been blurred in CSS. The page
+   * renders the initial and the right number of placeholder glyphs, so it
+   * looks like a redacted name because it is one.
+   */
+  initial: string | null;
+  hidden: number;
 }
 
 export interface CanonStats {
@@ -103,25 +118,57 @@ async function countOf(
   }
 }
 
+/** Where the app uploads the card it rendered. A public bucket. */
+const CARDS = "/storage/v1/object/public/quote-cards";
+/** The fixed set of author portraits a reader picks from. */
+const AVATARS = "https://thedailycanon.org/avatars";
+
 async function latestQuote(url: string, key: string): Promise<SharedQuote | null> {
   try {
     const res = await fetch(
-      `${url}/rest/v1/quote_shares?select=quote,work_title,work_author,created_at&order=created_at.desc&limit=1`,
+      `${url}/rest/v1/quote_shares?select=token,quote,work_title,work_author,user_id,created_at&order=created_at.desc&limit=1`,
       { headers: headers(key), next: { revalidate: REVALIDATE } },
     );
     if (!res.ok) return null;
     const [row] = (await res.json()) as {
+      token?: string;
       quote?: string;
       work_title?: string;
       work_author?: string;
+      user_id?: string;
       created_at?: string;
     }[];
     if (!row?.quote || !row.work_title) return null;
+
+    let initial: string | null = null;
+    let hidden = 0;
+    let avatarUrl: string | null = null;
+
+    if (row.user_id) {
+      const who = await fetch(
+        `${url}/rest/v1/profiles?select=display_name,avatar:preferences->>avatar&id=eq.${row.user_id}`,
+        { headers: headers(key), next: { revalidate: REVALIDATE } },
+      );
+      if (who.ok) {
+        const [p] = (await who.json()) as { display_name?: string; avatar?: string }[];
+        const first = p?.display_name?.trim().split(/\s+/)[0] ?? "";
+        if (first) {
+          initial = first[0].toUpperCase();
+          hidden = Math.max(0, first.length - 1);
+        }
+        if (p?.avatar) avatarUrl = `${AVATARS}/${p.avatar}.jpg`;
+      }
+    }
+
     return {
       quote: row.quote,
       workTitle: row.work_title,
       workAuthor: row.work_author ?? "",
       sharedAt: row.created_at ?? "",
+      cardUrl: row.token ? `${url}${CARDS}/${row.token}.webp` : null,
+      avatarUrl,
+      initial,
+      hidden,
     };
   } catch {
     return null;

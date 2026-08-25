@@ -93,6 +93,6 @@ export const doors: Door[] = [
     line: "Ninety-six miles from Milngavie to Fort William, a wildcamp under Pen y Fan, and a Wirehaired Vizsla named after a Kerouac character.",
     meta: "journals from the trail",
     side: "recto",
-    image: "/media/walking/hal-and-japhy.webp",
+    image: "/media/walking/west-highland-way/img-7119.webp",
   },
 ];

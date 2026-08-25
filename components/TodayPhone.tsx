@@ -50,21 +50,25 @@ export function TodayPhone({
     let timer = 0;
 
     /*
-      A backstop, for the same reason the preloader has one: this content
-      starts at opacity 0 and is revealed by an observer, so anything that
-      stops the observer firing leaves the phone permanently blank.
+      No timed backstop.
 
-      Twelve seconds, not three. At three it fired while the section was still
-      a thousand pixels below the fold on almost every visit, so the phone had
-      already slid up and the date had already flicked through by the time
-      anyone scrolled to it -- the animation played to an empty room. This is
-      long enough to stay out of the way of a normal read and short enough that
-      a broken observer is still only a pause.
+      There was one, on the theory that content revealed by an observer should
+      never be able to get stuck invisible. But a timer that fires regardless of
+      where the page is scrolled to will always eventually beat a reader to the
+      section: at three seconds it went off while this was a thousand pixels
+      below the fold, and at twelve it still went off before anyone reading the
+      page above it arrived. Either way the animation played to an empty room
+      and you got here to find it already over.
+
+      IntersectionObserver is the thing being guarded against, and it does not
+      fail. So the only fallback is for a browser that does not have it at all,
+      which shows everything immediately and animates nothing.
     */
-    const backstop = window.setTimeout(() => {
+    if (!("IntersectionObserver" in window)) {
       setBooting(true);
       setLoaded(true);
-    }, 12000);
+      return;
+    }
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -75,14 +79,20 @@ export function TodayPhone({
         setBooting(true);
         timer = window.setTimeout(() => setLoaded(true), 1150);
       },
-      { threshold: 0.4 },
+      /*
+        Fires when the top of the section has come a quarter of the way up the
+        viewport, rather than when some fraction of it is showing. A fractional
+        threshold is a trap for an element that can be taller than the window:
+        if it never fits, the fraction never reaches the threshold and the
+        observer never fires at all.
+      */
+      { threshold: 0, rootMargin: "0px 0px -25% 0px" },
     );
     io.observe(el);
 
     return () => {
       io.disconnect();
       window.clearTimeout(timer);
-      window.clearTimeout(backstop);
     };
   }, []);
 
