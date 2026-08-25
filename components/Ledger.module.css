@@ -33,6 +33,15 @@
   border-top-color: transparent;
 }
 
+/*
+  And the rule belonging to the row BELOW cuts across its rounded bottom, which
+  is the hairline that appeared under a hovered row: not the row's own border,
+  which is why hiding its own did not help. It is the next one's.
+*/
+.row:hover + .row {
+  border-top-color: transparent;
+}
+
 .main {
   min-width: 0;
 }
@@ -76,6 +85,16 @@
   border-radius: 5px;
   object-fit: contain;
   background: var(--ground-raised);
+  box-shadow: 0 0 0 0 var(--accent);
+  transition:
+    transform 520ms var(--ease-out-expo),
+    box-shadow 420ms var(--ease-out-expo);
+}
+
+/* The mark comes forward and takes a ring in the accent. */
+.row:hover .orgLogo {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 /* "via Kubrick Group" must survive. Without it a two-month stint at AXA reads
@@ -112,7 +131,10 @@
   font-size: 0.62rem;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
-  transition: color 320ms var(--ease-out-expo);
+  translate: 0 0;
+  transition:
+    color 320ms var(--ease-out-expo),
+    translate 520ms var(--ease-out-expo);
   white-space: nowrap;
 }
 
@@ -153,4 +175,38 @@
     text-align: left;
     margin-top: 0.75rem;
   }
+}
+
+/* ---- the row wakes up ---------------------------------------------------- */
+
+/*
+  The stack rises left to right as the row is hovered, a beat between each.
+  Staggered with nth-child rather than a custom property per item, because the
+  delay is the only thing that differs and the markup should not have to carry
+  an index for it.
+*/
+.row:hover .skill { translate: 0 -2px; }
+.row:hover .skill:nth-child(1) { transition-delay: 0ms; }
+.row:hover .skill:nth-child(2) { transition-delay: 40ms; }
+.row:hover .skill:nth-child(3) { transition-delay: 80ms; }
+.row:hover .skill:nth-child(4) { transition-delay: 120ms; }
+.row:hover .skill:nth-child(5) { transition-delay: 160ms; }
+.row:hover .skill:nth-child(6) { transition-delay: 200ms; }
+.row:hover .skill:nth-child(n + 7) { transition-delay: 240ms; }
+
+.row:hover .skill { color: var(--ink-muted); }
+
+/* The number the role is remembered by leans in. */
+.figureValue {
+  display: block;
+  transform-origin: right center;
+  transition: transform 520ms var(--ease-out-expo);
+}
+
+.row:hover .figureValue { transform: scale(1.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  .row:hover .orgLogo,
+  .row:hover .figureValue { transform: none; }
+  .row:hover .skill { translate: none; }
 }

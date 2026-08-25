@@ -3,6 +3,7 @@ import { cv, bullets } from "@/content/cv";
 import { experience, education } from "@/content/experience";
 import { projects } from "@/content/projects";
 import { identity } from "@/content/identity";
+import { tdcIcon } from "@/content/media";
 import Image from "next/image";
 import { TechIcon } from "@/components/TechIcon";
 import { iconFor } from "@/content/tech-map";
@@ -32,7 +33,11 @@ function Head({ children }: { children: React.ReactNode }) {
 export default function CvPage() {
   const degrees = education.filter((e) => DEGREES.has(e.slug));
   const certs = education.filter((e) => !DEGREES.has(e.slug));
-  const side = projects.filter((p) => p.slug !== "the-daily-canon");
+  /*
+    Renovision is out and the Canon is in the rail, so the two projects listed
+    beside the work are the two that shipped and are still running.
+  */
+  const side = projects.filter((p) => p.slug !== "renovision");
   /* The Canon is a role in the site's history and a project on the CV. Listing
      it in both places puts the same three years on the page twice. */
   const roles = experience.filter((r) => r.slug !== "daily-canon");
@@ -140,6 +145,9 @@ export default function CvPage() {
           <Head>Projects</Head>
           {side.map((p) => (
             <div key={p.slug} className={styles.entry}>
+              {p.slug === "the-daily-canon" && (
+                <Image className={styles.entryMark} src={tdcIcon} alt="" aria-hidden="true" width={48} height={48} />
+              )}
               {/* Wrapped, because .entry is a flex row that carries a mark
                   beside its text. Unwrapped, these three lines became three
                   columns. */}
@@ -196,10 +204,11 @@ export default function CvPage() {
               {earlier.map((r) => (
                 <p key={r.slug} className={styles.earlierRole}>
                   <span className={styles.earlierTitle}>{r.title}</span>
+                  {/* No mark on these. At this size it sat between the job
+                      title and the company like a bullet nobody asked for, and
+                      the width it took pushed the longer company names onto a
+                      second line, so four tidy rows became a ragged block. */}
                   <span className={styles.earlierCompany}>
-                    {r.logo && (
-                      <Image className={styles.earlierMark} src={r.logo} alt="" aria-hidden="true" width={32} height={32} />
-                    )}
                     {r.company}
                     {r.via && ` · via ${r.via}`}
                   </span>
@@ -218,7 +227,10 @@ export default function CvPage() {
                 <h3 className={styles.roleTitle}>{canon.title}</h3>
                 <p className={styles.roleDates}>Oct 2023 to Present</p>
               </div>
-              <p className={styles.roleCompany}>Founder · {canon.primary.text}</p>
+              <p className={styles.roleCompany}>
+                <Image className={styles.roleMark} src={tdcIcon} alt="" aria-hidden="true" width={40} height={40} />
+                Founder · {canon.primary.text}
+              </p>
               <ul className={styles.bullets}>
                 {bullets(canon.description).map((b) => (
                   <li key={b.slice(0, 30)}>{b}</li>

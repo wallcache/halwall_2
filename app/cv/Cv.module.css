@@ -318,7 +318,6 @@
 .earlierCompany {
   flex: 1;
   font-family: var(--font-mono);
-  font-size: 6.9pt;
   color: var(--recto-ink-muted);
 }
 
@@ -405,16 +404,15 @@
 }
 
 .earlierCompany {
-  display: inline-flex;
-  align-items: center;
-  gap: 1.4mm;
+  flex: 1;
+  min-width: 0;
+  /* One line each. A wrapped company name turns a four-row list into a block
+     and takes the date column out of alignment with it. Small enough that the
+     longest of them -- Quilter, plus its consultancy -- fits without needing
+     the ellipsis this used to fall back on. */
+  font-size: 6.3pt;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.earlierMark {
-  flex: none;
-  width: 3.4mm;
-  height: 3.4mm;
-  border-radius: 0.6mm;
-  object-fit: contain;
-  background: var(--recto-ground-raised);
-}
