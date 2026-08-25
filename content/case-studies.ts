@@ -3,8 +3,8 @@ import type { Figure } from "./types";
 /**
  * DRAFT — needs Hal's review before launch.
  *
- * The brief asks /work to be three case studies rather than bullet lists, and
- * neither the old site nor the handoff had a single one. These are drafted
+ * The brief asks /work for case studies rather than bullet lists, and neither
+ * the old site nor the handoff had a single one. These are drafted
  * from the CV and the existing role descriptions. Everything here is derived
  * from claims Hal has already made in public; nothing has been invented. The
  * architecture and constraint sections are the parts most likely to need
@@ -77,34 +77,6 @@ export const caseStudies: CaseStudy[] = [
       },
     ],
     stack: ["PySpark", "Databricks", "Azure", "Unity Catalog", "Kafka"],
-    needsReview: true,
-  },
-  {
-    slug: "deletion-that-cannot-overreach",
-    roleSlug: "axa",
-    title: "A deletion framework that cannot overreach",
-    standfirst:
-      "GDPR requires that data be deleted. A medallion architecture makes that genuinely hard, because the same subject is present at every layer in a different shape. The framework had to guarantee it deleted everything it should, and nothing it should not.",
-    headline: { value: 0, label: "accidental deletions, by design" },
-    sections: [
-      {
-        heading: "The problem",
-        body: "Bronze, silver and gold hold the same subject differently: raw, conformed, aggregated. Deleting a subject means finding every representation without a single canonical key to follow, and retention rules differ per layer and per dataset.",
-      },
-      {
-        heading: "The constraint",
-        body: "The asymmetry of failure is the whole design problem. Failing to delete is a compliance breach. Deleting too much is unrecoverable. A framework that is merely mostly right is not usable, so the guarantee had to be structural rather than a matter of care.",
-      },
-      {
-        heading: "The approach",
-        body: "A metadata-driven framework: retention and deletion rules declared as configuration rather than written per-dataset, so the rules can be reviewed as a set. Automated across every layer of the medallion architecture, and tested specifically against the over-deletion case rather than only the happy path.",
-      },
-      {
-        heading: "The outcome",
-        body: "Compliance across all layers with a tested guarantee of zero accidental deletions. The architectural documentation written alongside it was adopted by both the consultant and internal engineering teams, which is the part that outlasts the engagement.",
-      },
-    ],
-    stack: ["Python", "Databricks", "Azure Data Factory", "Azure DevOps"],
     needsReview: true,
   },
 ];

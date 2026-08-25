@@ -35,7 +35,7 @@ export default async function WorkPage() {
       index={INDEX}
       light
       title="The engineering"
-      standfirst="Four years of production pipelines across insurance and finance. The ledger first, then the three that are worth explaining properly rather than listing."
+      standfirst="Four years of production pipelines across insurance and finance. The ledger first, then the two that are worth explaining properly rather than listing."
     >
       <section className={shell.section} aria-labelledby="ledger">
         <h2 id="ledger" className={shell.sectionHead}>
