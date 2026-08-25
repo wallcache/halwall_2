@@ -207,3 +207,20 @@ export const Bell = ({ size = 16, className, strokeWidth = 1.5 }: IconProps) => 
     <path d="M10 18.5a2.2 2.2 0 0 0 4 0" />
   </svg>
 );
+
+/**
+ * Half a laurel wreath: a stem curving inward with four leaves on it.
+ *
+ * Drawn as one side only and mirrored for the other, because a wreath is
+ * symmetrical and two mirrored copies of one path stay in agreement in a way
+ * that two hand-drawn halves never quite do.
+ */
+export const Laurel = ({ size = 16, className, strokeWidth = 1.3 }: IconProps) => (
+  <svg {...base(size, strokeWidth)} className={className}>
+    <path d="M15.8 21.6C9.6 19.2 5.9 14 6.6 7.2" />
+    <path d="M14 18.9c-2.7.4-4.5-.8-5.2-2.9 2.1-1 4.1-.4 5.2 2.9z" />
+    <path d="M11.2 15.2c-2.5-.2-3.8-1.7-4-3.9 2.2-.5 3.9.6 4 3.9z" />
+    <path d="M9.3 11c-2.2-.9-3-2.7-2.6-4.8 2.1.3 3.4 1.7 2.6 4.8z" />
+    <path d="M8.6 6.7c-1.8-1.4-2-3.2-1-5.1 1.8.8 2.5 2.6 1 5.1z" />
+  </svg>
+);

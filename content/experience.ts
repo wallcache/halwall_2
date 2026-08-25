@@ -17,6 +17,8 @@ export interface Role {
   skills: string[];
   /** The one number this role is remembered by. Drives the counting ledger on /work. */
   figure?: Figure;
+  /** An award, set apart from the prose because a laurel is not a sentence. */
+  honour?: string;
 }
 
 export const experience: Role[] = [
@@ -57,7 +59,8 @@ export const experience: Role[] = [
     end: "present",
     dateRange: "Oct 2023 to Present",
     description:
-      "Built and runs a literary calendar on iOS and the web: one carefully chosen work of literature a day, drawn from a growing canon. Everything from the editorial curation to the Next.js and Supabase behind it, the native SwiftUI app that replaced the web wrapper in 2026, and the subscriptions. App of the Day on the App Store.",
+      "Built and runs a literary calendar on iOS and the web: one carefully chosen work of literature a day, drawn from a growing canon. Everything from the editorial curation to the Next.js and Supabase behind it, the native SwiftUI app that replaced the web wrapper in 2026, and the subscriptions.",
+    honour: "App of the Day on the App Store",
     skills: ["Next.js", "TypeScript", "Supabase", "Swift", "SwiftUI"],
     figure: { value: 10000, live: "downloads", suffix: "+", label: "downloads" },
   },

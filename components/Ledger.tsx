@@ -5,6 +5,7 @@ import Image from "next/image";
 import { experience } from "@/content/experience";
 import { iconFor } from "@/content/tech-map";
 import { TechIcon } from "./TechIcon";
+import { Laurel } from "./icons";
 import { CountUp } from "./CountUp";
 import { resolveFigure, type LiveCounts } from "@/lib/figures";
 import styles from "./Ledger.module.css";
@@ -66,6 +67,17 @@ export function Ledger({ counts }: { counts: LiveCounts }) {
               {role.via && <span className={styles.via}> · via {role.via}</span>}
             </p>
             <p className={styles.desc}>{role.description}</p>
+
+            {role.honour && (
+              <p className={styles.honour}>
+                <Laurel className={styles.laurel} size={34} />
+                <span className={styles.honourText}>
+                  <TechIcon slug="apple" size={12} className={styles.honourApple} />
+                  {role.honour}
+                </span>
+                <Laurel className={`${styles.laurel} ${styles.laurelRight}`} size={34} />
+              </p>
+            )}
             <ul className={styles.skills}>
               {role.skills.map((s) => {
                 const icon = iconFor(s);

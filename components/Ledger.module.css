@@ -242,3 +242,75 @@
   .row:hover .figureValue { transform: none; }
   .row:hover .skill { translate: none; }
 }
+
+/* ---- the award ----------------------------------------------------------- */
+
+/*
+  An award is not a sentence, so it stops being the last clause of a paragraph
+  and becomes a thing: a wreath around the words, with Apple's own mark where
+  the award came from.
+
+  Gold, which appears nowhere else on this site. That is the point -- it reads
+  as a medal precisely because it is not one of the two colours everything else
+  is made of. Kept local to this block rather than added to the palette, so it
+  cannot leak into the site's chrome.
+*/
+.honour {
+  --gold: #c9a227;
+  --gold-bright: #e3c25c;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-top: 0.9rem;
+  padding: 0.2rem 0.35rem 0.2rem 0.3rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    100deg,
+    rgb(201 162 39 / 0.14),
+    rgb(227 194 92 / 0.05) 60%,
+    transparent
+  );
+}
+
+.laurel {
+  flex: none;
+  color: var(--gold);
+  /* The wreath opens as the row is reached, the way a pair of hands would. */
+  rotate: 0deg;
+  transition: rotate 620ms var(--ease-out-expo), color 380ms var(--ease-out-expo);
+}
+
+.laurelRight {
+  transform: scaleX(-1);
+}
+
+/*
+  Both sprigs take the SAME rotation. `rotate` is applied before `transform` in
+  the property order, so the right one's scaleX(-1) flips its tilt for free --
+  giving it the opposite value made the pair lean the same way instead of
+  opening.
+*/
+.row:hover .laurel { rotate: -7deg; color: var(--gold-bright); }
+
+.honourText {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  white-space: nowrap;
+}
+
+.honourApple {
+  flex: none;
+  color: var(--gold-bright);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row:hover .laurel,
+  .row:hover .laurelRight { rotate: 0deg; }
+}
