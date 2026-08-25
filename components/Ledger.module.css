@@ -32,16 +32,22 @@
     unsee once you have noticed it.
   */
   border-top: 1px solid transparent;
-  transition:
-    background-color 380ms var(--ease-out-expo),
-    border-color 380ms var(--ease-out-expo);
+
+  /*
+    Rounded at rest, not on hover.
+
+    On :hover the radius was applied and removed instantly while the background
+    it belongs to faded over 380ms, so leaving a row left a square-cornered
+    fill hanging in the air for a third of a second. A radius on a transparent
+    box costs nothing and shows nothing; the only thing that changes is the
+    fill, which is the only thing that should.
+  */
+  border-radius: var(--radius-lg);
+  transition: background-color 380ms var(--ease-out-expo);
 }
 
 .row:hover {
   background: var(--ground-hover);
-  border-radius: var(--radius-lg);
-  /* The rule above a hovered row would otherwise cut across its rounded top. */
-  border-top-color: transparent;
 }
 
 /*
