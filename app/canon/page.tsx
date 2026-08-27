@@ -65,6 +65,51 @@ export default async function CanonPage() {
         <CanonNumbers stats={stats} />
       </section>
 
+      {/* ---------------- the argument ---------------- */}
+      <section className={shell.section} aria-labelledby="argument">
+        <h2 id="argument" className={shell.sectionHead}>
+          {canon.argument.heading}
+        </h2>
+        {canon.argument.body.map((p) => (
+          <p key={p.slice(0, 24)} className={styles.prose}>
+            {p}
+          </p>
+        ))}
+        <p className={styles.pull}>{canon.argument.pull}</p>
+      </section>
+
+      {/* ---------------- why I built it ---------------- */}
+      <section className={shell.section} aria-labelledby="origin">
+        <h2 id="origin" className={shell.sectionHead}>
+          {canon.origin.heading}
+        </h2>
+        <Parallax speed={0.04}>
+          {canon.origin.body.map((p) => (
+            <p key={p.slice(0, 24)} className={styles.prose}>
+              {p}
+            </p>
+          ))}
+          <p className={styles.pull}>{canon.origin.pull}</p>
+          {canon.origin.after.map((p) => (
+            <p key={p.slice(0, 24)} className={styles.prose} style={{ marginTop: "1.25rem" }}>
+              {p}
+            </p>
+          ))}
+        </Parallax>
+      </section>
+
+      {/* ---------------- where it is now ---------------- */}
+      <section className={shell.section} aria-labelledby="now">
+        <h2 id="now" className={shell.sectionHead}>
+          {canon.now.heading}
+        </h2>
+        {canon.now.body.map((p) => (
+          <p key={p.slice(0, 24)} className={styles.prose}>
+            {p}
+          </p>
+        ))}
+      </section>
+
       {/* ---------------- what readers say ---------------- */}
       <section className={shell.section} aria-labelledby="reviews">
         <div className={styles.brandRow}>
@@ -112,26 +157,6 @@ export default async function CanonPage() {
           What it looks like · drag
         </h2>
         <SlideCarousel />
-      </section>
-
-      {/* ---------------- why I built it ---------------- */}
-      <section className={shell.section} aria-labelledby="origin">
-        <h2 id="origin" className={shell.sectionHead}>
-          {canon.origin.heading}
-        </h2>
-        <Parallax speed={0.04}>
-          {canon.origin.body.map((p) => (
-            <p key={p.slice(0, 24)} className={styles.prose}>
-              {p}
-            </p>
-          ))}
-          <p className={styles.pull}>{canon.origin.pull}</p>
-          {canon.origin.after.map((p) => (
-            <p key={p.slice(0, 24)} className={styles.prose} style={{ marginTop: "1.25rem" }}>
-              {p}
-            </p>
-          ))}
-        </Parallax>
       </section>
 
       {/* ---------------- one day, one work ---------------- */}

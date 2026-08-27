@@ -19,24 +19,59 @@ export const canon = {
   title: "The Daily Canon",
   standfirst: "One work of literature a day, drawn from a growing canon that reaches back roughly four millennia.",
 
+  /**
+   * The argument comes before the biography.
+   *
+   * The page used to explain what the app is and how it was made without ever
+   * saying why a canon is worth anything in the first place. That case is the
+   * most persuasive thing here, so it is made first, and the curation, the
+   * dates and the app itself all follow from it.
+   *
+   * The living authors are named rather than gestured at. "We are not against
+   * modern literature" reads as a defence; three writers anyone can go and
+   * check reads as a position. All three are in the catalogue.
+   */
+  argument: {
+    heading: "The noise, and what survives it",
+    body: [
+      `There has never been more writing, and there has never been less time to sort it. A feed is not built to hand you a good book. It is built to hand you the next one, and it is extremely good at that. What reaches you is not really a recommendation. It is a volume problem wearing the costume of taste.`,
+      `None of which is an argument against new books. The app carries hundreds of works published this century, Percival Everett and Sally Rooney and Paul Murray among them, and putting living writers in front of readers is one of the better parts of running it.`,
+      `It is an argument about what lasts. Everything being written now is standing on something older, whether it admits it or not, and the books underneath have already been through the one test nobody can rig. Not prestige. Not a prize. Not a hundred thousand five-star ratings, which can be arranged by lunchtime. Time.`,
+    ],
+    pull: `Calvino had the cleanest test of a classic: it is a book you never hear anyone say they are reading, only rereading.`,
+  },
+
   origin: {
     heading: "Why I built it",
     body: [
-      `When I was young I devoured books. Then my parents and teachers noticed I had a mathematical brain, and the conveyor belt did what conveyor belts do: I was moved from English literature toward physics, from Dickens toward differential equations. I read Theoretical Physics at Imperial and became, as physics graduates tend to, an extremely rational kind of guy.`,
-      `It took years to find my way back to reading, and it did not happen naturally. I had to decide to come back, the way you decide to call an old friend you have been avoiding. And I had a new problem: I could not find the time. So I made myself a rule.`,
+      `I have always read. I read Theoretical Physics at Imperial and I have built software ever since, and the two have never felt like opposite ends of anything to me. If I am not at work or out with the dog, I am reading. Often I am reading while out with the dog, because Japhy covers a lot of ground and an audiobook covers a lot of pages.`,
+      `Somewhere in the middle of working through the canon I wanted to know where I actually was in it. What I had finished, what I had abandoned and been quietly relieved about, what I kept meaning to start and never did. Nothing I could find held that in a shape I liked, so I built something that did.`,
     ],
-    pull: `If I am going to read something, it had better be worth reading, because it might well be the last thing I read.`,
+    pull: `I did not set out to make a product. I set out to stop losing track of my own reading.`,
     after: [
-      `That rule changed everything. I started asking anyone who would answer which books are actually worth it, the ones where the time invested cannot possibly be wasted. Across conversations and subreddits the verdict kept converging on the same answer: the classics. Not because they are prestigious or difficult, but because they have already survived the only real test. Centuries of readers have tried to forget them and failed.`,
-      `I have since read hundreds of books from the canon and it has changed how I see nearly everything. I used to be an assured atheist. I am no longer sure that stance holds for anyone who reads great literature consistently enough. Something in the accumulated weight of all that human searching makes certainty feel cheap.`,
-      `I also build software for a living. So the question became inevitable: what if I built something that brought the two halves together?`,
+      `What I had not expected was how much the daily shape of it changed the reading itself. One work, today, chosen and waiting. Not a library to conquer, not a list with a number at the bottom that only ever goes up. Just the next thing, and the small pleasure of turning up for it.`,
+      `That turned out not to be a private taste. It stopped being a personal tool fairly quickly.`,
+    ],
+  },
+
+  /**
+   * Deliberately vaguer than the app's own roadmap, and with no headcount.
+   * Numbers in prose go stale the first time someone joins or leaves, and the
+   * live figures are already carried by CanonNumbers, which cannot.
+   */
+  now: {
+    heading: "It is not just mine any more",
+    body: [
+      `There is a small team behind it now: readers who write for the app, and developers who build it. The writing is the part I am most protective of. Every work arrives with a blurb and an extract chosen by somebody who has actually read the thing, which is slower than the alternative and is rather the point of it.`,
+      `The part I watch is quieter than the App Store. Which books people finish. Which ones they abandon, and where. Which half-forgotten title suddenly finds a run of readers because it landed on a day that gave them a reason to start it. You cannot design that feeling into an app. You can only build the calendar and wait to see whether it happens, and it does.`,
+      `There is more coming. The book club is the one I am most looking forward to: the same work, the same weeks, somewhere to argue about it. Reading is mostly solitary and mostly better for it. Not always.`,
     ],
   },
 
   idea: {
     heading: "One day, one work",
     body: [
-      `You open the app and it shows you one work of literature for today. Tomorrow, a different one. Novels, poems, short stories, essays, plays, philosophy. The only criterion for inclusion is that a work has survived the one test that matters: rereading.`,
+      `You open the app and it shows you one work of literature for today. Tomorrow, a different one. Novels, poems, short stories, essays, plays, philosophy. The only criterion for inclusion is the one above: enough readers have come back to it, for long enough, that it is still here.`,
       `The inspiration was Tolstoy's A Calendar of Wisdom. Late in life he compiled quotes and reflections from everything he had read, one page for every day of the year. You turn to today's date and find a handful of ideas arranged around a theme. Some of it is questionable; most of it is very good. I loved the quotidian nature of it, the way it turned reading into a ritual rather than an ambition.`,
       `The Daily Canon points that idea at whole works rather than quotations. Each day you meet a title. Sometimes familiar, sometimes long-intended, often completely new. When something catches you, you save it. When you have read it, you mark it done. The daily rhythm turns reading from an aspiration into a practice: modest enough to keep, meaningful enough to compound.`,
     ],
@@ -116,7 +151,7 @@ export const canon = {
   purpose: {
     heading: "What it is for",
     body: [
-      `The Daily Canon is not a productivity tool or a gamification engine. It is a daily encounter with something worth your attention.`,
+      `The Daily Canon is not a productivity tool and it is not a gamification engine. There is no leaderboard, and rank against other readers is the one number it refuses to show you. It is a daily encounter with something that has already earned its place.`,
       `If you used to read and want a way back, it is a low-friction place to start. If you are already deep in the canon, it is a way to find the gaps you did not know you had. If you have never read much at all, it is as good a map as I know how to draw.`,
     ],
     pull: `You will not read everything. But you will read enough to recognise the silence where the rest belongs.`,
