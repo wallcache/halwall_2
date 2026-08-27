@@ -1,7 +1,31 @@
+/*
+  The clip box has to be taller than the line it holds.
+
+  The roll sits in type set at line-height 1.02, and IBM Plex Serif's content
+  area is 1.292em -- so the glyphs stood 0.136em proud of their own line box at
+  the top and the bottom, and `overflow: hidden` took the difference. That cost
+  the date the tail of its "g" and, because every row is spaced by exactly one
+  box, let yesterday's descenders hang into the top of the window. One cause,
+  both symptoms.
+
+  Growing the box fixes both at once, because the rows are spaced by whatever
+  the box is: the resting descender needs 0.077em of room, and the row above
+  needs the same 0.077em to clear the top edge. The bleed below is comfortably
+  past that threshold.
+
+  Padding rather than line-height, and cancelled by an equal negative margin.
+  Padding does not care what line-height it inherits, so the roll cannot be
+  broken again by the type around it changing; and the margin means the box
+  grows without anything on the page moving, including the date itself, which
+  rests exactly where it did.
+*/
 .window {
+  --bleed: 0.14em;
   position: relative;
   display: block;
   overflow: hidden;
+  padding-block: var(--bleed);
+  margin-block: calc(var(--bleed) * -1);
 }
 
 /*
@@ -24,6 +48,8 @@
   user-select: none;
   -webkit-user-select: none;
   position: absolute;
+  /* Resolves against the padding box, so the reel and every row in it grow
+     with the bleed and the roll still lands one row per day. */
   inset: 0;
   display: flex;
   flex-direction: column;
