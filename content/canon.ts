@@ -29,13 +29,19 @@ export const canon = {
    *
    * The living authors are named rather than gestured at. "We are not against
    * modern literature" reads as a defence; three writers anyone can go and
-   * check reads as a position. All three are in the catalogue.
+   * check reads as a position.
+   *
+   * Chosen for weight rather than for currency: three novelists nobody argues
+   * about, all alive, all still publishing this century (Jack, 2020; Blonde,
+   * 2000; Klara and the Sun, 2021), and all in the catalogue. Anyone swapping
+   * these should check the same two things -- in the catalogue, and living.
+   * Cormac McCarthy is the trap: canon weight, six works here, died in 2023.
    */
   argument: {
     heading: "The noise, and what survives it",
     body: [
       `There has never been more writing, and there has never been less time to sort it. A feed is not built to hand you a good book. It is built to hand you the next one, and it is extremely good at that. What reaches you is not really a recommendation. It is a volume problem wearing the costume of taste.`,
-      `None of which is an argument against new books. The app carries hundreds of works published this century, Percival Everett and Sally Rooney and Paul Murray among them, and putting living writers in front of readers is one of the better parts of running it.`,
+      `None of which is an argument against new books. The app carries hundreds of works published this century, Marilynne Robinson and Joyce Carol Oates and Kazuo Ishiguro among them, and putting living writers in front of readers is one of the better parts of running it.`,
       `It is an argument about what lasts. Everything being written now is standing on something older, whether it admits it or not, and the books underneath have already been through the one test nobody can rig. Not prestige. Not a prize. Not a hundred thousand five-star ratings, which can be arranged by lunchtime. Time.`,
     ],
     pull: `Calvino had the cleanest test of a classic: it is a book you never hear anyone say they are reading, only rereading.`,
