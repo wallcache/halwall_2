@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "assets:optimise": "node scripts/optimise-assets.mjs",
-    "build:favicon": "node scripts/build-favicon.mjs"
+    "build:favicon": "node scripts/build-favicon.mjs",
+    "build:canon": "node scripts/build-canon-works.mjs"
   },
   "dependencies": {
     "next": "16.3.2",
