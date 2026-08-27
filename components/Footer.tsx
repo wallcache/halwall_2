@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { identity, socials, cvPath } from "@/content/identity";
 import { versoNav, rectoNav } from "@/content/nav";
+import { Jellyfish } from "./Jellyfish";
 import styles from "./Footer.module.css";
 
 export function Footer() {
@@ -53,13 +54,19 @@ export function Footer() {
       </div>
 
       <div className={styles.bottom}>
-        <span className={styles.name}>
-          {identity.name}
-          {/* The full stop. */}
-          <Link href="/private" className={styles.dot} aria-label="Private area" prefetch={false}>
-            .
-          </Link>{" "}
-          {identity.tagline}
+        {/* A printer's mark, opposite the edition line. It wants to be the
+            quietest thing in the row, so it takes the row's faint ink rather
+            than any colour of its own. */}
+        <span className={styles.colophon}>
+          <Jellyfish className={styles.mark} />
+          <span className={styles.name}>
+            {identity.name}
+            {/* The full stop. */}
+            <Link href="/private" className={styles.dot} aria-label="Private area" prefetch={false}>
+              .
+            </Link>{" "}
+            {identity.tagline}
+          </span>
         </span>
         <span>2026 edition</span>
       </div>

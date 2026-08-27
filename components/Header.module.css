@@ -181,23 +181,49 @@
 
 /* ---- wordmark ---------------------------------------------------------- */
 
+/* Centred, not baselined: the mark is an empty inline-block, whose baseline is
+   its bottom edge, and aligning that to the text baseline would ride it up out
+   of the line. The name keeps its own baseline row below. */
 .wordmark {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--step-0);
+  letter-spacing: -0.01em;
+}
+
+.wordmarkName {
   display: flex;
   align-items: baseline;
   gap: 0.14em;
-  font-size: var(--step-0);
-  letter-spacing: -0.01em;
   transition: gap 520ms var(--ease-out-expo);
 }
 
 /* The two halves drift apart on hover, opening the gutter in miniature. */
-.wordmark:focus-visible {
+.wordmark:focus-visible .wordmarkName {
   gap: 0.42em;
 }
 
 @media (hover: hover) {
-  .wordmark:hover {
+  .wordmark:hover .wordmarkName {
     gap: 0.42em;
+  }
+}
+
+/* Inked by whichever side the bar has adopted, and it takes the accent with
+   the rest of the lockup on the way past. */
+.wordmarkMark {
+  --mark-size: 22px;
+  color: var(--ink);
+}
+
+.wordmark:focus-visible .wordmarkMark {
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  .wordmark:hover .wordmarkMark {
+    color: var(--accent);
   }
 }
 
@@ -234,7 +260,8 @@
   .bar,
   .group,
   .link,
-  .wordmark {
+  .wordmark,
+  .wordmarkName {
     transition: none;
   }
 }
@@ -265,6 +292,10 @@
   }
 
   .group .link { display: none; }
+
+  /* The bar is tighter here and the wordmark is already at its smallest step,
+     so 22px would sit over the name rather than beside it. */
+  .wordmarkMark { --mark-size: 18px; }
 
   /* Only the vertical padding and the corner change, so the wordmark and the
      trigger never slide sideways as the bar folds. No scale: the wordmark is

@@ -1,0 +1,17 @@
+.mark {
+  display: inline-block;
+  height: var(--mark-size, 20px);
+  /* The trimmed artwork's own proportions, so nothing is ever squashed. */
+  aspect-ratio: 826 / 1024;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: url("/media/brand/jellyfish.png") center / contain no-repeat;
+  mask: url("/media/brand/jellyfish.png") center / contain no-repeat;
+  transition: background-color 320ms var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark {
+    transition: none;
+  }
+}

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "assets:optimise": "node scripts/optimise-assets.mjs"
+    "assets:optimise": "node scripts/optimise-assets.mjs",
+    "build:favicon": "node scripts/build-favicon.mjs"
   },
   "dependencies": {
     "next": "16.3.2",

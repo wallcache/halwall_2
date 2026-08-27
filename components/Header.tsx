@@ -7,6 +7,7 @@ import { useGutter, type Side } from "@/lib/gutter";
 import { identity } from "@/content/identity";
 import { versoNav, rectoNav, type NavItem } from "@/content/nav";
 import { MobileNav } from "./MobileNav";
+import { Jellyfish } from "./Jellyfish";
 import styles from "./Header.module.css";
 
 /** Past this, the bar goes compact and starts hiding on downward scroll. */
@@ -91,9 +92,18 @@ export function Header() {
       <nav className={styles.bar} aria-label="Primary">
         <div className={styles.group}>{versoNav.map(renderLink)}</div>
 
+        {/*
+          The mark and the name are one lockup. The two halves of the name keep
+          their own wrapper because the hover opens a gap between them, and a
+          gap on the link itself would push the jellyfish out along with it --
+          it is the pivot the name drifts apart around, so it holds still.
+        */}
         <Link href="/" className={styles.wordmark} aria-label={`${identity.name}, home`}>
-          <span className={styles.wordmarkVerso}>Hal</span>{" "}
-          <span className={styles.wordmarkRecto}>Wall</span>
+          <Jellyfish className={styles.wordmarkMark} />
+          <span className={styles.wordmarkName}>
+            <span className={styles.wordmarkVerso}>Hal</span>{" "}
+            <span className={styles.wordmarkRecto}>Wall</span>
+          </span>
         </Link>
 
         {/*

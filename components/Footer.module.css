@@ -5,7 +5,13 @@
 .link { font-family: var(--font-mono); font-size: var(--step--1); color: var(--verso-ink-muted); transition: color var(--dur-fast) var(--ease-out-expo); width: fit-content; }
 .link:hover, .link:focus-visible { color: var(--verso-accent); }
 .serifLink { font-family: var(--font-serif); font-size: var(--step-0); }
-.bottom { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; margin-top: clamp(2rem, 6vh, 3.5rem); padding-top: 1.25rem; border-top: 1px solid var(--verso-rule); font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--verso-ink-faint); }
+/* Centred, not baselined. The left-hand cell leads with the mark, and a flex
+   container takes its baseline from its first item -- so a baselined row was
+   sitting the jellyfish's bottom edge on the edition line's baseline and
+   dropping the name 6px out of true with it. */
+.bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-top: clamp(2rem, 6vh, 3.5rem); padding-top: 1.25rem; border-top: 1px solid var(--verso-rule); font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--verso-ink-faint); }
+.colophon { display: flex; align-items: center; gap: 0.7em; min-width: 0; }
+.mark { --mark-size: 18px; }
 .name { color: var(--verso-ink-muted); }
 /* The full stop is the door to /private. It was the easter egg on the old
    site and it survives the rebuild, just somewhere findable rather than in
